@@ -1,7 +1,7 @@
 // src/components/NodeConfiguration.js
 
 import React, { useState, useEffect } from 'react';
-import WORLD_CITIES, { getRandomCity } from '../data/worldCities';
+import WORLD_CITIES, { getRandomCity, pickTypeForNewNode } from '../data/worldCities';
 
 const clientTypeColors = {
   strong: '#e53935',
@@ -41,14 +41,20 @@ const NodeConfiguration = ({ nodes: initialNodes, clientTypes, clientDynamism, o
   const addNode = () => {
     const existingCities = nodes.map(n => n.city);
     const randomCity = getRandomCity(existingCities);
+    const bestClientType = clientTypes
+      ? pickTypeForNewNode(nodes, clientTypes, 'client_type')
+      : 'medium';
+    const bestDynamism = clientDynamism
+      ? pickTypeForNewNode(nodes, clientDynamism, 'dynamism_type')
+      : 'normal';
     const newNode = {
       id: nodes.length + 1,
       name: `Node ${nodes.length + 1}`,
       city: randomCity.city,
       latitude: randomCity.latitude,
       longitude: randomCity.longitude,
-      client_type: 'medium',
-      dynamism_type: 'normal',
+      client_type: bestClientType,
+      dynamism_type: bestDynamism,
     };
     const updatedNodes = [...nodes, newNode];
     setNodes(updatedNodes);

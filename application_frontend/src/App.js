@@ -19,7 +19,7 @@ import InfoBox from './components/InfoBox';
 import BasicConfigForm from './components/ExperimentConfig/BasicConfigForm';
 import ClientHeterogeneityConfig from './components/ExperimentConfig/ClientHeterogeneityConfig';
 import ClientDynamismConfig from './components/ExperimentConfig/ClientDynamismConfig';
-import { getRandomCity } from './data/worldCities';
+import { getRandomCity, distributeTypes } from './data/worldCities';
 
 
 import {
@@ -911,8 +911,10 @@ const handleExperimentConfigUpdate = useCallback((field, value) => {
       setNodes(prevNodes => {
         let updated;
         if (newCount > prevNodes.length) {
-          // Aggiungi nuovi nodi con città casuali
+          // Distribuisci tipi secondo le proporzioni della Advanced Configuration
           const toAdd = newCount - prevNodes.length;
+          const clientTypes = distributeTypes(toAdd, prevNodes, clientTypeConfig, 'client_type');
+          const dynamismTypes = distributeTypes(toAdd, prevNodes, clientDynamismConfig, 'dynamism_type');
           const existingCities = prevNodes.map(n => n.city);
           const newNodes = [];
           for (let i = 0; i < toAdd; i++) {
@@ -924,8 +926,8 @@ const handleExperimentConfigUpdate = useCallback((field, value) => {
               city: randomCity.city,
               latitude: randomCity.latitude,
               longitude: randomCity.longitude,
-              client_type: 'medium',
-              dynamism_type: 'normal',
+              client_type: clientTypes[i],
+              dynamism_type: dynamismTypes[i],
             });
           }
           updated = [...prevNodes, ...newNodes];

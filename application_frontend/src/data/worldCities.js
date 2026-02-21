@@ -63,4 +63,72 @@ export const getRandomCity = (existingCities = []) => {
   return pool[Math.floor(Math.random() * pool.length)];
 };
 
+/**
+ * Distributes types for new nodes based on proportion config,
+ * considering the types already assigned to existing nodes.
+ *
+ * @param {number} newCount - Number of new nodes to create
+ * @param {Array} existingNodes - Current nodes array
+ * @param {Object} proportionConfig - e.g. { strong: { proportion: 0.3 }, medium: { proportion: 0.5 }, weak: { proportion: 0.2 } }
+ * @param {string} typeKey - 'client_type' or 'dynamism_type'
+ * @returns {string[]} Array of type strings for the new nodes
+ */
+export const distributeTypes = (newCount, existingNodes, proportionConfig, typeKey) => {
+  const totalCount = existingNodes.length + newCount;
+  const types = Object.keys(proportionConfig);
+
+  // Count existing assignments
+  const existingCounts = {};
+  types.forEach(type => {
+    existingCounts[type] = existingNodes.filter(n => n[typeKey] === type).length;
+  });
+
+  // Calculate how many of each type we need for the new nodes
+  const result = [];
+  let assigned = 0;
+
+  types.forEach((type, i) => {
+    if (i === types.length - 1) {
+      // Last type gets all remaining
+      const remaining = newCount - assigned;
+      for (let j = 0; j < remaining; j++) result.push(type);
+    } else {
+      const targetTotal = Math.round(totalCount * (proportionConfig[type].proportion || 0));
+      const needed = Math.max(0, targetTotal - (existingCounts[type] || 0));
+      const toAdd = Math.min(needed, newCount - assigned);
+      for (let j = 0; j < toAdd; j++) result.push(type);
+      assigned += toAdd;
+    }
+  });
+
+  // Shuffle to avoid predictable ordering
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+
+  return result;
+};
+
+/**
+ * Picks the best type for a single new node to balance proportions.
+ */
+export const pickTypeForNewNode = (existingNodes, proportionConfig, typeKey) => {
+  const totalCount = existingNodes.length + 1;
+  let bestType = Object.keys(proportionConfig)[0];
+  let maxDeficit = -Infinity;
+
+  for (const [type, config] of Object.entries(proportionConfig)) {
+    const targetCount = totalCount * (config.proportion || 0);
+    const currentCount = existingNodes.filter(n => n[typeKey] === type).length;
+    const deficit = targetCount - currentCount;
+    if (deficit > maxDeficit) {
+      maxDeficit = deficit;
+      bestType = type;
+    }
+  }
+
+  return bestType;
+};
+
 export default WORLD_CITIES;

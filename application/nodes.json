@@ -9,12 +9,174 @@
     "name": "Node 1"
   },
   {
-    "city": "London",
-    "client_type": "",
-    "dynamism_type": "",
-    "id": 2,
-    "latitude": 51.5074,
-    "longitude": -0.1278,
-    "name": "Node 2"
+    "id": 3,
+    "name": "Node 3",
+    "city": "Tokyo",
+    "latitude": 35.6762,
+    "longitude": 139.6503,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 4,
+    "name": "Node 4",
+    "city": "Johannesburg",
+    "latitude": -26.2041,
+    "longitude": 28.0473,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 5,
+    "name": "Node 5",
+    "city": "Chicago",
+    "latitude": 41.8781,
+    "longitude": -87.6298,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 6,
+    "name": "Node 6",
+    "city": "Istanbul",
+    "latitude": 41.0082,
+    "longitude": 28.9784,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 7,
+    "name": "Node 7",
+    "city": "San Francisco",
+    "latitude": 37.7749,
+    "longitude": -122.4194,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 8,
+    "name": "Node 8",
+    "city": "Lima",
+    "latitude": -12.0464,
+    "longitude": -77.0428,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 9,
+    "name": "Node 9",
+    "city": "Seoul",
+    "latitude": 37.5665,
+    "longitude": 126.978,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 10,
+    "name": "Node 10",
+    "city": "Hong Kong",
+    "latitude": 22.3193,
+    "longitude": 114.1694,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 11,
+    "name": "Node 11",
+    "city": "Stockholm",
+    "latitude": 59.3293,
+    "longitude": 18.0686,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 12,
+    "name": "Node 12",
+    "city": "Paris",
+    "latitude": 48.8566,
+    "longitude": 2.3522,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 13,
+    "name": "Node 13",
+    "city": "Vancouver",
+    "latitude": 49.2827,
+    "longitude": -123.1207,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 14,
+    "name": "Node 14",
+    "city": "Miami",
+    "latitude": 25.7617,
+    "longitude": -80.1918,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 15,
+    "name": "Node 15",
+    "city": "Osaka",
+    "latitude": 34.6937,
+    "longitude": 135.5023,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 16,
+    "name": "Node 16",
+    "city": "Mumbai",
+    "latitude": 19.076,
+    "longitude": 72.8777,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 17,
+    "name": "Node 17",
+    "city": "Amsterdam",
+    "latitude": 52.3676,
+    "longitude": 4.9041,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 18,
+    "name": "Node 18",
+    "city": "Montreal",
+    "latitude": 45.5017,
+    "longitude": -73.5673,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 19,
+    "name": "Node 19",
+    "city": "Lisbon",
+    "latitude": 38.7223,
+    "longitude": -9.1393,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 20,
+    "name": "Node 20",
+    "city": "New York",
+    "latitude": 40.7128,
+    "longitude": -74.006,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 20,
+    "name": "Node 20",
+    "city": "Taipei",
+    "latitude": 25.033,
+    "longitude": 121.5654,
+    "client_type": "medium",
+    "dynamism_type": "normal"
   }
 ]
