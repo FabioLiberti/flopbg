@@ -16,20 +16,9 @@ const ChartMetrics = ({ data: chartData, options: chartOptions }) => {
     return <p>No datasets available for Federated vs Centralized Learning Metrics.</p>;
   }
 
-  const updatedOptions = {
-    ...chartOptions,
-    plugins: {
-      ...chartOptions.plugins,
-      legend: {
-        ...chartOptions.plugins.legend,
-        display: false,  // Nasconde la legenda
-      },
-    },
-  };
-
   return (
-    <div>
-      <Line data={chartData} options={updatedOptions} />
+    <div style={{ height: '500px', width: '100%' }}>
+      <Line data={chartData} options={chartOptions} />
     </div>
   );
 };

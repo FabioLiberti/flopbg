@@ -123,11 +123,13 @@ const ROCChart = ({ data: rocChartData, options: rocChartOptions }) => {
   };
 
   return (
-    <div>
-      <div style={{ height: '400px', width: '100%' }}>
+    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+      <div style={{ flex: '1 1 55%', minWidth: '400px', height: '400px' }}>
         <Line data={rocChartData} options={mergedOptions} />
       </div>
-      {generateResultsTable()}
+      <div style={{ flex: '1 1 35%', minWidth: '280px', maxHeight: '400px', overflowY: 'auto' }}>
+        {generateResultsTable()}
+      </div>
     </div>
   );
 };

@@ -42,6 +42,8 @@ function ImageComparison({ datasetName }) {
       } catch (error) {
         console.error('Error fetching images:', error);
         setError('Error fetching images');
+      } finally {
+        setIsLoading(false);
       }
     };
 

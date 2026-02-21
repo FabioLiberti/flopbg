@@ -51,47 +51,40 @@ export const fetchStatus = async (
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    console.log('Full status data received:', data);
-    
-    // Verifica la presenza dei dati necessari
-    if (!data.accuracy_data || data.accuracy_data.length === 0) {
-      console.warn('Missing or empty accuracy_data');
-    }  
-
-    if (!data.roc_curve_data) {
-      console.warn('Missing roc_curve_data');
-    } else {
-      console.log('ROC curve data received:', data.roc_curve_data);
-    }
-    if (!data.confusion_matrix) {
-      console.warn('Missing confusion_matrix');
-    } else {
-      console.log('Confusion matrix received:', data.confusion_matrix);
-    }
-
 
     if (!data || typeof data !== 'object') {
       throw new Error('Invalid data received from server');
     }
-    
-    // Verifica la presenza dei dati necessari
-    if (!data.roc_curve_data) console.warn('Missing roc_curve_data');
-    if (!data.confusion_matrix) console.warn('Missing confusion_matrix');
-    if (!data.client_participation) console.warn('Missing client_participation data');
-    if (!data.client_data_distribution) console.warn('Missing client_data_distribution data');
-    if (!data.client_training_times) console.warn('Missing client_training_times data');
-    
+
+    console.log('Full status data received:', data);
+
+    // Ensure roc_curve_data and confusion_matrix from top-level state
+    // are injected into the last federated result for the frontend useEffect
+    let accuracyData = data.accuracy_data || [];
+    if (accuracyData.length > 0 && (data.roc_curve_data || data.confusion_matrix)) {
+      const lastFederatedIdx = accuracyData.map((item, i) => ({ ...item, _idx: i }))
+        .filter(item => Number(item.round) > 0)
+        .pop();
+      if (lastFederatedIdx !== undefined) {
+        const idx = lastFederatedIdx._idx;
+        if (data.roc_curve_data && !accuracyData[idx].roc_curve_data) {
+          accuracyData[idx].roc_curve_data = data.roc_curve_data;
+        }
+        if (data.confusion_matrix && !accuracyData[idx].confusion_matrix) {
+          accuracyData[idx].confusion_matrix = data.confusion_matrix;
+        }
+      }
+    }
+
     setStatus(data.status || 'Idle');
     setIsTraining(data.status === 'Running');
-    setResults(data.accuracy_data || []);
+    setResults(accuracyData);
     setClientParticipation(data.client_participation || {});
     setClientDataDistribution(data.client_data_distribution || {});
     setClientTrainingTimes(data.client_training_times || {});
 
     if (typeof setCentralizedResult === 'function') {
       setCentralizedResult(data.centralized_metrics || {});
-    } else {
-      console.warn('setCentralizedResult is not a function');
     }
   } catch (error) {
     console.error('Error fetching status:', error);

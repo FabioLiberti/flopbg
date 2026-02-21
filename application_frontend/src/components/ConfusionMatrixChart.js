@@ -3,9 +3,6 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { Chart as ChartJS } from 'chart.js';
-
-ChartJS.register(ChartDataLabels);
 
 const ConfusionMatrixChart = ({ confusionMatrixData, confusionMatrixOptions }) => {
   if (!confusionMatrixData || !confusionMatrixOptions) {
@@ -152,14 +149,22 @@ const ConfusionMatrixChart = ({ confusionMatrixData, confusionMatrixOptions }) =
 
 
   return (
-    <div style={{ marginBottom: '40px' }}> {/* Adding space between charts */}
-      <h3>Confusion Matrix</h3>
-      <Bar
-        data={modifiedData}
-        options={modifiedOptions}
-        plugins={[ChartDataLabels]}
-      />
-      {generateClassicConfusionMatrix()}
+    <div style={{ marginBottom: '40px' }}>
+      <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+        {/* Left: Bar Chart */}
+        <div style={{ flex: '1 1 50%', minWidth: '400px' }}>
+          <h4 style={{ textAlign: 'center', marginTop: 0 }}>Confusion Matrix</h4>
+          <Bar
+            data={modifiedData}
+            options={modifiedOptions}
+            plugins={[ChartDataLabels]}
+          />
+        </div>
+        {/* Right: Classic Heatmap Table */}
+        <div style={{ flex: '1 1 40%', minWidth: '300px', display: 'flex', justifyContent: 'center' }}>
+          {generateClassicConfusionMatrix()}
+        </div>
+      </div>
     </div>
   );
 };

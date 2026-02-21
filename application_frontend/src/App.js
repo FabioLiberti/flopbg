@@ -108,6 +108,8 @@ const handleNodesUpdate = (updatedNodes) => {
   const [federatedResults, setFederatedResults] = useState([]);
   const [chartData, setChartData] = useState(null);
   const [chartOptions, setChartOptions] = useState(null);
+  const [lossChartData, setLossChartData] = useState(null);
+  const [lossChartOptions, setLossChartOptions] = useState(null);
   const [rocChartData, setRocChartData] = useState(null);
   const [rocChartOptions, setRocChartOptions] = useState({});
   const [confusionMatrixData, setConfusionMatrixData] = useState(null);
@@ -235,6 +237,8 @@ const handleNodesUpdate = (updatedNodes) => {
     setClientTrainingTimes({});
     setChartData(null);
     setChartOptions(null);
+    setLossChartData(null);
+    setLossChartOptions(null);
     setRocChartData(null);
     setRocChartOptions(null);
     setClientParticipationData(null);
@@ -316,21 +320,6 @@ const handleNodesUpdate = (updatedNodes) => {
 
       const rounds = federated.map((item) => `Round ${item.round}`);
 
-      // Adjusted metricsList to match the keys in your data
-      const metricsList = [
-        'accuracy',
-        'loss',
-        'precision',
-        'recall',
-        'f1_score',
-        'auc_roc',
-      ].filter(
-        (metric) =>
-          typeof centralized[metric] === 'number' &&
-          federated.every(
-            (item) => typeof item[metric] === 'number'
-          )
-      );
       const colors = {
         accuracy: 'rgb(75, 192, 192)',
         loss: 'rgb(255, 99,132)',
@@ -340,59 +329,140 @@ const handleNodesUpdate = (updatedNodes) => {
         auc_roc: 'rgb(255, 159, 64)',
       };
 
-      const datasets = metricsList.flatMap((metric) => [
+      // Helper to check if a metric has valid data
+      const isMetricAvailable = (metric) =>
+        typeof centralized[metric] === 'number' &&
+        federated.every((item) => typeof item[metric] === 'number');
+
+      // --- Chart 1: Performance Metrics (accuracy, precision, recall, f1_score, auc_roc) ---
+      const performanceMetrics = [
+        'accuracy', 'precision', 'recall', 'f1_score', 'auc_roc',
+      ].filter(isMetricAvailable);
+
+      const performanceDatasets = performanceMetrics.flatMap((metric) => [
         {
           label: `Centralized ${metric.replace('_', ' ')}`,
-          data: federated.map(
-            () => parseFloat(centralized[metric]) || 0
-          ),
+          data: federated.map(() => parseFloat(centralized[metric]) || 0),
           borderColor: colors[metric],
-          borderDash: [5, 5],
-          tension: 0.1,
+          borderDash: [8, 4],
+          borderWidth: 2,
+          pointRadius: 0,
+          tension: 0.3,
           fill: false,
         },
         {
           label: `Federated ${metric.replace('_', ' ')}`,
-          data: federated.map(
-            (item) => parseFloat(item[metric]) || 0
-          ),
+          data: federated.map((item) => parseFloat(item[metric]) || 0),
           borderColor: colors[metric],
-          tension: 0.1,
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          tension: 0.3,
           fill: false,
         },
       ]);
 
-      console.log('Datasets:', datasets);
-
-      if (datasets.length > 0) {
-        const newChartData = { labels: rounds, datasets };
-        const newChartOptions = {
-          scales: { y: { beginAtZero: true, max: 1 } },
+      if (performanceDatasets.length > 0) {
+        setChartData({ labels: rounds, datasets: performanceDatasets });
+        setChartOptions({
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              min: 0,
+              max: 1,
+              ticks: { callback: (val) => val.toFixed(2) },
+            },
+          },
           plugins: {
             title: {
               display: true,
-              text: [
-                'Federated vs Centralized Learning Metrics',
-                `(Dataset: ${datasetName}, Rounds: ${numRounds}, Clients: ${numClients})`,
-              ],
+              text: 'Performance Metrics',
+              font: { size: 14, weight: 'bold' },
             },
             legend: {
-              display: false,
+              display: true,
               position: 'bottom',
+              labels: { usePointStyle: true, padding: 12, font: { size: 10 } },
             },
-            tooltip: { enabled: true },
+            tooltip: {
+              enabled: true,
+              callbacks: {
+                label: (context) => {
+                  const label = context.dataset.label || '';
+                  const value = context.parsed.y;
+                  return `${label}: ${value.toFixed(4)}`;
+                },
+              },
+            },
           },
-        };
-
-        console.log('Setting new chart data:', newChartData);
-        console.log('Setting new chart options:', newChartOptions);
-
-        setChartData(newChartData);
-        setChartOptions(newChartOptions);
+        });
       } else {
-        console.warn('No valid metrics found in the results');
         setChartData(null);
         setChartOptions(null);
+      }
+
+      // --- Chart 2: Loss ---
+      if (isMetricAvailable('loss')) {
+        const lossDatasets = [
+          {
+            label: 'Centralized Loss',
+            data: federated.map(() => parseFloat(centralized.loss) || 0),
+            borderColor: colors.loss,
+            borderDash: [8, 4],
+            borderWidth: 2,
+            pointRadius: 0,
+            tension: 0.3,
+            fill: false,
+          },
+          {
+            label: 'Federated Loss',
+            data: federated.map((item) => parseFloat(item.loss) || 0),
+            borderColor: colors.loss,
+            borderWidth: 2,
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            tension: 0.3,
+            fill: false,
+          },
+        ];
+
+        setLossChartData({ labels: rounds, datasets: lossDatasets });
+        setLossChartOptions({
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { callback: (val) => val.toFixed(2) },
+            },
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: 'Loss',
+              font: { size: 14, weight: 'bold' },
+            },
+            legend: {
+              display: true,
+              position: 'bottom',
+              labels: { usePointStyle: true, padding: 12, font: { size: 10 } },
+            },
+            tooltip: {
+              enabled: true,
+              callbacks: {
+                label: (context) => {
+                  const label = context.dataset.label || '';
+                  const value = context.parsed.y;
+                  return `${label}: ${value.toFixed(4)}`;
+                },
+              },
+            },
+          },
+        });
+      } else {
+        setLossChartData(null);
+        setLossChartOptions(null);
       }
 
       // Prepare ROC Curve data
@@ -423,7 +493,7 @@ const handleNodesUpdate = (updatedNodes) => {
             },
           },
           plugins: {
-            legend: { display: false, position: 'top' },
+            legend: { display: true, position: 'top' },
             tooltip: {
               callbacks: {
                 label: (context) => {
@@ -437,6 +507,24 @@ const handleNodesUpdate = (updatedNodes) => {
           },
         };
 
+        // Helper to downsample ROC data points for cleaner rendering
+        const downsampleROC = (fprArr, tprArr, maxPoints = 200) => {
+          if (fprArr.length <= maxPoints) {
+            return fprArr.map((fpr, i) => ({ x: fpr, y: tprArr[i] }));
+          }
+          const step = Math.ceil(fprArr.length / maxPoints);
+          const sampled = [];
+          for (let i = 0; i < fprArr.length; i += step) {
+            sampled.push({ x: fprArr[i], y: tprArr[i] });
+          }
+          // Always include the last point
+          const last = fprArr.length - 1;
+          if (sampled[sampled.length - 1].x !== fprArr[last]) {
+            sampled.push({ x: fprArr[last], y: tprArr[last] });
+          }
+          return sampled;
+        };
+
         if (
           lastResult.roc_curve_data.fpr &&
           lastResult.roc_curve_data.tpr
@@ -444,12 +532,13 @@ const handleNodesUpdate = (updatedNodes) => {
           // Binary classification
           rocData.datasets.push({
             label: 'ROC Curve',
-            data: lastResult.roc_curve_data.fpr.map((fpr, index) => ({
-              x: fpr,
-              y: lastResult.roc_curve_data.tpr[index],
-            })),
-            borderColor: ' rgb(75, 192, 192)',
-            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+            data: downsampleROC(lastResult.roc_curve_data.fpr, lastResult.roc_curve_data.tpr),
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.15)',
+            fill: true,
+            pointRadius: 0,
+            borderWidth: 2,
+            tension: 0.3,
           });
           rocOptions.plugins.title = {
             display: true,
@@ -458,32 +547,43 @@ const handleNodesUpdate = (updatedNodes) => {
         } else {
           // Multi-class classification
           const colorPalette = [
-            '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
-            '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
-            '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000',
+            '#e6194b', '#3cb44b', '#4363d8', '#f58231', '#911eb4',
+            '#46f0f0', '#f032e6', '#008080', '#e6beff', '#800000',
             '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080',
           ];
           Object.entries(lastResult.roc_curve_data).forEach(
             ([classLabel, classData], index) => {
               rocData.datasets.push({
                 label: `Class ${classLabel}`,
-                data: classData.fpr.map((fpr, i) => ({
-                  x: fpr,
-                  y: classData.tpr[i],
-                })),
+                data: downsampleROC(classData.fpr, classData.tpr),
                 borderColor: colorPalette[index % colorPalette.length],
-                backgroundColor: `${colorPalette[index % colorPalette.length]}33`,
+                backgroundColor: 'transparent',
                 pointRadius: 0,
-                tension: 0.4,
+                borderWidth: 2,
+                tension: 0.3,
               });
             }
           );
+          // Add diagonal reference line
+          rocData.datasets.push({
+            label: 'Random (AUC = 0.5)',
+            data: [{ x: 0, y: 0 }, { x: 1, y: 1 }],
+            borderColor: 'rgba(150, 150, 150, 0.5)',
+            borderDash: [6, 4],
+            borderWidth: 1,
+            pointRadius: 0,
+            fill: false,
+          });
           rocOptions.plugins.title = {
             display: true,
-            text: [
-              'ROC Curves per Class',
-              `(Dataset: ${datasetName}, Rounds: ${numRounds}, Clients: ${numClients})`,
-            ],
+            text: 'ROC Curves',
+            font: { size: 16, weight: 'bold' },
+          };
+          rocOptions.plugins.subtitle = {
+            display: true,
+            text: `Dataset: ${datasetName} | Rounds: ${numRounds} | Clients: ${numClients}`,
+            font: { size: 12 },
+            padding: { bottom: 10 },
           };
         }
 
@@ -723,6 +823,8 @@ const handleNodesUpdate = (updatedNodes) => {
       console.log('No results to process.');
       setChartData(null);
       setChartOptions(null);
+      setLossChartData(null);
+      setLossChartOptions(null);
       setRocChartData(null);
       setRocChartOptions(null);
       setConfusionMatrixData(null);
@@ -1470,35 +1572,61 @@ return (
   </div>
      {results && results.length > 0 ? (
       <>
-    {/* Main chart for federated vs centralized learning metrics */}
+    {/* Federated vs Centralized Learning Metrics — two charts side by side */}
     <div style={{ marginBottom: '100px', textAlign: 'center'}}>
       <h3>Federated vs Centralized Learning Metrics</h3>
-      <div style={{ 
-        fontSize: '1.2rem', 
-        color: '#666', 
+      <div style={{
+        fontSize: '1.2rem',
+        color: '#666',
         marginBottom: '1rem',
-        textAlign: 'center' 
+        textAlign: 'center'
       }}>
         Dataset: {datasetName} | Rounds: {numRounds} | Clients: {numClients}
       </div>
-      {chartData && chartOptions && (
-        <ChartMetrics 
-          data={chartData} 
-          options={{
-            ...chartOptions,
-            plugins: {
-              ...chartOptions.plugins,
-              legend: {
-                display: true,
-                position: 'right'
-              },
-              title: {
-                display: false
-              }
-            }
-          }} 
-        />
-      )}
+      <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+        {/* Left: Performance Metrics */}
+        <div style={{ flex: '1 1 45%', minWidth: '400px' }}>
+          {chartData && chartOptions ? (
+            <ChartMetrics
+              data={chartData}
+              options={{
+                ...chartOptions,
+                plugins: {
+                  ...chartOptions.plugins,
+                  legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: { usePointStyle: true, padding: 12, font: { size: 10 } },
+                  },
+                }
+              }}
+            />
+          ) : (
+            <p>No performance metrics available.</p>
+          )}
+        </div>
+        {/* Right: Loss */}
+        <div style={{ flex: '1 1 45%', minWidth: '400px' }}>
+          {lossChartData && lossChartOptions ? (
+            <ChartMetrics
+              data={lossChartData}
+              options={{
+                ...lossChartOptions,
+                plugins: {
+                  ...lossChartOptions.plugins,
+                  legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: { usePointStyle: true, padding: 12, font: { size: 10 } },
+                  },
+                }
+              }}
+            />
+          ) : (
+            <p>No loss data available.</p>
+          )}
+        </div>
+      </div>
     </div>
 
          {/* Centralized Learning Metrics */}
@@ -1582,8 +1710,8 @@ return (
           </div>
           {confusionMatrixData && confusionMatrixOptions ? (
             <ConfusionMatrixChart
-              data={confusionMatrixData}
-              options={{
+              confusionMatrixData={confusionMatrixData}
+              confusionMatrixOptions={{
                 ...confusionMatrixOptions,
                 plugins: {
                   ...confusionMatrixOptions.plugins,
@@ -1647,66 +1775,56 @@ return (
             )}
           </div>
 
-          {/* Client Participation */}
+          {/* Client Participation & Client Training Times — side by side */}
           <div style={{ marginBottom: '100px', textAlign: 'center' }}>
-            <h3>Client Participation</h3>
-            <div style={{ 
-              fontSize: '0.9rem', 
-              color: '#666', 
+            <div style={{
+              fontSize: '0.9rem',
+              color: '#666',
               marginBottom: '1rem',
-              textAlign: 'center' 
+              textAlign: 'center'
             }}>
               Dataset: {datasetName} | Rounds: {numRounds} | Clients: {numClients}
             </div>
-            {clientParticipationData && clientParticipationOptions && (
-              <ClientParticipationChart
-                data={clientParticipationData}
-                options={{
-                  ...clientParticipationOptions,
-                  plugins: {
-                    ...clientParticipationOptions.plugins,
-                    legend: {
-                      display: true,
-                      position: 'right'
-                    },
-                    title: {
-                      display: false
-                    }
-                  }
-                }}
-              />
-            )}
-          </div>
-
-          {/* Client Training Times */}
-          <div style={{ marginBottom: '40px', textAlign: 'center' }}>
-            <h3>Client Training Times</h3>
-            <div style={{ 
-              fontSize: '0.9rem', 
-              color: '#666', 
-              marginBottom: '1rem',
-              textAlign: 'center' 
-            }}>
-              Dataset: {datasetName} | Rounds: {numRounds} | Clients: {numClients}
+            <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+              {/* Left: Client Participation */}
+              <div style={{ flex: '1 1 45%', minWidth: '400px' }}>
+                <h3>Client Participation</h3>
+                {clientParticipationData && clientParticipationOptions ? (
+                  <ClientParticipationChart
+                    data={clientParticipationData}
+                    options={{
+                      ...clientParticipationOptions,
+                      plugins: {
+                        ...clientParticipationOptions.plugins,
+                        legend: { display: false },
+                        title: { display: false }
+                      }
+                    }}
+                  />
+                ) : (
+                  <p>No client participation data available.</p>
+                )}
+              </div>
+              {/* Right: Client Training Times */}
+              <div style={{ flex: '1 1 45%', minWidth: '400px' }}>
+                <h3>Client Training Times</h3>
+                {trainingTimesData && trainingTimesOptions ? (
+                  <ClientTrainingTimesChart
+                    data={trainingTimesData}
+                    options={{
+                      ...trainingTimesOptions,
+                      plugins: {
+                        ...trainingTimesOptions.plugins,
+                        legend: { display: false },
+                        title: { display: false }
+                      }
+                    }}
+                  />
+                ) : (
+                  <p>No training times data available.</p>
+                )}
+              </div>
             </div>
-            {trainingTimesData && trainingTimesOptions && (
-              <ClientTrainingTimesChart
-                data={trainingTimesData}
-                options={{
-                  ...trainingTimesOptions,
-                  plugins: {
-                    ...trainingTimesOptions.plugins,
-                    legend: {
-                      display: true,
-                      position: 'right'
-                    },
-                    title: {
-                      display: false
-                    }
-                  }
-                }}
-              />
-            )}
           </div>
 
 

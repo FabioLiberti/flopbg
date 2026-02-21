@@ -507,7 +507,7 @@ def get_memory_images(dataset_name, num_images):
         response = {
             "real_images": real_images,      # Images encoded in base64
             "real_labels": real_labels,      # Real labels
-            "predicted_labels": predicted_labels.tolist()  # Predicted labels
+            "predicted_labels": predicted_labels  # Already a Python list from get_predicted_labels()
         }
 
         logging.info(f"Response prepared with {len(real_images)} images.")

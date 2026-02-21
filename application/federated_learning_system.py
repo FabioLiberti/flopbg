@@ -343,6 +343,15 @@ class FederatedLearningSystem:
 
     def get_current_state(self) -> Dict[str, Any]:
         try:
+            # Extract latest metrics from the last federated round (round > 0)
+            latest_roc = None
+            latest_cm = None
+            for item in reversed(self.accuracy_data):
+                if item.get('round', 0) > 0:
+                    latest_roc = item.get('roc_curve_data')
+                    latest_cm = item.get('confusion_matrix')
+                    break
+
             state = {
                 "status": "Running" if self.is_running else "Idle",
                 "current_round": self.current_round if self.current_round is not None else 0,
@@ -350,6 +359,8 @@ class FederatedLearningSystem:
                 "dataset_name": self.dataset_name if self.dataset_name else "",
                 "num_clients": len(self.client_manager.get_all_clients()) if self.client_manager else 0,
                 "accuracy_data": sanitize_data(self.accuracy_data),
+                "roc_curve_data": sanitize_data(latest_roc),
+                "confusion_matrix": sanitize_data(latest_cm),
                 "client_data_distribution": sanitize_data(self.get_client_data_distribution()),
                 "client_participation": sanitize_data(dict(self.client_participation)),
                 "client_training_times": sanitize_data(self.client_training_times),
