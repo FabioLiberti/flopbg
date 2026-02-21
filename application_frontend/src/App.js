@@ -1593,30 +1593,49 @@ return (
         boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
         textAlign: 'center'
       }}>
-        {/* Timer */}
+        {/* Timer and Round Counter */}
         <div style={{
-          fontSize: '2.5rem',
-          fontWeight: '700',
-          fontFamily: 'monospace',
-          color: isTraining ? '#2e7d32' : '#1565c0',
-          marginBottom: '15px',
-          letterSpacing: '2px'
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '40px',
+          marginBottom: '15px'
         }}>
-          {isTraining ? formatElapsed(elapsedSeconds) : formatElapsed(
-            experimentEndTime ? Math.floor((experimentEndTime - experimentStartTime) / 1000) : elapsedSeconds
-          )}
-          {isTraining && (
-            <span style={{
-              display: 'inline-block',
-              width: '12px',
-              height: '12px',
-              backgroundColor: '#4caf50',
-              borderRadius: '50%',
-              marginLeft: '12px',
-              animation: 'pulse 1.5s infinite',
-              verticalAlign: 'middle'
-            }} />
-          )}
+          {/* Timer */}
+          <div style={{
+            fontSize: '2.5rem',
+            fontWeight: '700',
+            fontFamily: 'monospace',
+            color: isTraining ? '#2e7d32' : '#1565c0',
+            letterSpacing: '2px'
+          }}>
+            {isTraining ? formatElapsed(elapsedSeconds) : formatElapsed(
+              experimentEndTime ? Math.floor((experimentEndTime - experimentStartTime) / 1000) : elapsedSeconds
+            )}
+            {isTraining && (
+              <span style={{
+                display: 'inline-block',
+                width: '12px',
+                height: '12px',
+                backgroundColor: '#4caf50',
+                borderRadius: '50%',
+                marginLeft: '12px',
+                animation: 'pulse 1.5s infinite',
+                verticalAlign: 'middle'
+              }} />
+            )}
+          </div>
+          {/* Round Counter */}
+          <div style={{
+            fontSize: '1.6rem',
+            fontWeight: '600',
+            color: isTraining ? '#2e7d32' : '#1565c0',
+            padding: '8px 20px',
+            backgroundColor: isTraining ? 'rgba(76, 175, 80, 0.1)' : 'rgba(25, 118, 210, 0.1)',
+            borderRadius: '8px'
+          }}>
+            Round {results.filter(r => Number(r.round) > 0).length} / {numRounds}
+          </div>
         </div>
 
         {/* Experiment Parameters */}
