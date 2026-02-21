@@ -96,74 +96,88 @@ learning_rate: 0.001
 local_epochs: 1
 mu: 0.1
 nodes:
-- city: Rome
+- city: Milan
   client_type: strong
   dynamism_type: fast
   id: 1
+  latitude: 45.4642
+  longitude: 9.19
+  name: "Charit\xE9 Universit\xE4tsmedizin"
+- city: Messina
+  client_type: strong
+  dynamism_type: fast
+  id: 2
+  latitude: 38.1938
+  longitude: 15.554
+  name: "AP-HP H\xF4pital Saint-Louis"
+- city: Rome
+  client_type: strong
+  dynamism_type: fast
+  id: 3
   latitude: 41.9028
   longitude: 12.4964
-  name: Centro Pediatrico Regionale
-- city: Turin
+  name: NHS Royal London Hospital
+- city: Bologna
+  client_type: strong
+  dynamism_type: fast
+  id: 4
+  latitude: 44.4949
+  longitude: 11.3426
+  name: Istituto Europeo di Oncologia
+- city: Genoa
   client_type: medium
   dynamism_type: normal
-  id: 2
-  latitude: 45.0705
-  longitude: 7.6868
-  name: Ospedale Montano Nord
+  id: 5
+  latitude: 44.4056
+  longitude: 8.9463
+  name: Hospital 12 de Octubre
+- city: Catania
+  client_type: medium
+  dynamism_type: normal
+  id: 6
+  latitude: 37.4979
+  longitude: 15.0878
+  name: Amsterdam UMC
+- city: Palermo
+  client_type: medium
+  dynamism_type: normal
+  id: 7
+  latitude: 38.1157
+  longitude: 13.3615
+  name: Karolinska Universitetssjukhuset
 - city: Naples
   client_type: medium
   dynamism_type: normal
-  id: 3
+  id: 8
   latitude: 40.8518
   longitude: 14.2681
-  name: Ospedale Montano Sud
-- city: Brescia
-  client_type: weak
-  dynamism_type: slow
-  id: 4
-  latitude: 45.5419
-  longitude: 10.2118
-  name: Ospedale di Valle A
-- city: Verona
-  client_type: weak
-  dynamism_type: normal
-  id: 5
-  latitude: 45.4386
-  longitude: 10.9945
-  name: Ospedale di Valle B
+  name: "AKH Wien \u2013 Univ. Dermatologie"
 - city: Cagliari
   client_type: weak
-  dynamism_type: slow
-  id: 6
+  dynamism_type: normal
+  id: 9
   latitude: 39.2238
   longitude: 9.1217
-  name: Ospedale di Valle C
-- city: Bologna
-  client_type: medium
-  dynamism_type: fast
-  id: 7
-  latitude: 44.4949
-  longitude: 11.3426
-  name: "Ospedale di Comunit\xE0 D"
-- city: Palermo
+  name: "Universit\xE4tsspital Z\xFCrich"
+- city: Turin
   client_type: weak
-  dynamism_type: normal
-  id: 8
-  latitude: 38.1157
-  longitude: 13.3615
-  name: "Ospedale di Comunit\xE0 E"
-- city: Florence
-  client_type: strong
-  dynamism_type: fast
-  id: 9
-  latitude: 43.7696
-  longitude: 11.2558
-  name: Casa della Salute F
-- city: Padua
-  client_type: medium
-  dynamism_type: normal
+  dynamism_type: slow
   id: 10
+  latitude: 45.0705
+  longitude: 7.6868
+  name: Hospital de Santa Maria
+- city: Padua
+  client_type: weak
+  dynamism_type: slow
+  id: 11
   latitude: 45.406
   longitude: 11.8776
-  name: Casa della Salute G
+  name: ATTIKON University Hospital
+- city: Florence
+  client_type: weak
+  dynamism_type: slow
+  id: 12
+  latitude: 43.7696
+  longitude: 11.2558
+  name: Centralny Szpital Kliniczny
 num_clients: 5

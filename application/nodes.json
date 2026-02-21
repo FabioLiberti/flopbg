@@ -1,7 +1,25 @@
 [
   {
     "id": 1,
-    "name": "Centro Pediatrico Regionale",
+    "name": "Charit\u00e9 Universit\u00e4tsmedizin",
+    "city": "Milan",
+    "latitude": 45.4642,
+    "longitude": 9.19,
+    "client_type": "strong",
+    "dynamism_type": "fast"
+  },
+  {
+    "id": 2,
+    "name": "AP-HP H\u00f4pital Saint-Louis",
+    "city": "Messina",
+    "latitude": 38.1938,
+    "longitude": 15.554,
+    "client_type": "strong",
+    "dynamism_type": "fast"
+  },
+  {
+    "id": 3,
+    "name": "NHS Royal London Hospital",
     "city": "Rome",
     "latitude": 41.9028,
     "longitude": 12.4964,
@@ -9,17 +27,44 @@
     "dynamism_type": "fast"
   },
   {
-    "id": 2,
-    "name": "Ospedale Montano Nord",
-    "city": "Turin",
-    "latitude": 45.0705,
-    "longitude": 7.6868,
+    "id": 4,
+    "name": "Istituto Europeo di Oncologia",
+    "city": "Bologna",
+    "latitude": 44.4949,
+    "longitude": 11.3426,
+    "client_type": "strong",
+    "dynamism_type": "fast"
+  },
+  {
+    "id": 5,
+    "name": "Hospital 12 de Octubre",
+    "city": "Genoa",
+    "latitude": 44.4056,
+    "longitude": 8.9463,
     "client_type": "medium",
     "dynamism_type": "normal"
   },
   {
-    "id": 3,
-    "name": "Ospedale Montano Sud",
+    "id": 6,
+    "name": "Amsterdam UMC",
+    "city": "Catania",
+    "latitude": 37.4979,
+    "longitude": 15.0878,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 7,
+    "name": "Karolinska Universitetssjukhuset",
+    "city": "Palermo",
+    "latitude": 38.1157,
+    "longitude": 13.3615,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 8,
+    "name": "AKH Wien \u2013 Univ. Dermatologie",
     "city": "Naples",
     "latitude": 40.8518,
     "longitude": 14.2681,
@@ -27,66 +72,39 @@
     "dynamism_type": "normal"
   },
   {
-    "id": 4,
-    "name": "Ospedale di Valle A",
-    "city": "Brescia",
-    "latitude": 45.5419,
-    "longitude": 10.2118,
-    "client_type": "weak",
-    "dynamism_type": "slow"
-  },
-  {
-    "id": 5,
-    "name": "Ospedale di Valle B",
-    "city": "Verona",
-    "latitude": 45.4386,
-    "longitude": 10.9945,
-    "client_type": "weak",
-    "dynamism_type": "normal"
-  },
-  {
-    "id": 6,
-    "name": "Ospedale di Valle C",
+    "id": 9,
+    "name": "Universit\u00e4tsspital Z\u00fcrich",
     "city": "Cagliari",
     "latitude": 39.2238,
     "longitude": 9.1217,
     "client_type": "weak",
-    "dynamism_type": "slow"
-  },
-  {
-    "id": 7,
-    "name": "Ospedale di Comunit\u00e0 D",
-    "city": "Bologna",
-    "latitude": 44.4949,
-    "longitude": 11.3426,
-    "client_type": "medium",
-    "dynamism_type": "fast"
-  },
-  {
-    "id": 8,
-    "name": "Ospedale di Comunit\u00e0 E",
-    "city": "Palermo",
-    "latitude": 38.1157,
-    "longitude": 13.3615,
-    "client_type": "weak",
     "dynamism_type": "normal"
-  },
-  {
-    "id": 9,
-    "name": "Casa della Salute F",
-    "city": "Florence",
-    "latitude": 43.7696,
-    "longitude": 11.2558,
-    "client_type": "strong",
-    "dynamism_type": "fast"
   },
   {
     "id": 10,
-    "name": "Casa della Salute G",
+    "name": "Hospital de Santa Maria",
+    "city": "Turin",
+    "latitude": 45.0705,
+    "longitude": 7.6868,
+    "client_type": "weak",
+    "dynamism_type": "slow"
+  },
+  {
+    "id": 11,
+    "name": "ATTIKON University Hospital",
     "city": "Padua",
     "latitude": 45.406,
     "longitude": 11.8776,
-    "client_type": "medium",
-    "dynamism_type": "normal"
+    "client_type": "weak",
+    "dynamism_type": "slow"
+  },
+  {
+    "id": 12,
+    "name": "Centralny Szpital Kliniczny",
+    "city": "Florence",
+    "latitude": 43.7696,
+    "longitude": 11.2558,
+    "client_type": "weak",
+    "dynamism_type": "slow"
   }
 ]
