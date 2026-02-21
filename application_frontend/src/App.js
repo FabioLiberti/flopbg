@@ -132,17 +132,18 @@ const handleNodesUpdate = (updatedNodes) => {
   const [experimentStartTime, setExperimentStartTime] = useState(null);
   const [experimentEndTime, setExperimentEndTime] = useState(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [isConfiguring, setIsConfiguring] = useState(false);
 
-  // Timer effect: updates every second while training
+  // Timer effect: updates every second while configuring or training
   useEffect(() => {
     let timer = null;
-    if (isTraining && experimentStartTime) {
+    if ((isTraining || isConfiguring) && experimentStartTime) {
       timer = setInterval(() => {
         setElapsedSeconds(Math.floor((Date.now() - experimentStartTime) / 1000));
       }, 1000);
     }
     return () => { if (timer) clearInterval(timer); };
-  }, [isTraining, experimentStartTime]);
+  }, [isTraining, isConfiguring, experimentStartTime]);
 
   // Detect experiment end
   useEffect(() => {
@@ -288,9 +289,13 @@ const handleNodesUpdate = (updatedNodes) => {
     setConfusionMatrixData(null);
     setConfusionMatrixOptions(null);
     setIsTraining(false);
-    setExperimentStartTime(null);
     setExperimentEndTime(null);
     setElapsedSeconds(0);
+
+    // Show monitoring box immediately
+    setExperimentStartTime(Date.now());
+    setIsConfiguring(true);
+    setStatus('Configuring...');
 
     try {
       // First, configure the system
@@ -317,13 +322,15 @@ const handleNodesUpdate = (updatedNodes) => {
 
       await startExperiment(payload);
 
-      setExperimentStartTime(Date.now());
+      setIsConfiguring(false);
       setIsTraining(true);
       setStatus('Running');
       console.log('Experiment started.');
     } catch (error) {
       console.error('Error starting experiment:', error);
+      setIsConfiguring(false);
       setIsTraining(false);
+      setExperimentStartTime(null);
       setStatus('Error');
     }
   };
@@ -1535,18 +1542,18 @@ return (
     }}>
       <button
         onClick={handleStartExperiment}
-        disabled={isTraining}
+        disabled={isTraining || isConfiguring}
         style={{
           padding: '12px 24px',
-          backgroundColor: isTraining ? '#ccc' : '#3498db',
+          backgroundColor: (isTraining || isConfiguring) ? '#ccc' : '#3498db',
           color: 'white',
           border: 'none',
           borderRadius: '4px',
-          cursor: isTraining ? 'not-allowed' : 'pointer',
+          cursor: (isTraining || isConfiguring) ? 'not-allowed' : 'pointer',
           transition: 'all 0.2s ease'
         }}
       >
-        Start Experiment
+        {isConfiguring ? 'Configuring...' : 'Start Experiment'}
       </button>
       <button
         onClick={handleStopExperiment}
@@ -1587,12 +1594,36 @@ return (
         maxWidth: '900px',
         margin: '30px auto',
         padding: '25px 30px',
-        backgroundColor: isTraining ? '#e8f5e9' : '#f3f8ff',
-        border: isTraining ? '2px solid #4caf50' : '2px solid #1976d2',
+        backgroundColor: isConfiguring ? '#fff8e1' : (isTraining ? '#e8f5e9' : '#f3f8ff'),
+        border: isConfiguring ? '2px solid #ff9800' : (isTraining ? '2px solid #4caf50' : '2px solid #1976d2'),
         borderRadius: '12px',
         boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
         textAlign: 'center'
       }}>
+        {/* Configuring banner */}
+        {isConfiguring && (
+          <div style={{
+            fontSize: '1.2rem',
+            fontWeight: '600',
+            color: '#e65100',
+            marginBottom: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px'
+          }}>
+            <span style={{
+              display: 'inline-block',
+              width: '12px',
+              height: '12px',
+              backgroundColor: '#ff9800',
+              borderRadius: '50%',
+              animation: 'pulse 1s infinite'
+            }} />
+            Configurazione e caricamento dataset in corso...
+          </div>
+        )}
+
         {/* Timer and Round Counter */}
         <div style={{
           display: 'flex',
@@ -1606,18 +1637,20 @@ return (
             fontSize: '2.5rem',
             fontWeight: '700',
             fontFamily: 'monospace',
-            color: isTraining ? '#2e7d32' : '#1565c0',
+            color: isConfiguring ? '#e65100' : (isTraining ? '#2e7d32' : '#1565c0'),
             letterSpacing: '2px'
           }}>
-            {isTraining ? formatElapsed(elapsedSeconds) : formatElapsed(
-              experimentEndTime ? Math.floor((experimentEndTime - experimentStartTime) / 1000) : elapsedSeconds
+            {formatElapsed(
+              (!isTraining && !isConfiguring && experimentEndTime)
+                ? Math.floor((experimentEndTime - experimentStartTime) / 1000)
+                : elapsedSeconds
             )}
-            {isTraining && (
+            {(isTraining || isConfiguring) && (
               <span style={{
                 display: 'inline-block',
                 width: '12px',
                 height: '12px',
-                backgroundColor: '#4caf50',
+                backgroundColor: isConfiguring ? '#ff9800' : '#4caf50',
                 borderRadius: '50%',
                 marginLeft: '12px',
                 animation: 'pulse 1.5s infinite',
@@ -1626,16 +1659,18 @@ return (
             )}
           </div>
           {/* Round Counter */}
-          <div style={{
-            fontSize: '1.6rem',
-            fontWeight: '600',
-            color: isTraining ? '#2e7d32' : '#1565c0',
-            padding: '8px 20px',
-            backgroundColor: isTraining ? 'rgba(76, 175, 80, 0.1)' : 'rgba(25, 118, 210, 0.1)',
-            borderRadius: '8px'
-          }}>
-            Round {results.filter(r => Number(r.round) > 0).length} / {numRounds}
-          </div>
+          {!isConfiguring && (
+            <div style={{
+              fontSize: '1.6rem',
+              fontWeight: '600',
+              color: isTraining ? '#2e7d32' : '#1565c0',
+              padding: '8px 20px',
+              backgroundColor: isTraining ? 'rgba(76, 175, 80, 0.1)' : 'rgba(25, 118, 210, 0.1)',
+              borderRadius: '8px'
+            }}>
+              Round {results.filter(r => Number(r.round) > 0).length} / {numRounds}
+            </div>
+          )}
         </div>
 
         {/* Experiment Parameters */}
@@ -1669,7 +1704,7 @@ return (
           paddingTop: '12px'
         }}>
           <span><strong>Start:</strong> {formatTimestamp(experimentStartTime)}</span>
-          <span><strong>End:</strong> {experimentEndTime ? formatTimestamp(experimentEndTime) : (isTraining ? 'In corso...' : '--')}</span>
+          <span><strong>End:</strong> {experimentEndTime ? formatTimestamp(experimentEndTime) : ((isTraining || isConfiguring) ? 'In corso...' : '--')}</span>
           {experimentEndTime && (
             <span><strong>Durata totale:</strong> {formatElapsed(Math.floor((experimentEndTime - experimentStartTime) / 1000))}</span>
           )}
@@ -1967,10 +2002,21 @@ return (
 
        </>
      ) : (
-       <p>
+       <div style={{
+         textAlign: 'center',
+         padding: '20px 30px',
+         backgroundColor: '#ffebee',
+         border: '2px solid #e53935',
+         borderRadius: '8px',
+         color: '#b71c1c',
+         fontWeight: 'bold',
+         fontSize: '1rem',
+         maxWidth: '600px',
+         margin: '20px auto',
+       }}>
          No results available. The experiment might still be in progress
          or hasn't started yet.
-       </p>
+       </div>
      )}
    </div>
 )}

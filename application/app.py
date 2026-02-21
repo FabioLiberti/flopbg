@@ -253,6 +253,9 @@ def start_experiment():
         # Reset the federated learning system's state
         fl_system.reset_state()
 
+        # Imposta la directory di salvataggio nel sistema FL (dopo il reset)
+        fl_system.execution_dir = experiment_dir
+
         # Define a function to run the experiment
         def run_experiment():
             try:
@@ -286,12 +289,8 @@ def start_experiment():
         }), 200
         
     except Exception as e:
-            logging.error(f"Error during experiment: {str(e)}")
-            return jsonify({"status": "error", "message": str(e)}), 400
-    
-    except Exception as e:
         logging.error(f"Error in /start: {str(e)}")
-        return jsonify({"message": str(e), "status": "error"}), 400
+        return jsonify({"status": "error", "message": str(e)}), 400
 
 @app.route('/status', methods=['GET'])
 def get_status():

@@ -8,6 +8,11 @@ import numpy as np
 import tensorflow as tf
 import math
 import threading
+import json
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from datetime import datetime
 from typing import Dict, Any, Optional, List
 from collections import defaultdict
 
@@ -47,6 +52,7 @@ class FederatedLearningSystem:
         self.input_shape = None
         self.num_classes = None
         self.centralized_metrics = None
+        self.execution_dir = None
         logging.info("FederatedLearningSystem initialized.")
 
     def start_experiment(self, num_rounds, local_epochs, batch_size, learning_rate, mu, quantization_bits, global_participation_rate):
@@ -265,6 +271,9 @@ class FederatedLearningSystem:
             else:
                 logging.error("Global model not found. Cannot save the model.")
 
+            # Salva tutti i risultati dell'esperimento nella cartella report
+            self.save_experiment_results()
+
         except Exception as e:
             logging.error(f"Error during experiment: {e}")
         finally:
@@ -341,6 +350,289 @@ class FederatedLearningSystem:
                     'class_distribution': class_distribution
                 }
         return distribution
+
+    def save_experiment_results(self):
+        """
+        Salva tutti i risultati dell'esperimento nella cartella execution_dir:
+        - Metriche per round (accuracy, loss, precision, recall, F1, AUC-ROC)
+        - Confusion matrix per ogni round
+        - ROC curve data per ogni round
+        - Metriche centralizzate (baseline)
+        - Partecipazione client
+        - Tempi di training client
+        - Distribuzione dati client
+        - Grafici PNG: metriche, ROC, confusion matrix, client activity
+        """
+        if not self.execution_dir:
+            logging.warning("execution_dir not set. Cannot save experiment results.")
+            return
+
+        try:
+            os.makedirs(self.execution_dir, exist_ok=True)
+            logging.info(f"Saving experiment results to: {self.execution_dir}")
+
+            # --- 1. Salva tutte le metriche per round (JSON) ---
+            all_rounds_data = sanitize_data(self.accuracy_data)
+            with open(os.path.join(self.execution_dir, 'all_rounds_metrics.json'), 'w') as f:
+                json.dump(all_rounds_data, f, indent=4)
+            logging.info("Saved all_rounds_metrics.json")
+
+            # --- 2. Salva metriche centralizzate (JSON) ---
+            if self.centralized_metrics:
+                with open(os.path.join(self.execution_dir, 'centralized_metrics.json'), 'w') as f:
+                    json.dump(sanitize_data(self.centralized_metrics), f, indent=4)
+                logging.info("Saved centralized_metrics.json")
+
+            # --- 3. Salva partecipazione client (JSON) ---
+            if self.client_participation:
+                with open(os.path.join(self.execution_dir, 'client_participation.json'), 'w') as f:
+                    json.dump(sanitize_data(dict(self.client_participation)), f, indent=4)
+                logging.info("Saved client_participation.json")
+
+            # --- 4. Salva tempi di training client (JSON) ---
+            if self.client_training_times:
+                with open(os.path.join(self.execution_dir, 'client_training_times.json'), 'w') as f:
+                    json.dump(sanitize_data(self.client_training_times), f, indent=4)
+                logging.info("Saved client_training_times.json")
+
+            # --- 5. Salva distribuzione dati client (JSON) ---
+            distribution = self.get_client_data_distribution()
+            if distribution:
+                with open(os.path.join(self.execution_dir, 'client_data_distribution.json'), 'w') as f:
+                    json.dump(sanitize_data(distribution), f, indent=4)
+                logging.info("Saved client_data_distribution.json")
+
+            # --- 6. Salva riepilogo esperimento (JSON) ---
+            federated_rounds = [d for d in self.accuracy_data if d.get('round', 0) > 0]
+            experiment_summary = {
+                'dataset': self.dataset_name,
+                'num_clients': self.num_clients,
+                'max_rounds': self.max_rounds,
+                'completed_rounds': len(federated_rounds),
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            }
+            if federated_rounds:
+                last = federated_rounds[-1]
+                experiment_summary['final_federated_accuracy'] = last.get('accuracy')
+                experiment_summary['final_federated_loss'] = last.get('loss')
+                experiment_summary['final_federated_f1'] = last.get('f1_score')
+                experiment_summary['final_federated_precision'] = last.get('precision')
+                experiment_summary['final_federated_recall'] = last.get('recall')
+                experiment_summary['final_federated_auc_roc'] = last.get('auc_roc')
+            if self.centralized_metrics:
+                experiment_summary['centralized_accuracy'] = self.centralized_metrics.get('accuracy')
+                experiment_summary['centralized_loss'] = self.centralized_metrics.get('loss')
+            with open(os.path.join(self.execution_dir, 'experiment_summary.json'), 'w') as f:
+                json.dump(sanitize_data(experiment_summary), f, indent=4)
+            logging.info("Saved experiment_summary.json")
+
+            # --- 7. Genera grafici PNG ---
+            charts_dir = os.path.join(self.execution_dir, 'charts')
+            os.makedirs(charts_dir, exist_ok=True)
+
+            # 7a. Grafico Accuracy per round
+            if federated_rounds:
+                rounds = [d['round'] for d in federated_rounds]
+                accuracies = [d.get('accuracy', 0) for d in federated_rounds]
+                losses = [d.get('loss', 0) for d in federated_rounds]
+                precisions = [d.get('precision', 0) for d in federated_rounds]
+                recalls = [d.get('recall', 0) for d in federated_rounds]
+                f1s = [d.get('f1_score', 0) for d in federated_rounds]
+
+                # Accuracy & Loss
+                fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+                ax1.plot(rounds, accuracies, 'b-o', label='Federated Accuracy')
+                if self.centralized_metrics:
+                    ax1.axhline(y=self.centralized_metrics.get('accuracy', 0), color='r', linestyle='--', label='Centralized Accuracy')
+                ax1.set_xlabel('Round')
+                ax1.set_ylabel('Accuracy')
+                ax1.set_title('Accuracy per Round')
+                ax1.legend()
+                ax1.grid(True)
+
+                ax2.plot(rounds, losses, 'r-o', label='Federated Loss')
+                if self.centralized_metrics:
+                    ax2.axhline(y=self.centralized_metrics.get('loss', 0), color='b', linestyle='--', label='Centralized Loss')
+                ax2.set_xlabel('Round')
+                ax2.set_ylabel('Loss')
+                ax2.set_title('Loss per Round')
+                ax2.legend()
+                ax2.grid(True)
+
+                plt.tight_layout()
+                plt.savefig(os.path.join(charts_dir, 'accuracy_loss.png'), dpi=150, bbox_inches='tight')
+                plt.close()
+
+                # Precision, Recall, F1
+                fig, ax = plt.subplots(figsize=(10, 5))
+                ax.plot(rounds, precisions, 'g-o', label='Precision')
+                ax.plot(rounds, recalls, 'm-o', label='Recall')
+                ax.plot(rounds, f1s, 'c-o', label='F1 Score')
+                ax.set_xlabel('Round')
+                ax.set_ylabel('Score')
+                ax.set_title('Precision / Recall / F1 per Round')
+                ax.legend()
+                ax.grid(True)
+                plt.tight_layout()
+                plt.savefig(os.path.join(charts_dir, 'precision_recall_f1.png'), dpi=150, bbox_inches='tight')
+                plt.close()
+
+                logging.info("Saved accuracy_loss.png and precision_recall_f1.png")
+
+            # 7b. Confusion Matrix (dall'ultimo round federato)
+            last_federated = None
+            for item in reversed(self.accuracy_data):
+                if item.get('round', 0) > 0:
+                    last_federated = item
+                    break
+
+            if last_federated and last_federated.get('confusion_matrix'):
+                cm = np.array(last_federated['confusion_matrix'])
+                fig, ax = plt.subplots(figsize=(8, 6))
+                im = ax.imshow(cm, cmap='Blues', interpolation='nearest')
+                fig.colorbar(im, ax=ax)
+                # Annotate cells
+                for i in range(cm.shape[0]):
+                    for j in range(cm.shape[1]):
+                        ax.text(j, i, str(cm[i, j]), ha='center', va='center',
+                                color='white' if cm[i, j] > cm.max() / 2 else 'black')
+                ax.set_xlabel('Predicted')
+                ax.set_ylabel('Actual')
+                ax.set_title(f'Confusion Matrix - {self.dataset_name} (Round {last_federated["round"]})')
+                ax.set_xticks(range(cm.shape[1]))
+                ax.set_yticks(range(cm.shape[0]))
+                plt.tight_layout()
+                plt.savefig(os.path.join(charts_dir, 'confusion_matrix.png'), dpi=150, bbox_inches='tight')
+                plt.close()
+                logging.info("Saved confusion_matrix.png")
+
+            # 7c. ROC Curves (dall'ultimo round federato)
+            if last_federated and last_federated.get('roc_curve_data'):
+                roc_data = last_federated['roc_curve_data']
+                fig, ax = plt.subplots(figsize=(8, 6))
+                if isinstance(roc_data, dict):
+                    if 'fpr' in roc_data and 'tpr' in roc_data:
+                        # Binary classification
+                        ax.plot(roc_data['fpr'], roc_data['tpr'], 'b-', label='ROC Curve')
+                    else:
+                        # Multiclass: keys are class indices
+                        for class_key, curve in roc_data.items():
+                            if isinstance(curve, dict) and 'fpr' in curve and 'tpr' in curve:
+                                ax.plot(curve['fpr'], curve['tpr'], label=f'Class {class_key}')
+                ax.plot([0, 1], [0, 1], 'k--', label='Random')
+                ax.set_xlabel('False Positive Rate')
+                ax.set_ylabel('True Positive Rate')
+                ax.set_title(f'ROC Curves - {self.dataset_name}')
+                ax.legend()
+                ax.grid(True)
+                plt.tight_layout()
+                plt.savefig(os.path.join(charts_dir, 'roc_curves.png'), dpi=150, bbox_inches='tight')
+                plt.close()
+                logging.info("Saved roc_curves.png")
+
+            # 7d. Client Participation Heatmap
+            if self.client_participation:
+                try:
+                    participation = dict(self.client_participation)
+                    # Build matrix: rows = clients, cols = rounds
+                    all_client_ids = set()
+                    for round_num, client_ids in participation.items():
+                        for cid in client_ids:
+                            all_client_ids.add(cid)
+                    all_client_ids = sorted(all_client_ids)
+                    num_rounds_done = len(participation)
+
+                    if all_client_ids and num_rounds_done > 0:
+                        matrix = np.zeros((len(all_client_ids), num_rounds_done))
+                        for col_idx, (round_num, active_ids) in enumerate(sorted(participation.items(), key=lambda x: int(x[0]))):
+                            for row_idx, cid in enumerate(all_client_ids):
+                                if cid in active_ids:
+                                    matrix[row_idx, col_idx] = 1
+
+                        fig, ax = plt.subplots(figsize=(max(8, num_rounds_done), max(4, len(all_client_ids) * 0.4)))
+                        im = ax.imshow(matrix, cmap='YlGn', aspect='auto', interpolation='nearest')
+                        fig.colorbar(im, ax=ax, label='Participated')
+                        ax.set_xticks(range(num_rounds_done))
+                        ax.set_xticklabels([f'R{r}' for r in sorted(participation.keys(), key=lambda x: int(x))])
+                        ax.set_yticks(range(len(all_client_ids)))
+                        ax.set_yticklabels([f'Client {c}' for c in all_client_ids])
+                        ax.set_title('Client Participation per Round')
+                        ax.set_xlabel('Round')
+                        ax.set_ylabel('Client')
+                        plt.tight_layout()
+                        plt.savefig(os.path.join(charts_dir, 'client_participation.png'), dpi=150, bbox_inches='tight')
+                        plt.close()
+                        logging.info("Saved client_participation.png")
+                except Exception as e:
+                    logging.error(f"Error generating client participation chart: {e}")
+
+            # 7e. Client Training Times
+            if self.client_training_times:
+                try:
+                    client_ids = sorted(self.client_training_times.keys())
+                    times = [self.client_training_times[cid] for cid in client_ids]
+                    fig, ax = plt.subplots(figsize=(10, 5))
+                    ax.bar([f'Client {c}' for c in client_ids], times, color='steelblue')
+                    ax.set_xlabel('Client')
+                    ax.set_ylabel('Training Time (s)')
+                    ax.set_title('Client Training Times')
+                    plt.xticks(rotation=45)
+                    plt.tight_layout()
+                    plt.savefig(os.path.join(charts_dir, 'client_training_times.png'), dpi=150, bbox_inches='tight')
+                    plt.close()
+                    logging.info("Saved client_training_times.png")
+                except Exception as e:
+                    logging.error(f"Error generating client training times chart: {e}")
+
+            # 7f. Client Data Distribution
+            if distribution:
+                try:
+                    client_ids = sorted(distribution.keys())
+                    samples = [distribution[cid]['num_samples'] for cid in client_ids]
+                    fig, ax = plt.subplots(figsize=(10, 5))
+                    ax.bar([f'Client {c}' for c in client_ids], samples, color='coral')
+                    ax.set_xlabel('Client')
+                    ax.set_ylabel('Number of Samples')
+                    ax.set_title('Data Distribution per Client')
+                    plt.xticks(rotation=45)
+                    plt.tight_layout()
+                    plt.savefig(os.path.join(charts_dir, 'client_data_distribution.png'), dpi=150, bbox_inches='tight')
+                    plt.close()
+
+                    # Class distribution stacked bar
+                    all_classes = set()
+                    for cid in client_ids:
+                        all_classes.update(distribution[cid]['class_distribution'].keys())
+                    all_classes = sorted(all_classes)
+
+                    if all_classes:
+                        fig, ax = plt.subplots(figsize=(12, 6))
+                        bottom = np.zeros(len(client_ids))
+                        for cls in all_classes:
+                            values = [distribution[cid]['class_distribution'].get(cls, 0) for cid in client_ids]
+                            ax.bar([f'Client {c}' for c in client_ids], values, bottom=bottom, label=f'Class {cls}')
+                            bottom += np.array(values)
+                        ax.set_xlabel('Client')
+                        ax.set_ylabel('Number of Samples')
+                        ax.set_title('Class Distribution per Client')
+                        ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+                        plt.xticks(rotation=45)
+                        plt.tight_layout()
+                        plt.savefig(os.path.join(charts_dir, 'client_class_distribution.png'), dpi=150, bbox_inches='tight')
+                        plt.close()
+
+                    logging.info("Saved client_data_distribution.png and client_class_distribution.png")
+                except Exception as e:
+                    logging.error(f"Error generating client data distribution charts: {e}")
+
+            # --- 8. File di completamento ---
+            with open(os.path.join(self.execution_dir, 'experiment_completed'), 'w') as f:
+                f.write(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+            logging.info(f"All experiment results saved to: {self.execution_dir}")
+
+        except Exception as e:
+            logging.error(f"Error saving experiment results: {e}", exc_info=True)
 
     def get_current_state(self) -> Dict[str, Any]:
         try:
