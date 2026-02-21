@@ -336,7 +336,7 @@ def get_images():
             'isic': os.path.join(parent_dir, 'data', 'ISIC', 'test'),
             'svhn': os.path.join(parent_dir, 'data', 'svhn', 'test'),
             'brain_tumor': os.path.join(parent_dir, 'data', 'Brain_Tumor'),
-            'brain_tumor_mri': os.path.join(parent_dir, 'data', 'Brain Tumor MRI'),
+            'brain_tumor_mri': os.path.join(parent_dir, 'data', 'Brain Tumor MRI', 'Testing'),
             'retinopathy': os.path.join(parent_dir, 'data', 'Retinopatia'),        
             'skin_cancer': os.path.join(parent_dir, 'data', 'Skin Cancer')  
         }

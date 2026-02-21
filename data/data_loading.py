@@ -273,6 +273,44 @@ def load_brain_tumor_data():
 
 
 
+def load_brain_tumor_mri():
+    """
+    Loads the Brain Tumor MRI dataset from data/Brain Tumor MRI/.
+    Structure: Training/CLASS/images, Testing/CLASS/images
+    Classes: glioma_tumor, meningioma_tumor, no_tumor, pituitary_tumor
+    """
+    data_dir = os.path.join(parent_dir, 'data', 'Brain Tumor MRI')
+    image_size = (224, 224)
+
+    if not os.path.exists(data_dir):
+        raise FileNotFoundError(f"The directory {data_dir} does not exist. Ensure the dataset is downloaded and placed correctly.")
+
+    try:
+        train_dataset = tf.keras.utils.image_dataset_from_directory(
+            os.path.join(data_dir, 'Training'),
+            image_size=image_size,
+            batch_size=32,
+            shuffle=False
+        )
+
+        test_dataset = tf.keras.utils.image_dataset_from_directory(
+            os.path.join(data_dir, 'Testing'),
+            image_size=image_size,
+            batch_size=32,
+            shuffle=False
+        )
+    except Exception as e:
+        raise Exception(f"Error loading Brain Tumor MRI dataset: {e}")
+
+    train_images, train_labels = convert_dataset_to_numpy(train_dataset)
+    test_images, test_labels = convert_dataset_to_numpy(test_dataset)
+
+    train_images = train_images.astype(np.float32) / 255.0
+    test_images = test_images.astype(np.float32) / 255.0
+
+    return (train_images, train_labels), (test_images, test_labels)
+
+
 def load_data(dataset_name):
     """
     Loads the specified dataset.
@@ -299,6 +337,8 @@ def load_data(dataset_name):
         return load_isic()
     elif dataset_name == 'brain_tumor':
         return load_brain_tumor_data()
+    elif dataset_name == 'brain_tumor_mri':
+        return load_brain_tumor_mri()
     else:
         raise ValueError(f"Dataset '{dataset_name}' not supported.")
 
