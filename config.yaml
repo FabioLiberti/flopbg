@@ -117,4 +117,4 @@ nodes:
   latitude: 0
   longitude: 0
   name: Node 3
-num_clients: 2
+num_clients: 4

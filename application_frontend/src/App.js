@@ -128,6 +128,44 @@ const handleNodesUpdate = (updatedNodes) => {
   const [numClients, setNumClients] = useState(0);
   const [isDataAvailable, setIsDataAvailable] = useState(false);
 
+  // Experiment monitoring state
+  const [experimentStartTime, setExperimentStartTime] = useState(null);
+  const [experimentEndTime, setExperimentEndTime] = useState(null);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+
+  // Timer effect: updates every second while training
+  useEffect(() => {
+    let timer = null;
+    if (isTraining && experimentStartTime) {
+      timer = setInterval(() => {
+        setElapsedSeconds(Math.floor((Date.now() - experimentStartTime) / 1000));
+      }, 1000);
+    }
+    return () => { if (timer) clearInterval(timer); };
+  }, [isTraining, experimentStartTime]);
+
+  // Detect experiment end
+  useEffect(() => {
+    if (!isTraining && experimentStartTime && !experimentEndTime && results.length > 0) {
+      setExperimentEndTime(Date.now());
+    }
+  }, [isTraining, experimentStartTime, experimentEndTime, results]);
+
+  // Helper: format seconds as HH:MM:SS
+  const formatElapsed = (totalSec) => {
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    return [h, m, s].map(v => String(v).padStart(2, '0')).join(':');
+  };
+
+  // Helper: format timestamp as date/time string
+  const formatTimestamp = (ts) => {
+    if (!ts) return '--';
+    const d = new Date(ts);
+    return d.toLocaleDateString('it-IT') + ' ' + d.toLocaleTimeString('it-IT');
+  };
+
   //////////////////////////////////////////////////////////////////////////// inizio 2° parte
 
   // Fetch datasets and status on mount
@@ -250,6 +288,9 @@ const handleNodesUpdate = (updatedNodes) => {
     setConfusionMatrixData(null);
     setConfusionMatrixOptions(null);
     setIsTraining(false);
+    setExperimentStartTime(null);
+    setExperimentEndTime(null);
+    setElapsedSeconds(0);
 
     try {
       // First, configure the system
@@ -276,6 +317,7 @@ const handleNodesUpdate = (updatedNodes) => {
 
       await startExperiment(payload);
 
+      setExperimentStartTime(Date.now());
       setIsTraining(true);
       setStatus('Running');
       console.log('Experiment started.');
@@ -1538,7 +1580,83 @@ return (
   </div>
 </div>
 
+    {/* Experiment Monitoring Box */}
+    {experimentStartTime && (
+      <div style={{
+        width: '100%',
+        maxWidth: '900px',
+        margin: '30px auto',
+        padding: '25px 30px',
+        backgroundColor: isTraining ? '#e8f5e9' : '#f3f8ff',
+        border: isTraining ? '2px solid #4caf50' : '2px solid #1976d2',
+        borderRadius: '12px',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+        textAlign: 'center'
+      }}>
+        {/* Timer */}
+        <div style={{
+          fontSize: '2.5rem',
+          fontWeight: '700',
+          fontFamily: 'monospace',
+          color: isTraining ? '#2e7d32' : '#1565c0',
+          marginBottom: '15px',
+          letterSpacing: '2px'
+        }}>
+          {isTraining ? formatElapsed(elapsedSeconds) : formatElapsed(
+            experimentEndTime ? Math.floor((experimentEndTime - experimentStartTime) / 1000) : elapsedSeconds
+          )}
+          {isTraining && (
+            <span style={{
+              display: 'inline-block',
+              width: '12px',
+              height: '12px',
+              backgroundColor: '#4caf50',
+              borderRadius: '50%',
+              marginLeft: '12px',
+              animation: 'pulse 1.5s infinite',
+              verticalAlign: 'middle'
+            }} />
+          )}
+        </div>
 
+        {/* Experiment Parameters */}
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: '12px 24px',
+          marginBottom: '15px',
+          fontSize: '0.95rem'
+        }}>
+          <span><strong>Dataset:</strong> {datasetName}</span>
+          <span><strong>Rounds:</strong> {numRounds}</span>
+          <span><strong>Clients:</strong> {numClients}</span>
+          <span><strong>Local Epochs:</strong> {localEpochs}</span>
+          <span><strong>Batch Size:</strong> {batchSize}</span>
+          <span><strong>Learning Rate:</strong> {learningRate}</span>
+          <span><strong>Mu:</strong> {mu}</span>
+          <span><strong>Quantization:</strong> {quantizationBits} bit</span>
+          <span><strong>Participation Rate:</strong> {globalParticipationRate}</span>
+        </div>
+
+        {/* Start/End Timestamps */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '40px',
+          fontSize: '0.9rem',
+          color: '#555',
+          borderTop: '1px solid #ddd',
+          paddingTop: '12px'
+        }}>
+          <span><strong>Start:</strong> {formatTimestamp(experimentStartTime)}</span>
+          <span><strong>End:</strong> {experimentEndTime ? formatTimestamp(experimentEndTime) : (isTraining ? 'In corso...' : '--')}</span>
+          {experimentEndTime && (
+            <span><strong>Durata totale:</strong> {formatElapsed(Math.floor((experimentEndTime - experimentStartTime) / 1000))}</span>
+          )}
+        </div>
+      </div>
+    )}
 
      {/* Sezione dei risultati */}
       <div style={{ 

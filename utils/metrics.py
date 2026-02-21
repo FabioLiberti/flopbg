@@ -61,11 +61,17 @@ def evaluate_with_metrics(
     recall = recall_score(test_labels, predicted_classes, average=average, zero_division=0)
     f1 = f1_score(test_labels, predicted_classes, average=average, zero_division=0)
     accuracy = accuracy_score(test_labels, predicted_classes)
-    cm = confusion_matrix(test_labels, predicted_classes)
 
-    # Calculate AUC-ROC and ROC Curve
+    # Calculate AUC-ROC, ROC Curve and Confusion Matrix
     try:
         num_classes = model.output_shape[-1]
+
+        # Confusion matrix with explicit labels to always include all classes
+        if num_classes is not None and num_classes > 1:
+            cm = confusion_matrix(test_labels, predicted_classes, labels=list(range(num_classes)))
+        else:
+            cm = confusion_matrix(test_labels, predicted_classes)
+
         if num_classes == 1 or num_classes is None:
             # Binary classification
             auc_roc = roc_auc_score(test_labels, predictions.ravel())
@@ -84,6 +90,8 @@ def evaluate_with_metrics(
         logging.error(f"Error in calculating AUC-ROC: {e}")
         auc_roc = None
         roc_curve_data = None
+        if 'cm' not in dir():
+            cm = confusion_matrix(test_labels, predicted_classes)
 
     # Convert confusion matrix to list for JSON serialization
     cm_list = cm.tolist()
