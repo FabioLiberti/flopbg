@@ -349,6 +349,51 @@ def load_skin_cancer():
     return (train_images, train_labels), (test_images, test_labels)
 
 
+def load_retinopathy():
+    """
+    Loads the Diabetic Retinopathy dataset from data/Retinopatia/.
+    Structure: CLASS/images (flat, no train/test split)
+    Classes: 0_No_DR, 1_Mild, 2_Moderate, 3_Severe, 4_Proliferative_DR
+    Uses image_dataset_from_directory with validation_split for train/test split.
+    """
+    data_dir = os.path.join(parent_dir, 'data', 'Retinopatia')
+    image_size = (128, 128)
+
+    if not os.path.exists(data_dir):
+        raise FileNotFoundError(f"The directory {data_dir} does not exist.")
+
+    try:
+        train_dataset = tf.keras.utils.image_dataset_from_directory(
+            data_dir,
+            image_size=image_size,
+            batch_size=32,
+            shuffle=True,
+            seed=42,
+            validation_split=0.2,
+            subset='training'
+        )
+
+        test_dataset = tf.keras.utils.image_dataset_from_directory(
+            data_dir,
+            image_size=image_size,
+            batch_size=32,
+            shuffle=True,
+            seed=42,
+            validation_split=0.2,
+            subset='validation'
+        )
+    except Exception as e:
+        raise Exception(f"Error loading Retinopathy dataset: {e}")
+
+    train_images, train_labels = convert_dataset_to_numpy(train_dataset)
+    test_images, test_labels = convert_dataset_to_numpy(test_dataset)
+
+    train_images = train_images.astype(np.float32) / 255.0
+    test_images = test_images.astype(np.float32) / 255.0
+
+    return (train_images, train_labels), (test_images, test_labels)
+
+
 def load_data(dataset_name):
     """
     Loads the specified dataset.
@@ -379,6 +424,8 @@ def load_data(dataset_name):
         return load_brain_tumor_mri()
     elif dataset_name == 'skin_cancer':
         return load_skin_cancer()
+    elif dataset_name == 'retinopathy':
+        return load_retinopathy()
     else:
         raise ValueError(f"Dataset '{dataset_name}' not supported.")
 

@@ -67,7 +67,7 @@ def create_model(dataset_name, input_shape, num_classes, learning_rate=0.001):
             tf.keras.layers.Dropout(0.5),
             tf.keras.layers.Dense(1, activation='sigmoid')  # For binary classification
         ])
-    elif dataset_name in ['isic', 'brain_tumor', 'brain_tumor_mri']:
+    elif dataset_name in ['isic', 'brain_tumor', 'brain_tumor_mri', 'retinopathy']:
         # Model for multiclass classification, images 224x224x3
         model = tf.keras.models.Sequential([
             tf.keras.layers.InputLayer(shape=input_shape),
