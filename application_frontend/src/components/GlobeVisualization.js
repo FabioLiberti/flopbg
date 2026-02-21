@@ -19,7 +19,10 @@ const dynamismTypeSizes = {
   slow: 3,
 };
 
-const GlobeVisualization = ({ nodes }) => {
+const defaultProjection = { scale: 160, center: [10, 20] };
+
+const GlobeVisualization = ({ nodes, projectionConfig, geography = '/countries-110m.json' }) => {
+  const projection = projectionConfig || defaultProjection;
   const [tooltip, setTooltip] = useState(null);
 
   if (!Array.isArray(nodes) || nodes.length === 0) {
@@ -36,17 +39,14 @@ const GlobeVisualization = ({ nodes }) => {
   return (
     <div style={{ position: 'relative', width: '100%', height: '500px', backgroundColor: '#d4e9f7' }}>
       <ComposableMap
-        projectionConfig={{
-          scale: 160,
-          center: [10, 20],
-        }}
+        projectionConfig={projection}
         style={{
           width: '100%',
           height: '100%',
         }}
       >
         <ZoomableGroup>
-          <Geographies geography="/countries-110m.json">
+          <Geographies geography={geography}>
             {({ geographies }) =>
               geographies.map((geo) => (
                 <Geography

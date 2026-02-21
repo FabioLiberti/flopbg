@@ -19,7 +19,8 @@ import InfoBox from './components/InfoBox';
 import BasicConfigForm from './components/ExperimentConfig/BasicConfigForm';
 import ClientHeterogeneityConfig from './components/ExperimentConfig/ClientHeterogeneityConfig';
 import ClientDynamismConfig from './components/ExperimentConfig/ClientDynamismConfig';
-import { getRandomCity, distributeTypes } from './data/worldCities';
+import { getRandomCity, distributeTypes, getCitiesByView } from './data/worldCities';
+import USE_CASES from './data/useCases';
 
 
 import {
@@ -125,11 +126,60 @@ function App() {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [isConfiguring, setIsConfiguring] = useState(false);
   const [activeTab, setActiveTab] = useState('experiment');
+  const [nodeDistView, setNodeDistView] = useState('global');
+  const [selectedUseCase, setSelectedUseCase] = useState(null);
 
   const handleNodesUpdate = (updatedNodes) => {
     setNodes(updatedNodes);
     setNumClients(updatedNodes.length);
     saveNodes(updatedNodes);
+  };
+
+  const handleNodeDistViewChange = (newView) => {
+    setNodeDistView(newView);
+    // Reassign all nodes to random cities from the selected region
+    const regionCities = getCitiesByView(newView);
+    if (regionCities.length === 0) return;
+    setNodes(prevNodes => {
+      const usedCities = [];
+      const updated = prevNodes.map((node) => {
+        const available = regionCities.filter(c => !usedCities.includes(c.city));
+        const pool = available.length > 0 ? available : regionCities;
+        const city = pool[Math.floor(Math.random() * pool.length)];
+        usedCities.push(city.city);
+        return {
+          ...node,
+          city: city.city,
+          latitude: city.latitude,
+          longitude: city.longitude,
+        };
+      });
+      saveNodes(updated);
+      return updated;
+    });
+  };
+
+  const applyUseCase = (useCase) => {
+    setSelectedUseCase(useCase.id);
+    // Basic config
+    setDatasetName(useCase.dataset);
+    setNumRounds(useCase.basicConfig.numRounds);
+    setLocalEpochs(useCase.basicConfig.localEpochs);
+    setBatchSize(useCase.basicConfig.batchSize);
+    setLearningRate(useCase.basicConfig.learningRate);
+    setMu(useCase.basicConfig.mu);
+    setQuantizationBits(useCase.basicConfig.quantizationBits);
+    setGlobalParticipationRate(useCase.basicConfig.globalParticipationRate);
+    // Advanced config
+    setClientTypeConfig(useCase.clientTypeConfig);
+    setClientDynamismConfig(useCase.clientDynamismConfig);
+    // Node distribution view
+    setNodeDistView(useCase.nodeDistView);
+    // Nodes
+    const useCaseNodes = useCase.nodes.map(n => ({ ...n }));
+    setNodes(useCaseNodes);
+    setNumClients(useCaseNodes.length);
+    saveNodes(useCaseNodes);
   };
 
   // Timer effect: updates every second while configuring or training
@@ -920,7 +970,7 @@ const handleExperimentConfigUpdate = useCallback((field, value) => {
           const newNodes = [];
           for (let i = 0; i < toAdd; i++) {
             const usedCities = [...existingCities, ...newNodes.map(n => n.city)];
-            const randomCity = getRandomCity(usedCities);
+            const randomCity = getRandomCity(usedCities, nodeDistView);
             newNodes.push({
               id: prevNodes.length + i + 1,
               name: `Node ${prevNodes.length + i + 1}`,
@@ -970,7 +1020,7 @@ const handleExperimentConfigUpdate = useCallback((field, value) => {
     default:
       console.warn('Unknown field:', field);
   }
-}, [clientTypeConfig, clientDynamismConfig]);
+}, [clientTypeConfig, clientDynamismConfig, nodeDistView]);
 
 // Funzione per aggiornare le opzioni dei grafici rimuovendo le etichette interne
 //const updateChartOptions = (options) => {
@@ -1147,6 +1197,7 @@ return (
           { id: 'basic', label: 'Basic Configuration' },
           { id: 'advanced', label: 'Advanced Configuration' },
           { id: 'nodes', label: 'Node Distribution' },
+          { id: 'usecases', label: 'Use Cases', italic: true },
           { id: 'experiment', label: 'Experiment', highlight: true },
         ].map(tab => {
           const isActive = activeTab === tab.id;
@@ -1174,6 +1225,7 @@ return (
                 gap: '6px',
                 textTransform: tab.highlight ? 'uppercase' : 'none',
                 letterSpacing: tab.highlight ? '0.5px' : '0',
+                fontStyle: tab.italic ? 'italic' : 'normal',
               }}
             >
               {tab.label}
@@ -1192,6 +1244,256 @@ return (
         })}
       </nav>
     </header>
+
+    {/* === TAB: USE CASES === */}
+    {activeTab === 'usecases' && (
+    <div style={{
+      width: '100%',
+      maxWidth: '1400px',
+      margin: '0 auto',
+      padding: '30px',
+      boxSizing: 'border-box'
+    }}>
+      <div style={{
+        textAlign: 'center',
+        marginBottom: '2rem'
+      }}>
+        <h3 style={{
+          fontSize: '1.5rem',
+          color: '#666',
+          margin: '0 0 0.5rem 0',
+          fontWeight: '500'
+        }}>
+          Use Cases
+        </h3>
+        <p style={{ color: '#999', fontSize: '0.9rem', margin: 0 }}>
+          Seleziona uno scenario preconfigurato per popolare automaticamente tutte le configurazioni
+        </p>
+      </div>
+
+      <div style={{
+        display: 'flex',
+        gap: '30px',
+        flexWrap: 'wrap',
+        justifyContent: 'center'
+      }}>
+        {USE_CASES.map((uc) => {
+          const isSelected = selectedUseCase === uc.id;
+          return (
+            <div
+              key={uc.id}
+              style={{
+                flex: '1 1 400px',
+                maxWidth: '600px',
+                backgroundColor: isSelected ? '#e8f5e9' : '#f8f9fa',
+                borderRadius: '12px',
+                padding: '24px',
+                boxShadow: isSelected
+                  ? '0 4px 20px rgba(76, 175, 80, 0.25)'
+                  : '0 2px 10px rgba(0,0,0,0.1)',
+                border: isSelected ? '2px solid #4caf50' : '2px solid transparent',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+              }}
+              onClick={() => applyUseCase(uc)}
+            >
+              {/* Header */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: '16px'
+              }}>
+                <div>
+                  <h4 style={{
+                    margin: '0 0 4px 0',
+                    fontSize: '1.3rem',
+                    color: '#333',
+                    fontWeight: '600'
+                  }}>
+                    {uc.name}
+                  </h4>
+                  <span style={{
+                    fontSize: '0.85rem',
+                    color: '#666',
+                    fontStyle: 'italic'
+                  }}>
+                    {uc.subtitle}
+                  </span>
+                </div>
+                {isSelected && (
+                  <span style={{
+                    padding: '4px 12px',
+                    backgroundColor: '#4caf50',
+                    color: '#fff',
+                    borderRadius: '12px',
+                    fontSize: '0.75rem',
+                    fontWeight: '600',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    ATTIVO
+                  </span>
+                )}
+              </div>
+
+              {/* Dataset badge */}
+              <div style={{
+                display: 'flex',
+                gap: '8px',
+                flexWrap: 'wrap',
+                marginBottom: '16px'
+              }}>
+                <span style={{
+                  padding: '4px 10px',
+                  backgroundColor: '#e3f2fd',
+                  color: '#1565c0',
+                  borderRadius: '4px',
+                  fontSize: '0.8rem',
+                  fontWeight: '500'
+                }}>
+                  Dataset: {uc.dataset}
+                </span>
+                <span style={{
+                  padding: '4px 10px',
+                  backgroundColor: '#fff3e0',
+                  color: '#e65100',
+                  borderRadius: '4px',
+                  fontSize: '0.8rem',
+                  fontWeight: '500'
+                }}>
+                  {uc.basicConfig.numClients} nodi
+                </span>
+                <span style={{
+                  padding: '4px 10px',
+                  backgroundColor: '#f3e5f5',
+                  color: '#7b1fa2',
+                  borderRadius: '4px',
+                  fontSize: '0.8rem',
+                  fontWeight: '500'
+                }}>
+                  {uc.basicConfig.numRounds} rounds
+                </span>
+                <span style={{
+                  padding: '4px 10px',
+                  backgroundColor: '#e8f5e9',
+                  color: '#2e7d32',
+                  borderRadius: '4px',
+                  fontSize: '0.8rem',
+                  fontWeight: '500'
+                }}>
+                  Vista: {uc.nodeDistView === 'national' ? 'Italia' : uc.nodeDistView === 'europe' ? 'Europa' : 'Globale'}
+                </span>
+              </div>
+
+              {/* Context */}
+              <div style={{ marginBottom: '14px' }}>
+                <h5 style={{ margin: '0 0 6px 0', color: '#444', fontSize: '0.9rem' }}>Contesto</h5>
+                <p style={{
+                  margin: 0,
+                  fontSize: '0.85rem',
+                  color: '#555',
+                  lineHeight: '1.6',
+                  maxHeight: '80px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}>
+                  {uc.description}
+                </p>
+              </div>
+
+              {/* Objective */}
+              <div style={{ marginBottom: '16px' }}>
+                <h5 style={{ margin: '0 0 6px 0', color: '#444', fontSize: '0.9rem' }}>Obiettivo</h5>
+                <p style={{
+                  margin: 0,
+                  fontSize: '0.85rem',
+                  color: '#555',
+                  lineHeight: '1.6',
+                  maxHeight: '60px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}>
+                  {uc.objective}
+                </p>
+              </div>
+
+              {/* Config summary grid */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '8px',
+                padding: '12px',
+                backgroundColor: isSelected ? 'rgba(255,255,255,0.7)' : '#fff',
+                borderRadius: '8px',
+                fontSize: '0.8rem',
+                marginBottom: '14px'
+              }}>
+                <div><span style={{ color: '#888' }}>LR:</span> <strong>{uc.basicConfig.learningRate}</strong></div>
+                <div><span style={{ color: '#888' }}>Batch:</span> <strong>{uc.basicConfig.batchSize}</strong></div>
+                <div><span style={{ color: '#888' }}>Epochs:</span> <strong>{uc.basicConfig.localEpochs}</strong></div>
+                <div><span style={{ color: '#888' }}>Mu:</span> <strong>{uc.basicConfig.mu}</strong></div>
+                <div><span style={{ color: '#888' }}>Quant. bits:</span> <strong>{uc.basicConfig.quantizationBits}</strong></div>
+                <div><span style={{ color: '#888' }}>Part. rate:</span> <strong>{uc.basicConfig.globalParticipationRate}</strong></div>
+              </div>
+
+              {/* Nodes list */}
+              <div>
+                <h5 style={{ margin: '0 0 8px 0', color: '#444', fontSize: '0.9rem' }}>
+                  Nodi ({uc.nodes.length})
+                </h5>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '4px',
+                  fontSize: '0.78rem'
+                }}>
+                  {uc.nodes.map(node => (
+                    <div key={node.id} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '3px 6px',
+                      backgroundColor: isSelected ? 'rgba(255,255,255,0.5)' : '#f5f5f5',
+                      borderRadius: '4px',
+                      borderLeft: `3px solid ${
+                        node.client_type === 'strong' ? '#e53935' :
+                        node.client_type === 'medium' ? '#43a047' : '#1e88e5'
+                      }`
+                    }}>
+                      <span style={{ fontWeight: '500', color: '#333' }}>#{node.id}</span>
+                      <span style={{ color: '#666', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {node.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Apply button */}
+              <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                <button
+                  onClick={(e) => { e.stopPropagation(); applyUseCase(uc); }}
+                  style={{
+                    padding: '10px 28px',
+                    backgroundColor: isSelected ? '#4caf50' : '#1976d2',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem',
+                    fontWeight: '600',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {isSelected ? 'Configurazione Applicata' : 'Applica Configurazione'}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+    )}
 
     {/* === TAB: DATASETS === */}
     {activeTab === 'datasets' && (
@@ -1505,24 +1807,32 @@ return (
     )}
 
     {/* === TAB: NODE DISTRIBUTION === */}
-    {activeTab === 'nodes' && (
+    {activeTab === 'nodes' && (() => {
+      const viewConfig = {
+        global:   { label: 'Global Node Distribution',  projection: { scale: 160, center: [10, 20] } },
+        europe:   { label: 'Europe Node Distribution',  projection: { scale: 700, center: [15, 52] } },
+        national: { label: 'Italy Node Distribution',   projection: { scale: 2500, center: [12.5, 42] } },
+      };
+      const currentView = viewConfig[nodeDistView];
+
+      return (
     <>
 {/* Node Distribution and Configuration Section */}
-<div style={{ 
+<div style={{
   width: '100%',
   maxWidth: '1400px',
   margin: '0 auto',
-  padding: '0 2rem',      
-  marginBottom: '100px' 
+  padding: '0 2rem',
+  marginBottom: '100px'
 }}>
   <div style={{
     marginTop: '2rem',
-    marginBottom: '2rem',
+    marginBottom: '1rem',
     position: 'relative',
     padding: '1rem 0',
     textAlign: 'center'
   }}>
-    <h3 style={{ 
+    <h3 style={{
       fontSize: '1.5rem',
       color: '#666',
       margin: '0',
@@ -1545,24 +1855,55 @@ return (
     }} />
   </div>
 
-  <div style={{ 
-    fontSize: '0.9rem', 
-    color: '#666', 
+  {/* Sub-navigation: Global / Europe / National */}
+  <div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '8px',
+    marginBottom: '1.5rem'
+  }}>
+    {Object.entries(viewConfig).map(([key, cfg]) => {
+      const isActive = nodeDistView === key;
+      return (
+        <button
+          key={key}
+          onClick={() => handleNodeDistViewChange(key)}
+          style={{
+            padding: '8px 20px',
+            border: isActive ? '2px solid #3498db' : '1px solid #ccc',
+            borderRadius: '20px',
+            background: isActive ? '#e8f4fd' : '#fff',
+            color: isActive ? '#2980b9' : '#666',
+            fontWeight: isActive ? '600' : '400',
+            fontSize: '0.85rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          {cfg.label}
+        </button>
+      );
+    })}
+  </div>
+
+  <div style={{
+    fontSize: '0.9rem',
+    color: '#666',
     marginBottom: '1rem',
-    textAlign: 'center' 
+    textAlign: 'center'
   }}>
     Dataset: {datasetName} | Rounds: {numRounds} | Clients: {numClients}
   </div>
 
-  <div style={{ 
-    display: 'flex', 
-    flexWrap: 'wrap', 
+  <div style={{
+    display: 'flex',
+    flexWrap: 'wrap',
     gap: '2rem',
     justifyContent: 'center',
     alignItems: 'flex-start'
   }}>
     {/* Map Visualization */}
-    <div style={{ 
+    <div style={{
       flex: '1 1 500px',
       minWidth: '500px',
       backgroundColor: '#f8f9fa',
@@ -1576,29 +1917,24 @@ return (
         fontSize: '1.2rem',
         textAlign: 'center'
       }}>
-        Global Node Distribution
+        {currentView.label}
       </h4>
-      <div style={{ 
-        height: '500px',  // Aumentata l'altezza
+      <div style={{
+        height: '500px',
         width: '100%',
         backgroundColor: '#fff',
         borderRadius: '8px',
         overflow: 'hidden'
       }}>
-        <GlobeVisualization 
+        <GlobeVisualization
           nodes={nodes}
-          options={{
-            globeBackgroundColor: '#f1f1f1',
-            globeGlowColor: 'lightblue',
-            markerColor: '#3498db',
-            markerGlowColor: '#2980b9'
-          }}
+          projectionConfig={currentView.projection}
         />
       </div>
     </div>
 
     {/* Node Configuration */}
-    <div style={{ 
+    <div style={{
       flex: '1 1 400px',
       minWidth: '400px',
       backgroundColor: '#f8f9fa',
@@ -1621,22 +1957,20 @@ return (
         maxHeight: '500px',
         overflowY: 'auto'
       }}>
-        <NodeConfiguration 
+        <NodeConfiguration
           nodes={nodes}
           clientTypes={clientTypeConfig}
           clientDynamism={clientDynamismConfig}
           onNodesUpdate={handleNodesUpdate}
-          style={{
-            fontSize: '0.9rem',
-            lineHeight: '1.5'
-          }}
+          currentView={nodeDistView}
         />
       </div>
     </div>
   </div>
 </div>
     </>
-    )}
+      );
+    })()}
 
     {/* === TAB: EXPERIMENT === */}
     {activeTab === 'experiment' && (

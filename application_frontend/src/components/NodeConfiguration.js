@@ -1,7 +1,7 @@
 // src/components/NodeConfiguration.js
 
 import React, { useState, useEffect } from 'react';
-import WORLD_CITIES, { getRandomCity, pickTypeForNewNode } from '../data/worldCities';
+import { getRandomCity, pickTypeForNewNode, getCitiesByView } from '../data/worldCities';
 
 const clientTypeColors = {
   strong: '#e53935',
@@ -9,8 +9,9 @@ const clientTypeColors = {
   weak: '#1e88e5',
 };
 
-const NodeConfiguration = ({ nodes: initialNodes, clientTypes, clientDynamism, onNodesUpdate }) => {
+const NodeConfiguration = ({ nodes: initialNodes, clientTypes, clientDynamism, onNodesUpdate, currentView = 'global' }) => {
   const [nodes, setNodes] = useState(initialNodes || []);
+  const viewCities = getCitiesByView(currentView);
 
   useEffect(() => {
     setNodes(initialNodes || []);
@@ -24,7 +25,7 @@ const NodeConfiguration = ({ nodes: initialNodes, clientTypes, clientDynamism, o
   };
 
   const handleCityChange = (index, cityName) => {
-    const cityData = WORLD_CITIES.find(c => c.city === cityName);
+    const cityData = viewCities.find(c => c.city === cityName);
     if (cityData) {
       const updatedNodes = [...nodes];
       updatedNodes[index] = {
@@ -40,7 +41,7 @@ const NodeConfiguration = ({ nodes: initialNodes, clientTypes, clientDynamism, o
 
   const addNode = () => {
     const existingCities = nodes.map(n => n.city);
-    const randomCity = getRandomCity(existingCities);
+    const randomCity = getRandomCity(existingCities, currentView);
     const bestClientType = clientTypes
       ? pickTypeForNewNode(nodes, clientTypes, 'client_type')
       : 'medium';
@@ -183,7 +184,7 @@ const NodeConfiguration = ({ nodes: initialNodes, clientTypes, clientDynamism, o
                     style={selectStyle}
                   >
                     <option value="">-- Select City --</option>
-                    {WORLD_CITIES.map((c) => (
+                    {viewCities.map((c) => (
                       <option key={c.city} value={c.city}>{c.city}</option>
                     ))}
                   </select>

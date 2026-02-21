@@ -102,68 +102,68 @@ nodes:
   id: 1
   latitude: 41.9028
   longitude: 12.4964
-  name: Node 1
-- city: Warsaw
-  client_type: weak
+  name: Centro Pediatrico Regionale
+- city: Turin
+  client_type: medium
   dynamism_type: normal
   id: 2
-  latitude: 52.2297
-  longitude: 21.0122
-  name: Node 2
-- city: Shanghai
+  latitude: 45.0705
+  longitude: 7.6868
+  name: Ospedale Montano Nord
+- city: Naples
   client_type: medium
   dynamism_type: normal
   id: 3
-  latitude: 31.2304
-  longitude: 121.4737
-  name: Node 3
-- city: London
+  latitude: 40.8518
+  longitude: 14.2681
+  name: Ospedale Montano Sud
+- city: Brescia
+  client_type: weak
+  dynamism_type: slow
+  id: 4
+  latitude: 45.5419
+  longitude: 10.2118
+  name: Ospedale di Valle A
+- city: Verona
   client_type: weak
   dynamism_type: normal
-  id: 4
-  latitude: 51.5074
-  longitude: -0.1278
-  name: Node 4
-- city: Paris
-  client_type: strong
-  dynamism_type: slow
   id: 5
-  latitude: 48.8566
-  longitude: 2.3522
-  name: Node 5
-- city: Melbourne
-  client_type: strong
-  dynamism_type: normal
+  latitude: 45.4386
+  longitude: 10.9945
+  name: Ospedale di Valle B
+- city: Cagliari
+  client_type: weak
+  dynamism_type: slow
   id: 6
-  latitude: -37.8136
-  longitude: 144.9631
-  name: Node 6
-- city: Singapore
+  latitude: 39.2238
+  longitude: 9.1217
+  name: Ospedale di Valle C
+- city: Bologna
   client_type: medium
   dynamism_type: fast
   id: 7
-  latitude: 1.3521
-  longitude: 103.8198
-  name: Node 7
-- city: Chicago
-  client_type: medium
-  dynamism_type: slow
+  latitude: 44.4949
+  longitude: 11.3426
+  name: "Ospedale di Comunit\xE0 D"
+- city: Palermo
+  client_type: weak
+  dynamism_type: normal
   id: 8
-  latitude: 41.8781
-  longitude: -87.6298
-  name: Node 8
-- city: Santiago
+  latitude: 38.1157
+  longitude: 13.3615
+  name: "Ospedale di Comunit\xE0 E"
+- city: Florence
+  client_type: strong
+  dynamism_type: fast
+  id: 9
+  latitude: 43.7696
+  longitude: 11.2558
+  name: Casa della Salute F
+- city: Padua
   client_type: medium
   dynamism_type: normal
-  id: 9
-  latitude: -33.4489
-  longitude: -70.6693
-  name: Node 9
-- city: Vienna
-  client_type: medium
-  dynamism_type: fast
   id: 10
-  latitude: 48.2082
-  longitude: 16.3738
-  name: Node 10
+  latitude: 45.406
+  longitude: 11.8776
+  name: Casa della Salute G
 num_clients: 5
