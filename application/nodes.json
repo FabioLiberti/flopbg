@@ -9,12 +9,12 @@
     "name": "Node 1"
   },
   {
-    "id": 2,
-    "name": "Node 2",
-    "city": "",
-    "latitude": 0,
-    "longitude": 0,
+    "city": "London",
     "client_type": "",
-    "dynamism_type": ""
+    "dynamism_type": "",
+    "id": 2,
+    "latitude": 51.5074,
+    "longitude": -0.1278,
+    "name": "Node 2"
   }
 ]

@@ -1,6 +1,7 @@
 // src/components/NodeConfiguration.js
 
 import React, { useState, useEffect } from 'react';
+import WORLD_CITIES, { getRandomCity } from '../data/worldCities';
 
 const clientTypeColors = {
   strong: '#e53935',
@@ -22,15 +23,32 @@ const NodeConfiguration = ({ nodes: initialNodes, clientTypes, clientDynamism, o
     onNodesUpdate(updatedNodes);
   };
 
+  const handleCityChange = (index, cityName) => {
+    const cityData = WORLD_CITIES.find(c => c.city === cityName);
+    if (cityData) {
+      const updatedNodes = [...nodes];
+      updatedNodes[index] = {
+        ...updatedNodes[index],
+        city: cityData.city,
+        latitude: cityData.latitude,
+        longitude: cityData.longitude,
+      };
+      setNodes(updatedNodes);
+      onNodesUpdate(updatedNodes);
+    }
+  };
+
   const addNode = () => {
+    const existingCities = nodes.map(n => n.city);
+    const randomCity = getRandomCity(existingCities);
     const newNode = {
       id: nodes.length + 1,
       name: `Node ${nodes.length + 1}`,
-      city: '',
-      latitude: 0.0,
-      longitude: 0.0,
-      client_type: '',
-      dynamism_type: '',
+      city: randomCity.city,
+      latitude: randomCity.latitude,
+      longitude: randomCity.longitude,
+      client_type: 'medium',
+      dynamism_type: 'normal',
     };
     const updatedNodes = [...nodes, newNode];
     setNodes(updatedNodes);
@@ -153,21 +171,24 @@ const NodeConfiguration = ({ nodes: initialNodes, clientTypes, clientDynamism, o
                 </label>
                 <label style={labelStyle}>
                   City
-                  <input
-                    type="text"
+                  <select
                     value={node.city || ''}
-                    onChange={(e) => handleNodeChange(index, 'city', e.target.value)}
-                    style={inputStyle}
-                  />
+                    onChange={(e) => handleCityChange(index, e.target.value)}
+                    style={selectStyle}
+                  >
+                    <option value="">-- Select City --</option>
+                    {WORLD_CITIES.map((c) => (
+                      <option key={c.city} value={c.city}>{c.city}</option>
+                    ))}
+                  </select>
                 </label>
                 <label style={labelStyle}>
                   Lat
                   <input
                     type="number"
                     value={node.latitude}
-                    onChange={(e) => handleNodeChange(index, 'latitude', parseFloat(e.target.value) || 0)}
-                    step="0.01"
-                    style={inputStyle}
+                    readOnly
+                    style={{ ...inputStyle, backgroundColor: '#f0f0f0', color: '#888' }}
                   />
                 </label>
                 <label style={labelStyle}>
@@ -175,9 +196,8 @@ const NodeConfiguration = ({ nodes: initialNodes, clientTypes, clientDynamism, o
                   <input
                     type="number"
                     value={node.longitude}
-                    onChange={(e) => handleNodeChange(index, 'longitude', parseFloat(e.target.value) || 0)}
-                    step="0.01"
-                    style={inputStyle}
+                    readOnly
+                    style={{ ...inputStyle, backgroundColor: '#f0f0f0', color: '#888' }}
                   />
                 </label>
                 <label style={labelStyle}>

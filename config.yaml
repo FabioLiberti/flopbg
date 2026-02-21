@@ -103,11 +103,11 @@ nodes:
   latitude: 41.9028
   longitude: 12.4964
   name: Node 1
-- city: ''
+- city: London
   client_type: ''
   dynamism_type: ''
   id: 2
-  latitude: 0
-  longitude: 0
+  latitude: 51.5074
+  longitude: -0.1278
   name: Node 2
 num_clients: 5

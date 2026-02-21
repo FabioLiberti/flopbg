@@ -19,6 +19,7 @@ import InfoBox from './components/InfoBox';
 import BasicConfigForm from './components/ExperimentConfig/BasicConfigForm';
 import ClientHeterogeneityConfig from './components/ExperimentConfig/ClientHeterogeneityConfig';
 import ClientDynamismConfig from './components/ExperimentConfig/ClientDynamismConfig';
+import { getRandomCity } from './data/worldCities';
 
 
 import {
@@ -910,17 +911,23 @@ const handleExperimentConfigUpdate = useCallback((field, value) => {
       setNodes(prevNodes => {
         let updated;
         if (newCount > prevNodes.length) {
-          // Aggiungi nuovi nodi con coordinate di default
+          // Aggiungi nuovi nodi con città casuali
           const toAdd = newCount - prevNodes.length;
-          const newNodes = Array.from({ length: toAdd }, (_, i) => ({
-            id: prevNodes.length + i + 1,
-            name: `Node ${prevNodes.length + i + 1}`,
-            city: '',
-            latitude: 0.0,
-            longitude: 0.0,
-            client_type: 'medium',
-            dynamism_type: 'normal',
-          }));
+          const existingCities = prevNodes.map(n => n.city);
+          const newNodes = [];
+          for (let i = 0; i < toAdd; i++) {
+            const usedCities = [...existingCities, ...newNodes.map(n => n.city)];
+            const randomCity = getRandomCity(usedCities);
+            newNodes.push({
+              id: prevNodes.length + i + 1,
+              name: `Node ${prevNodes.length + i + 1}`,
+              city: randomCity.city,
+              latitude: randomCity.latitude,
+              longitude: randomCity.longitude,
+              client_type: 'medium',
+              dynamism_type: 'normal',
+            });
+          }
           updated = [...prevNodes, ...newNodes];
         } else if (newCount < prevNodes.length) {
           // Rimuovi nodi dalla fine
