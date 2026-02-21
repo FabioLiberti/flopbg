@@ -406,6 +406,17 @@ class FederatedLearningSystem:
         if len(images.shape) == 3:
             images = np.expand_dims(images, axis=-1)  # Per immagini in scala di grigi
 
+        # Gestisci mismatch canali (es. RGB -> grayscale o viceversa)
+        expected_channels = self.input_shape[-1] if len(self.input_shape) == 3 else 1
+        current_channels = images.shape[-1]
+
+        if current_channels == 3 and expected_channels == 1:
+            # Converti RGB in scala di grigi
+            images = np.mean(images, axis=-1, keepdims=True)
+        elif current_channels == 1 and expected_channels == 3:
+            # Converti scala di grigi in RGB
+            images = np.repeat(images, 3, axis=-1)
+
         # Ridimensiona le immagini se necessario
         target_size = self.input_shape[:2]  # Ottieni la dimensione di input del modello
         if images.shape[1:3] != target_size:

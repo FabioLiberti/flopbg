@@ -1741,7 +1741,7 @@ return (
           }}>
             Dataset: {datasetName} | Rounds: {numRounds} | Clients: {numClients}
           </div>
-          <ImageComparison datasetName={datasetName} />
+          <ImageComparison datasetName={datasetName} isTraining={isTraining} />
         </div>
 
           {/* Client Data Distribution */}

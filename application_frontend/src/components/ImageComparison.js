@@ -2,22 +2,25 @@
 
 import React, { useState, useEffect } from 'react';
 
-function ImageComparison({ datasetName }) {
+function ImageComparison({ datasetName, isTraining }) {
   const [realImages, setRealImages] = useState([]);
   const [realLabels, setRealLabels] = useState([]);
   const [predictedLabels, setPredictedLabels] = useState([]);
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
- 
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    // Only fetch images after training has completed
+    if (isTraining) {
+      return;
+    }
+
     const fetchImages = async () => {
       setIsLoading(true);
       setError(null);
       try {
         const response = await fetch(
-          //`http://localhost:5001/api/images?dataset_name=${datasetName}&num_images=10`
-          `http://localhost:5001/api/images?dataset_name=${encodeURIComponent(datasetName)}&num_images=2`
+          `http://localhost:5001/api/images?dataset_name=${encodeURIComponent(datasetName)}&num_images=10`
         );
         const data = await response.json();
 
@@ -25,7 +28,6 @@ function ImageComparison({ datasetName }) {
         console.log('Data received from /api/images:', data);
 
         if (response.ok) {
-          // if (data && data.real_images && data.predicted_labels) {
             if (data && Array.isArray(data.real_images) && Array.isArray(data.predicted_labels)) {
               setRealImages(data.real_images);
               setRealLabels(data.real_labels || []);
@@ -35,7 +37,6 @@ function ImageComparison({ datasetName }) {
             setError('No images found');
           }
         } else {
-          // Handle specific error messages from the backend
           console.error('Server responded with error:', data);
           setError(data.message || 'Error fetching images');
         }
@@ -48,7 +49,11 @@ function ImageComparison({ datasetName }) {
     };
 
     fetchImages();
-  }, [datasetName]);
+  }, [datasetName, isTraining]);
+
+  if (isTraining) {
+    return <p>Images will be available after training completes.</p>;
+  }
 
   if (isLoading) {
     return <p>Loading images...</p>;
@@ -59,7 +64,7 @@ function ImageComparison({ datasetName }) {
   }
 
   if (!Array.isArray(realImages) || realImages.length === 0) {
-    return <p>Loading images...</p>;
+    return <p>No images available. Run an experiment first.</p>;
   }
 
   return (
