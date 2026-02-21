@@ -66,16 +66,6 @@ const saveNodes = async (nodes) => {
 };
 
 function App() {
-
-//  const handleNodesUpdate = useCallback((updatedNodes) => { //
-const handleNodesUpdate = (updatedNodes) => {
-  setNodes(updatedNodes);
-  setNumClients(updatedNodes.length);
-  saveNodes(updatedNodes);
-};
-
-
-//function App() {
   const [status, setStatus] = useState('Idle');
   const [isTraining, setIsTraining] = useState(false);
   const [results, setResults] = useState([]);
@@ -133,6 +123,12 @@ const handleNodesUpdate = (updatedNodes) => {
   const [experimentEndTime, setExperimentEndTime] = useState(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [isConfiguring, setIsConfiguring] = useState(false);
+
+  const handleNodesUpdate = (updatedNodes) => {
+    setNodes(updatedNodes);
+    setNumClients(updatedNodes.length);
+    saveNodes(updatedNodes);
+  };
 
   // Timer effect: updates every second while configuring or training
   useEffect(() => {
@@ -907,9 +903,36 @@ const handleExperimentConfigUpdate = useCallback((field, value) => {
     case 'numRounds':
       setNumRounds(value);
       break;
-    case 'numClients':
-      setNumClients(value);
+    case 'numClients': {
+      const newCount = Math.max(1, value || 1);
+      setNumClients(newCount);
+      // Sincronizza la lista nodi con il numero di client
+      setNodes(prevNodes => {
+        let updated;
+        if (newCount > prevNodes.length) {
+          // Aggiungi nuovi nodi con coordinate di default
+          const toAdd = newCount - prevNodes.length;
+          const newNodes = Array.from({ length: toAdd }, (_, i) => ({
+            id: prevNodes.length + i + 1,
+            name: `Node ${prevNodes.length + i + 1}`,
+            city: '',
+            latitude: 0.0,
+            longitude: 0.0,
+            client_type: 'medium',
+            dynamism_type: 'normal',
+          }));
+          updated = [...prevNodes, ...newNodes];
+        } else if (newCount < prevNodes.length) {
+          // Rimuovi nodi dalla fine
+          updated = prevNodes.slice(0, newCount);
+        } else {
+          return prevNodes;
+        }
+        saveNodes(updated);
+        return updated;
+      });
       break;
+    }
     case 'localEpochs':
       setLocalEpochs(value);
       break;

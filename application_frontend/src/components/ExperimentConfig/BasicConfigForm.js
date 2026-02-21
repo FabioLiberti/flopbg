@@ -62,6 +62,9 @@ const BasicConfigForm = ({ experimentConfig, setExperimentConfig }) => {
             style={inputStyle}
             min="1"
           />
+          <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>
+            Synced with Node Configuration
+          </div>
         </div>
    
         {/* Local Epochs */}

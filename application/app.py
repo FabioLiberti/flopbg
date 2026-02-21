@@ -577,10 +577,13 @@ def save_nodes():
         if not nodes:
             return jsonify({"message": "Nodes data is required."}), 400
 
-        # Update the config with the new nodes
-        config['nodes'] = nodes
+        # Salva su nodes.json (usato da GET /nodes)
+        nodes_file_path = os.path.join(os.path.dirname(__file__), 'nodes.json')
+        with open(nodes_file_path, 'w') as f:
+            json.dump(nodes, f, indent=2)
 
-        # Save the updated configuration to file
+        # Aggiorna anche config.yaml
+        config['nodes'] = nodes
         with open(config_path, 'w') as f:
             yaml.dump(config, f)
 

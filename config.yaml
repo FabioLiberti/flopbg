@@ -103,18 +103,11 @@ nodes:
   latitude: 41.9028
   longitude: 12.4964
   name: Node 1
-- city: Krypton
-  client_type: medium
-  dynamism_type: normal
+- city: ''
+  client_type: ''
+  dynamism_type: ''
   id: 2
-  latitude: 5
-  longitude: 2
-  name: Node 2
-- city: Troppus
-  client_type: strong
-  dynamism_type: fast
-  id: 3
   latitude: 0
   longitude: 0
-  name: Node 3
+  name: Node 2
 num_clients: 5

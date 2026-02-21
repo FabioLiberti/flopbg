@@ -2,25 +2,31 @@
 
 import React, { useState, useEffect } from 'react';
 
+const clientTypeColors = {
+  strong: '#e53935',
+  medium: '#43a047',
+  weak: '#1e88e5',
+};
+
 const NodeConfiguration = ({ nodes: initialNodes, clientTypes, clientDynamism, onNodesUpdate }) => {
   const [nodes, setNodes] = useState(initialNodes || []);
 
-  // Aggiorna lo stato locale dei nodi quando initialNodes cambia
   useEffect(() => {
     setNodes(initialNodes || []);
   }, [initialNodes]);
 
   const handleNodeChange = (index, key, value) => {
     const updatedNodes = [...nodes];
-    updatedNodes[index][key] = value;
+    updatedNodes[index] = { ...updatedNodes[index], [key]: value };
     setNodes(updatedNodes);
-    onNodesUpdate(updatedNodes); // Notifica al genitore le modifiche
+    onNodesUpdate(updatedNodes);
   };
 
   const addNode = () => {
     const newNode = {
       id: nodes.length + 1,
       name: `Node ${nodes.length + 1}`,
+      city: '',
       latitude: 0.0,
       longitude: 0.0,
       client_type: '',
@@ -28,22 +34,21 @@ const NodeConfiguration = ({ nodes: initialNodes, clientTypes, clientDynamism, o
     };
     const updatedNodes = [...nodes, newNode];
     setNodes(updatedNodes);
-    onNodesUpdate(updatedNodes); // Notifica al genitore le modifiche
+    onNodesUpdate(updatedNodes);
   };
 
   const removeNode = (index) => {
     const updatedNodes = nodes.filter((_, i) => i !== index);
     setNodes(updatedNodes);
-    onNodesUpdate(updatedNodes); // Notifica al genitore le modifiche
+    onNodesUpdate(updatedNodes);
   };
 
   const saveNodes = async () => {
-    console.log('Nodes being sent:', nodes);
     try {
-      const response = await fetch('http://localhost:3000/nodes', {
+      const response = await fetch('http://localhost:5001/nodes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nodes: nodes }),
+        body: JSON.stringify({ nodes }),
       });
 
       if (!response.ok) {
@@ -54,106 +59,178 @@ const NodeConfiguration = ({ nodes: initialNodes, clientTypes, clientDynamism, o
       alert('Nodes saved successfully.');
     } catch (error) {
       console.error('Error saving nodes:', error);
+      alert('Error saving nodes.');
     }
+  };
+
+  const inputStyle = {
+    padding: '4px 8px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    fontSize: '13px',
+    width: '100%',
+    boxSizing: 'border-box',
+  };
+
+  const labelStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    fontSize: '13px',
+    color: '#555',
+    marginBottom: '4px',
+  };
+
+  const selectStyle = {
+    ...inputStyle,
+    backgroundColor: '#fff',
   };
 
   return (
     <div>
-      <h2>Node Configuration</h2>
-      <button onClick={addNode}>Add Node</button>
-      {nodes.map((node, index) => (
-        <div
-          key={node.id}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+        <span style={{ fontSize: '13px', color: '#666' }}>{nodes.length} nodes</span>
+        <button
+          onClick={addNode}
           style={{
-            border: '1px solid black',
-            padding: '10px',
-            marginBottom: '10px',
+            padding: '6px 14px',
+            backgroundColor: '#43a047',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '13px',
           }}
         >
-          <h4>{node.name}</h4>
-          <label>
-            Name:
-            <input
-              type="text"
-              value={node.name}
-              onChange={(e) => handleNodeChange(index, 'name', e.target.value)}
-            />
-          </label>
-          <br />
-          <label>
-            City:
-            <input
-              type="text"
-              value={node.city}
-              onChange={(e) =>
-                handleNodeChange(index, 'city', e.target.value)}
-            />  
-          </label> 
-          <br />
-          <label>     
-            Latitude:
-            <input
-              type="number"
-              value={node.latitude}
-              onChange={(e) =>
-                handleNodeChange(index, 'latitude', parseFloat(e.target.value))
-              }
-              step="0.0001"
-            />
-          </label>
-          <br />
-          <label>
-            Longitude:
-            <input
-              type="number"
-              value={node.longitude}
-              onChange={(e) =>
-                handleNodeChange(index, 'longitude', parseFloat(e.target.value))
-              }
-              step="0.0001"
-            />
-          </label>
-          <br />
-          <label>
-            Client Type:
-            <select
-              value={node.client_type}
-              onChange={(e) =>
-                handleNodeChange(index, 'client_type', e.target.value)
-              }
+          + Add Node
+        </button>
+      </div>
+
+      <div style={{ maxHeight: '380px', overflowY: 'auto' }}>
+        {nodes.map((node, index) => {
+          const typeColor = clientTypeColors[node.client_type] || '#ccc';
+          return (
+            <div
+              key={node.id || index}
+              style={{
+                border: '1px solid #e0e0e0',
+                borderLeft: `4px solid ${typeColor}`,
+                borderRadius: '6px',
+                padding: '10px 12px',
+                marginBottom: '8px',
+                backgroundColor: '#fafafa',
+              }}
             >
-              <option value="">Select Client Type</option>
-              {clientTypes &&
-                Object.keys(clientTypes).map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-            </select>
-          </label>
-          <br />
-          <label>
-            Dynamism Type:
-            <select
-              value={node.dynamism_type}
-              onChange={(e) =>
-                handleNodeChange(index, 'dynamism_type', e.target.value)
-              }
-            >
-              <option value="">Select Dynamism Type</option>
-              {clientDynamism &&
-                Object.keys(clientDynamism).map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-            </select>
-          </label>
-          <br />
-          <button onClick={() => removeNode(index)}>Remove Node</button>
-        </div>
-      ))}
-      <button onClick={saveNodes}>Save Nodes</button>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                <strong style={{ fontSize: '13px', color: '#333' }}>
+                  #{node.id} {node.city || node.name}
+                </strong>
+                <button
+                  onClick={() => removeNode(index)}
+                  style={{
+                    padding: '2px 8px',
+                    backgroundColor: '#ffebee',
+                    color: '#c62828',
+                    border: '1px solid #ef9a9a',
+                    borderRadius: '3px',
+                    cursor: 'pointer',
+                    fontSize: '11px',
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                <label style={labelStyle}>
+                  Name
+                  <input
+                    type="text"
+                    value={node.name || ''}
+                    onChange={(e) => handleNodeChange(index, 'name', e.target.value)}
+                    style={inputStyle}
+                  />
+                </label>
+                <label style={labelStyle}>
+                  City
+                  <input
+                    type="text"
+                    value={node.city || ''}
+                    onChange={(e) => handleNodeChange(index, 'city', e.target.value)}
+                    style={inputStyle}
+                  />
+                </label>
+                <label style={labelStyle}>
+                  Lat
+                  <input
+                    type="number"
+                    value={node.latitude}
+                    onChange={(e) => handleNodeChange(index, 'latitude', parseFloat(e.target.value) || 0)}
+                    step="0.01"
+                    style={inputStyle}
+                  />
+                </label>
+                <label style={labelStyle}>
+                  Lng
+                  <input
+                    type="number"
+                    value={node.longitude}
+                    onChange={(e) => handleNodeChange(index, 'longitude', parseFloat(e.target.value) || 0)}
+                    step="0.01"
+                    style={inputStyle}
+                  />
+                </label>
+                <label style={labelStyle}>
+                  Client Type
+                  <select
+                    value={node.client_type || ''}
+                    onChange={(e) => handleNodeChange(index, 'client_type', e.target.value)}
+                    style={selectStyle}
+                  >
+                    <option value="">--</option>
+                    {clientTypes &&
+                      Object.keys(clientTypes).map((type) => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
+                  </select>
+                </label>
+                <label style={labelStyle}>
+                  Dynamism
+                  <select
+                    value={node.dynamism_type || ''}
+                    onChange={(e) => handleNodeChange(index, 'dynamism_type', e.target.value)}
+                    style={selectStyle}
+                  >
+                    <option value="">--</option>
+                    {clientDynamism &&
+                      Object.keys(clientDynamism).map((type) => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
+                  </select>
+                </label>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{ marginTop: '12px', textAlign: 'right' }}>
+        <button
+          onClick={saveNodes}
+          style={{
+            padding: '8px 20px',
+            backgroundColor: '#1976d2',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: 'bold',
+          }}
+        >
+          Save Nodes
+        </button>
+      </div>
     </div>
   );
 };
