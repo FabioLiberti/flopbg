@@ -103,137 +103,67 @@ nodes:
   latitude: 41.9028
   longitude: 12.4964
   name: Node 1
-- city: Tokyo
+- city: Warsaw
+  client_type: weak
+  dynamism_type: normal
+  id: 2
+  latitude: 52.2297
+  longitude: 21.0122
+  name: Node 2
+- city: Shanghai
   client_type: medium
   dynamism_type: normal
   id: 3
-  latitude: 35.6762
-  longitude: 139.6503
+  latitude: 31.2304
+  longitude: 121.4737
   name: Node 3
-- city: Johannesburg
-  client_type: medium
+- city: London
+  client_type: weak
   dynamism_type: normal
   id: 4
-  latitude: -26.2041
-  longitude: 28.0473
+  latitude: 51.5074
+  longitude: -0.1278
   name: Node 4
-- city: Chicago
-  client_type: medium
-  dynamism_type: normal
+- city: Paris
+  client_type: strong
+  dynamism_type: slow
   id: 5
-  latitude: 41.8781
-  longitude: -87.6298
+  latitude: 48.8566
+  longitude: 2.3522
   name: Node 5
-- city: Istanbul
-  client_type: medium
+- city: Melbourne
+  client_type: strong
   dynamism_type: normal
   id: 6
-  latitude: 41.0082
-  longitude: 28.9784
+  latitude: -37.8136
+  longitude: 144.9631
   name: Node 6
-- city: San Francisco
+- city: Singapore
   client_type: medium
-  dynamism_type: normal
+  dynamism_type: fast
   id: 7
-  latitude: 37.7749
-  longitude: -122.4194
+  latitude: 1.3521
+  longitude: 103.8198
   name: Node 7
-- city: Lima
+- city: Chicago
   client_type: medium
-  dynamism_type: normal
+  dynamism_type: slow
   id: 8
-  latitude: -12.0464
-  longitude: -77.0428
+  latitude: 41.8781
+  longitude: -87.6298
   name: Node 8
-- city: Seoul
+- city: Santiago
   client_type: medium
   dynamism_type: normal
   id: 9
-  latitude: 37.5665
-  longitude: 126.978
+  latitude: -33.4489
+  longitude: -70.6693
   name: Node 9
-- city: Hong Kong
+- city: Vienna
   client_type: medium
-  dynamism_type: normal
+  dynamism_type: fast
   id: 10
-  latitude: 22.3193
-  longitude: 114.1694
+  latitude: 48.2082
+  longitude: 16.3738
   name: Node 10
-- city: Stockholm
-  client_type: medium
-  dynamism_type: normal
-  id: 11
-  latitude: 59.3293
-  longitude: 18.0686
-  name: Node 11
-- city: Paris
-  client_type: medium
-  dynamism_type: normal
-  id: 12
-  latitude: 48.8566
-  longitude: 2.3522
-  name: Node 12
-- city: Vancouver
-  client_type: medium
-  dynamism_type: normal
-  id: 13
-  latitude: 49.2827
-  longitude: -123.1207
-  name: Node 13
-- city: Miami
-  client_type: medium
-  dynamism_type: normal
-  id: 14
-  latitude: 25.7617
-  longitude: -80.1918
-  name: Node 14
-- city: Osaka
-  client_type: medium
-  dynamism_type: normal
-  id: 15
-  latitude: 34.6937
-  longitude: 135.5023
-  name: Node 15
-- city: Mumbai
-  client_type: medium
-  dynamism_type: normal
-  id: 16
-  latitude: 19.076
-  longitude: 72.8777
-  name: Node 16
-- city: Amsterdam
-  client_type: medium
-  dynamism_type: normal
-  id: 17
-  latitude: 52.3676
-  longitude: 4.9041
-  name: Node 17
-- city: Montreal
-  client_type: medium
-  dynamism_type: normal
-  id: 18
-  latitude: 45.5017
-  longitude: -73.5673
-  name: Node 18
-- city: Lisbon
-  client_type: medium
-  dynamism_type: normal
-  id: 19
-  latitude: 38.7223
-  longitude: -9.1393
-  name: Node 19
-- city: New York
-  client_type: medium
-  dynamism_type: normal
-  id: 20
-  latitude: 40.7128
-  longitude: -74.006
-  name: Node 20
-- city: Taipei
-  client_type: medium
-  dynamism_type: normal
-  id: 20
-  latitude: 25.033
-  longitude: 121.5654
-  name: Node 20
 num_clients: 5

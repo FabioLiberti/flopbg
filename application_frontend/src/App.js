@@ -124,6 +124,7 @@ function App() {
   const [experimentEndTime, setExperimentEndTime] = useState(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [isConfiguring, setIsConfiguring] = useState(false);
+  const [activeTab, setActiveTab] = useState('experiment');
 
   const handleNodesUpdate = (updatedNodes) => {
     setNodes(updatedNodes);
@@ -969,7 +970,7 @@ const handleExperimentConfigUpdate = useCallback((field, value) => {
     default:
       console.warn('Unknown field:', field);
   }
-}, []);
+}, [clientTypeConfig, clientDynamismConfig]);
 
 // Funzione per aggiornare le opzioni dei grafici rimuovendo le etichette interne
 //const updateChartOptions = (options) => {
@@ -1100,12 +1101,15 @@ return (
       </div>
     </header>
 
-    {/* Secondo header con il titolo del dashboard */}
+    {/* Secondo header con il titolo del dashboard e navigazione */}
     <header style={{
       background: 'white',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-      padding: '10px 0',
-      marginBottom: '20px'
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+      padding: '10px 0 0 0',
+      marginBottom: '20px',
+      position: 'sticky',
+      top: 0,
+      zIndex: 100
     }}>
       <div style={{
         display: 'flex',
@@ -1113,7 +1117,7 @@ return (
         justifyContent: 'center',
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '0 20px'
+        padding: '0 20px 8px'
       }}>
         <h2 style={{
           margin: 0,
@@ -1125,20 +1129,79 @@ return (
         }}>
           Federated Learning Dashboard 🤖📊
         </h2>
-        <InfoBox 
+        <InfoBox
           infoFile="dashboard-info"
         />
       </div>
+      {/* Tab Navigation */}
+      <nav style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '0',
+        borderTop: '1px solid #e0e0e0',
+        maxWidth: '1200px',
+        margin: '0 auto',
+      }}>
+        {[
+          { id: 'datasets', label: 'Datasets' },
+          { id: 'basic', label: 'Basic Configuration' },
+          { id: 'advanced', label: 'Advanced Configuration' },
+          { id: 'nodes', label: 'Node Distribution' },
+          { id: 'experiment', label: 'Experiment', highlight: true },
+        ].map(tab => {
+          const isActive = activeTab === tab.id;
+          const isRunning = tab.id === 'experiment' && (isTraining || isConfiguring);
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                borderBottom: isActive ? `3px solid ${tab.highlight ? '#e74c3c' : '#3498db'}` : '3px solid transparent',
+                background: isActive
+                  ? (tab.highlight ? '#fff5f5' : '#f0f8ff')
+                  : 'transparent',
+                color: isActive
+                  ? (tab.highlight ? '#c0392b' : '#2980b9')
+                  : '#666',
+                fontWeight: isActive ? '700' : '500',
+                fontSize: tab.highlight ? '0.95rem' : '0.88rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                textTransform: tab.highlight ? 'uppercase' : 'none',
+                letterSpacing: tab.highlight ? '0.5px' : '0',
+              }}
+            >
+              {tab.label}
+              {isRunning && (
+                <span style={{
+                  display: 'inline-block',
+                  width: '8px',
+                  height: '8px',
+                  backgroundColor: '#4caf50',
+                  borderRadius: '50%',
+                  animation: 'pulse 1.5s infinite',
+                }} />
+              )}
+            </button>
+          );
+        })}
+      </nav>
     </header>
 
-    {/* Sezione per i dataset */}
-    <div style={{ 
+    {/* === TAB: DATASETS === */}
+    {activeTab === 'datasets' && (
+    <div style={{
       width:'100%',
-      maxWidth:'1400px',  
-      margin:'0 auto',  
-      padding:'30px',  
-      display:'flex',     
-      gap:'30px',         
+      maxWidth:'1400px',
+      margin:'0 auto',
+      padding:'30px',
+      display:'flex',
+      gap:'30px',
       boxSizing:'border-box'
     }}>
       {/* Colonna Dataset Generici */}
@@ -1242,7 +1305,11 @@ return (
          </ul>
        </div>
      </div>
+    )}
 
+    {/* === TAB: BASIC CONFIGURATION === */}
+    {activeTab === 'basic' && (
+    <>
 {/* 1. Prima sezione - Basic Configuration */}
 <div style={{ 
   width: '100%',
@@ -1283,9 +1350,14 @@ return (
         setExperimentConfig={handleExperimentConfigUpdate}
       />
     </div>
+  </div>
+</div>
+    </>
+    )}
 
-
-
+    {/* === TAB: ADVANCED CONFIGURATION === */}
+    {activeTab === 'advanced' && (
+    <>
 {/* Advanced Configuration Section */}
 <div style={{ 
   width: '100%',
@@ -1429,10 +1501,12 @@ return (
     </div>
   </div>
 </div>
+    </>
+    )}
 
-
-
-
+    {/* === TAB: NODE DISTRIBUTION === */}
+    {activeTab === 'nodes' && (
+    <>
 {/* Node Distribution and Configuration Section */}
 <div style={{ 
   width: '100%',
@@ -1561,10 +1635,12 @@ return (
     </div>
   </div>
 </div>
+    </>
+    )}
 
-
-
-
+    {/* === TAB: EXPERIMENT === */}
+    {activeTab === 'experiment' && (
+    <>
     {/* Experiment Controls */}
     <div style={{
       display: 'flex',
@@ -1616,8 +1692,6 @@ return (
         Status: {status}
       </div>
     )}
-  </div>
-</div>
 
     {/* Experiment Monitoring Box */}
     {experimentStartTime && (
@@ -2050,6 +2124,9 @@ return (
          or hasn't started yet.
        </div>
      )}
+    </>
+    )}
+
    </div>
 )}
 export default App;
