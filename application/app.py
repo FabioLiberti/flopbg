@@ -415,10 +415,11 @@ def get_images():
         try:
             # Get predictions using the loaded images
             images_array = np.array(images)
+            logging.info(f"Images array shape: {images_array.shape}, dtype: {images_array.dtype}")
             predicted_labels = fl_system.get_predicted_labels(images_array)
         except Exception as e:
-            logging.error(f"Error getting predicted labels: {e}")
-            return jsonify({"message": "Error getting predicted labels."}), 500
+            logging.exception(f"Error getting predicted labels: {e}")
+            return jsonify({"message": f"Error getting predicted labels: {str(e)}"}), 500
 
         # Prepare the JSON response with images and predictions
         response = {
@@ -498,10 +499,11 @@ def get_memory_images(dataset_name, num_images):
         try:
             # Get predictions using the loaded images
             images_array = np.array(images)
+            logging.info(f"Memory images array shape: {images_array.shape}, dtype: {images_array.dtype}")
             predicted_labels = fl_system.get_predicted_labels(images_array)
         except Exception as e:
-            logging.exception("Error getting predicted labels")
-            return jsonify({"message": "Error getting predicted labels."}), 500
+            logging.exception(f"Error getting predicted labels: {e}")
+            return jsonify({"message": f"Error getting predicted labels: {str(e)}"}), 500
 
         # Prepare the JSON response with images and predictions
         response = {

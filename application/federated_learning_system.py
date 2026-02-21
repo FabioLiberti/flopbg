@@ -439,9 +439,9 @@ class FederatedLearningSystem:
             # Effettua le predizioni
             predictions = self.model.predict(preprocessed_images)
 
-            # Gestisci diverse forme di output in base al dataset
-            if self.num_classes == 1:
-                # Classificazione binaria con un singolo neurone di output
+            # Gestisci diverse forme di output in base all'output del modello
+            if predictions.shape[-1] == 1:
+                # Classificazione binaria con un singolo neurone di output (sigmoid)
                 predicted_labels = (predictions > 0.5).astype(int).flatten()
             else:
                 # Classificazione multi-classe
