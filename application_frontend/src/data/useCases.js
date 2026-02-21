@@ -8,7 +8,8 @@ const USE_CASES = [
     dataset: 'chest_xray',
     nodeDistView: 'national',
     description: `Una rete di piccoli ospedali di montagna (ospedali di comunità, 20–50 posti letto) serve aree rurali con popolazione ridotta, molto anziana, ma con anche un flusso di famiglie giovani che vivono lontano dai grandi centri urbani. Ogni ospedale dispone di un reparto pediatrico minimo o solo di guardia pediatrica, con poche decine di casi pediatrici respiratori l'anno e pochissime radiografie toraciche pediatriche etichettate da specialisti.`,
-    objective: `Addestrare un modello di classificazione di radiografie del torace pediatrico per rilevare polmonite (vs. non polmonite), sfruttando un dataset clinico pubblico come base e simulando i vari ospedali come nodi federati. Valutare se il training federato, con dati frammentati e non IID, consente di raggiungere prestazioni paragonabili a un modello centralizzato.`,
+    problem: `I pediatri locali lamentano difficoltà nel discriminare rapidamente, soprattutto in pronto soccorso, fra polmoniti virali, batteriche e quadri non infettivi, con rischio di sovra-ospedalizzazione o ricoveri tardivi. La condivisione centralizzata dei dati radiologici non è permessa dalle policy regionali.`,
+    objective: `Addestrare un modello di classificazione di radiografie del torace pediatrico per rilevare polmonite (vs. non polmonite), sfruttando un dataset clinico pubblico come base e simulando i vari ospedali come nodi federati. Valutare se il training federato, con dati frammentati e non IID, consente di raggiungere prestazioni paragonabili a un modello centralizzato, mantenendo la privacy dei dati e gestendo l'eterogeneità dei nodi.`,
     basicConfig: {
       numRounds: 100,
       numClients: 10,

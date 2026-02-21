@@ -1393,13 +1393,32 @@ return (
                   fontSize: '0.85rem',
                   color: '#555',
                   lineHeight: '1.6',
-                  maxHeight: '80px',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
                 }}>
                   {uc.description}
                 </p>
               </div>
+
+              {/* Problem */}
+              {uc.problem && (
+              <div style={{
+                marginBottom: '14px',
+                padding: '12px 16px',
+                backgroundColor: isSelected ? 'rgba(255, 243, 224, 0.8)' : '#fff3e0',
+                borderRadius: '8px',
+                borderLeft: '4px solid #ff9800',
+              }}>
+                <h5 style={{ margin: '0 0 6px 0', color: '#e65100', fontSize: '0.9rem' }}>Problema</h5>
+                <p style={{
+                  margin: 0,
+                  fontSize: '0.85rem',
+                  color: '#bf360c',
+                  lineHeight: '1.6',
+                  fontWeight: '500',
+                }}>
+                  {uc.problem}
+                </p>
+              </div>
+              )}
 
               {/* Objective */}
               <div style={{ marginBottom: '16px' }}>
@@ -1409,9 +1428,6 @@ return (
                   fontSize: '0.85rem',
                   color: '#555',
                   lineHeight: '1.6',
-                  maxHeight: '60px',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
                 }}>
                   {uc.objective}
                 </p>
