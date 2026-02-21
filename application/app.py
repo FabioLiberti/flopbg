@@ -338,7 +338,7 @@ def get_images():
             'brain_tumor': os.path.join(parent_dir, 'data', 'Brain_Tumor'),
             'brain_tumor_mri': os.path.join(parent_dir, 'data', 'Brain Tumor MRI', 'Testing'),
             'retinopathy': os.path.join(parent_dir, 'data', 'Retinopatia'),        
-            'skin_cancer': os.path.join(parent_dir, 'data', 'Skin Cancer')  
+            'skin_cancer': os.path.join(parent_dir, 'data', 'Skin Cancer', 'test')
         }
 
         # Verify that the dataset is supported

@@ -22,7 +22,7 @@ client_types:
     computational_power: 0.4
     network_speed: 0.5
     proportion: 0.2
-dataset_name: brain_tumor
+dataset_name: brain_tumor_mri
 datasets:
 - input_shape:
   - 28
@@ -117,4 +117,4 @@ nodes:
   latitude: 0
   longitude: 0
   name: Node 3
-num_clients: 7
+num_clients: 6

@@ -50,10 +50,10 @@ def create_model(dataset_name, input_shape, num_classes, learning_rate=0.001):
             tf.keras.layers.Dropout(0.5),
             tf.keras.layers.Dense(num_classes, activation='softmax')  # For multiclass
         ])
-    elif dataset_name == 'chest_xray':
-        # Model for binary classification, images 150x150x3
+    elif dataset_name in ['chest_xray', 'skin_cancer']:
+        # Model for binary classification
         if num_classes != 1:
-            logging.warning("For 'chest_xray', num_classes should be 1 for binary classification.")
+            logging.warning(f"For '{dataset_name}', num_classes should be 1 for binary classification.")
         model = tf.keras.models.Sequential([
             tf.keras.layers.InputLayer(shape=input_shape),
             tf.keras.layers.Conv2D(32, (3, 3), activation='relu'),
@@ -86,7 +86,7 @@ def create_model(dataset_name, input_shape, num_classes, learning_rate=0.001):
         raise ValueError(f"Dataset '{dataset_name}' not supported.")
 
     # Select loss function
-    if dataset_name == 'chest_xray':
+    if dataset_name in ['chest_xray', 'skin_cancer']:
         loss = 'binary_crossentropy'
     else:
         loss = 'sparse_categorical_crossentropy'

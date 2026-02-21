@@ -311,6 +311,44 @@ def load_brain_tumor_mri():
     return (train_images, train_labels), (test_images, test_labels)
 
 
+def load_skin_cancer():
+    """
+    Loads the Skin Cancer dataset from data/Skin Cancer/.
+    Structure: train/CLASS/images, test/CLASS/images
+    Classes: benign, malignant (binary classification)
+    """
+    data_dir = os.path.join(parent_dir, 'data', 'Skin Cancer')
+    image_size = (150, 150)
+
+    if not os.path.exists(data_dir):
+        raise FileNotFoundError(f"The directory {data_dir} does not exist. Ensure the dataset is downloaded and placed correctly.")
+
+    try:
+        train_dataset = tf.keras.utils.image_dataset_from_directory(
+            os.path.join(data_dir, 'train'),
+            image_size=image_size,
+            batch_size=32,
+            shuffle=False
+        )
+
+        test_dataset = tf.keras.utils.image_dataset_from_directory(
+            os.path.join(data_dir, 'test'),
+            image_size=image_size,
+            batch_size=32,
+            shuffle=False
+        )
+    except Exception as e:
+        raise Exception(f"Error loading Skin Cancer dataset: {e}")
+
+    train_images, train_labels = convert_dataset_to_numpy(train_dataset)
+    test_images, test_labels = convert_dataset_to_numpy(test_dataset)
+
+    train_images = train_images.astype(np.float32) / 255.0
+    test_images = test_images.astype(np.float32) / 255.0
+
+    return (train_images, train_labels), (test_images, test_labels)
+
+
 def load_data(dataset_name):
     """
     Loads the specified dataset.
@@ -339,6 +377,8 @@ def load_data(dataset_name):
         return load_brain_tumor_data()
     elif dataset_name == 'brain_tumor_mri':
         return load_brain_tumor_mri()
+    elif dataset_name == 'skin_cancer':
+        return load_skin_cancer()
     else:
         raise ValueError(f"Dataset '{dataset_name}' not supported.")
 
