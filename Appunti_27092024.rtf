@@ -1,0 +1,131 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fswiss\fcharset0 Helvetica-Bold;\f2\fnil\fcharset0 Menlo-Regular;
+}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red0\green0\blue0;\red144\green1\blue18;
+\red19\green118\blue70;\red15\green112\blue1;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c100000\c100000\c100000;\cssrgb\c0\c0\c0;\cssrgb\c63922\c8235\c8235;
+\cssrgb\c3529\c52549\c34510;\cssrgb\c0\c50196\c0;\csgray\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww16880\viewh12000\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 DHFL (24092024)\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+1) grafico config matrix (classico) -> (#completed#)\
+2) migliorare curva grafico confronto Centralized vs Federated Learning -> (Ordinate \'93Scalar\'94)???\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 3) visualizzare immagini perdete vs reali (v. sotto) \'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97--> in corso\'85\'85\'85\'85\
+4) aggiungere grafico cartografico (con nodi/client coniugati eterogenei e dinamici)\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 5) grafico tab di configurazione esperimento \'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97> in corso\'85\'85\'85\'85\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 6) registrare in automatico report (grafici e tabelle prodotti) \'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97--> in corso\'85\'85\'85\'85\
+7) consentire la selezione pi\'f9 datasets\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 8) creare grafici con tutte le metriche per i rispetti datasets\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\tx11520\tx11520\pardirnatural\partightenfactor0
+\cf0 9) creare tabella risultati metriche (#completed#), visualizzarla a video e registrarla in automatico (come grafico)\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 10) pi\'f9 algoritmi (per confrontarne i risultati)\
+11) migliorare grafica della pagina web\
+12) aggiungere (i) per informazioni con richiamo a test di descrizione\
+\'85.\'85\
+\
+
+\f1\b \ul Adattamento del progetto
+\f0\b0 \ulnone \
+1. Dataset TELCO (attacchi)\
+\
+Contesto sicurezza dati di attacchi (infrastruttura IT)\
+- \
+- \
+\
+\
+\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 3) 
+\f2 \cb2 \expnd0\expndtw0\kerning0
+num_images = int(request.args.get(\cf4 'num_images'\cf0 , \cf5 10\cf0 ))  \cf6 # Numero di immagini da restituire\cf0 \cb1 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0 \cf0 \kerning1\expnd0\expndtw0 \'97\'97> metterlo in config.yaml (da app.py)\
+\'85\'85\'85\'85..\
+Stampare prima dei grafici:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f2 \cf7 \CocoaLigature0 Found 5216 files belonging to 2 classes.\
+Found 624 files belonging to 2 classes.
+\f0 \cf0 \CocoaLigature1 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+(Info gi\'e0 recuperata in esecuzione del backend - app.py)\
+\'97\
+Aggiungere stampa configurazione esperimento con client configurati ecc\'85\'85 \
+\'85\'85\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f2 \cf7 \CocoaLigature0 INFO:root:Round 5: Selected Clients: [2, 7, 9, 3, 8, 4, 0]\
+..\
+INFO:root:Client 5 trained for 3.98 seconds.\
+INFO:root:Client 8 trained for 3.86 seconds.
+\f0 \cf0 \CocoaLigature1 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 ..\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f2 \cf7 \CocoaLigature0 INFO:root:Model for dataset 'chest_xray' created and compiled.\
+INFO:root:Client 0 initialized.\
+INFO:root:Registered client 0 in tier 'weak'.\
+INFO:root:Registered Client 0 as 'weak' type.\
+INFO:root:Assigned Client 1 to dynamism 'fast' with participation rate 0.9\
+INFO:root:Assigned Client 9 to dynamism 'fast' with participation rate 0.9\
+INFO:root:Assigned Client 7 to dynamism 'fast' with participation rate 0.9\
+INFO:root:Assigned Client 2 to dynamism 'normal' with participation rate 0.7\
+INFO:root:Assigned Client 0 to dynamism 'normal' with participation rate 0.7\
+INFO:root:Assigned Client 3 to dynamism 'normal' with participation rate 0.7\
+INFO:root:Assigned Client 6 to dynamism 'normal' with participation rate 0.7\
+INFO:root:Assigned Client 4 to dynamism 'normal' with participation rate 0.7\
+INFO:root:Assigned Client 8 to dynamism 'slow' with participation rate 0.5\
+INFO:root:Assigned Client 5 to dynamism 'slow' with participation rate 0.5\
+INFO:root:Configuration completed for dataset: chest_xray with 10 clients\
+INFO:werkzeug:127.0.0.1 - - [25/Sep/2024 18:45:00] "POST /config HTTP/1.1" 200 -\
+INFO:werkzeug:127.0.0.1 - - [25/Sep/2024 18:45:00] "OPTIONS /start HTTP/1.1" 200 -\
+INFO:root:Received start request with data: \{'num_rounds': 5, 'local_epochs': 1, 'batch_size': 32, 'learning_rate': 0.001, 'mu': 0.1, 'quantization_bits': 8, 'global_participation_rate': 1\}\
+INFO:root:Starting experiment with parameters:\
+INFO:root:Num Rounds: 5\
+INFO:root:Local Epochs: 1\
+INFO:root:Batch Size: 32\
+INFO:root:Learning Rate: 0.001\
+INFO:root:Mu: 0.1\
+INFO:root:Quantization Bits: 8\
+INFO:root:Global Participation Rate: 1.0\
+INFO:root:Creating model for dataset: chest_xray
+\f0 \cf0 \CocoaLigature1 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \'85\'85\'85\'85\'85\'85.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f2 \cf7 \CocoaLigature0 INFO:root:Received configuration: \{'dataset_name': 'isic', 'num_clients': 10, 'client_types': \{'medium': \{'computational_power': 0.7, 'network_speed': 0.7, 'proportion': 0.5\}, 'strong': \{'computational_power': 1, 'network_speed': 1, 'proportion': 0.3\}, 'weak': \{'computational_power': 0.4, 'network_speed': 0.5, 'proportion': 0.2\}\}, 'client_dynamism': \{'fast': \{'participation_rate': 0.9, 'proportion': 0.3\}, 'normal': \{'participation_rate': 0.7, 'proportion': 0.5\}, 'slow': \{'participation_rate': 0.5, 'proportion': 0.2\}\}\}\
+INFO:root:Dataset Name: isic\
+INFO:root:Num Clients: 10\
+INFO:root:Client Types: \{'medium': \{'computational_power': 0.7, 'network_speed': 0.7, 'proportion': 0.5\}, 'strong': \{'computational_power': 1, 'network_speed': 1, 'proportion': 0.3\}, 'weak': \{'computational_power': 0.4, 'network_speed': 0.5, 'proportion': 0.2\}\}\
+INFO:root:Client Dynamism: \{'fast': \{'participation_rate': 0.9, 'proportion': 0.3\}, 'normal': \{'participation_rate': 0.7, 'proportion': 0.5\}, 'slow': \{'participation_rate': 0.5, 'proportion': 0.2\}\}\
+Found 2239 files belonging to 9 classes.\
+Found 118 files belonging to 9 classes.\
+..\
+INFO:root:Starting federated round 4/5\
+INFO:root:Selected 8 active clients out of 10\
+INFO:root:Round 4: Selected Clients: [1, 4, 9, 0, 2, 3, 5, 7]\
+INFO:root:Client 1 trained for 1.17 seconds.\
+INFO:werkzeug:127.0.0.1 - - [25/Sep/2024 22:13:44] "GET /status HTTP/1.1" 200 -\
+INFO:root:Client 4 trained for 1.26 seconds.\
+INFO:root:Client 9 trained for 1.22 seconds.\
+INFO:root:Client 0 trained for 1.20 seconds.\
+INFO:root:Client 2 trained for 1.16 seconds.\
+INFO:werkzeug:127.0.0.1 - - [25/Sep/2024 22:13:49] "GET /status HTTP/1.1" 200 -\
+INFO:root:Client 3 trained for 1.25 seconds.\
+INFO:root:Client 5 trained for 1.23 seconds.\
+INFO:root:Client 7 trained for 1.17 seconds.\
+..
+\f0 \cf0 \CocoaLigature1 \
+}

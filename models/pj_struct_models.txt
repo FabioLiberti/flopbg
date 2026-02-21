@@ -1,0 +1,9 @@
+.
+├── __init__.py
+├── __pycache__
+│   ├── __init__.cpython-310.pyc
+│   └── model_definition.cpython-310.pyc
+├── model_definition.py
+└── pj_struct_models.txt
+
+2 directories, 5 files

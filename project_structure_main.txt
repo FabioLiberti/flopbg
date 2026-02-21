@@ -1,0 +1,80 @@
+.
+├── Appunti_27092024.rtf
+├── Readme.md
+├── _Reports_
+│   ├── rpt_20240917_1527_02eg01el02cl
+│   ├── rpt_20240917_1604_02eg01el02cl
+│   ├── rpt_20240917_1609_02eg01el02cl
+│   ├── rpt_20240917_1610_02eg01el02cl
+│   ├── rpt_20240917_1618_02eg01el02cl
+│   ├── rpt_20240917_1628_02eg01el02cl
+│   ├── rpt_20240917_1657_02eg01el02cl
+│   ├── rpt_20240917_1822_02eg01el02cl
+│   ├── rpt_20240922_0949_02eg01el02cl
+│   └── rpt_20240923_100eg01el50cl_web
+├── _img_
+│   ├── Application_1_18092024.png
+│   └── Application_2_18092024.png
+├── application
+│   ├── __init__.py
+│   ├── app.py
+│   ├── data
+│   ├── federated_learning_system.py
+│   ├── nodes.json
+│   └── reports
+├── application_frontend
+│   ├── README.md
+│   ├── node_modules
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── package.json.txt
+│   ├── public
+│   └── src
+├── clients
+│   ├── __init__.py
+│   ├── client.py
+│   └── client_manager.py
+├── config.yaml
+├── dashboard.py
+├── data
+│   ├── Brain Tumor MRI
+│   ├── Brain_Tumor
+│   ├── ISIC
+│   ├── Retinopatia
+│   ├── Skin Cancer
+│   ├── chest_xray
+│   ├── data_loading.py
+│   ├── data_loading_BK29102024_1415.py.txt
+│   ├── data_loading_BKGOOD_25092024_2205.py.txt
+│   └── svhn
+├── federated-learning-analysis.md
+├── global_model.h5
+├── main.py
+├── main_BK04112024.py
+├── models
+│   ├── __init__.py
+│   └── model_definition.py
+├── project_structure_complete.txt
+├── project_structure_main.txt
+├── public
+│   ├── world-110m.json
+│   └── world-map-bg.png
+├── report_manager.py
+├── reports
+│   ├── __init__.py
+│   ├── client_activity
+│   ├── fl_metrics
+│   ├── fl_reports.py
+│   ├── metrics.py
+│   └── visualization.py
+├── requirements.txt
+├── server
+│   └── server.py
+├── struttura_progetto.txt
+└── utils
+    ├── __init__.py
+    ├── metrics.py
+    ├── sanitization.py
+    └── visualization.py
+
+36 directories, 42 files

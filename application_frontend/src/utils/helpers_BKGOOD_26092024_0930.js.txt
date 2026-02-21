@@ -1,0 +1,159 @@
+// src/utils/helpers.js
+
+export const fetchConfig = async (setConfigData) => {
+  try {
+    const response = await fetch('http://localhost:5001/config');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const configData = await response.json();
+    console.log('Configuration data:', configData);
+    setConfigData(configData);
+  } catch (error) {
+    console.error('Error fetching configuration:', error);
+  }
+};
+
+export const fetchDatasets = async (setDatasets, setDatasetName) => {
+  try {
+    const response = await fetch('http://localhost:5001/datasets');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log('Available datasets:', data.datasets);
+
+    if (data && data.datasets) {
+      setDatasets(data.datasets);
+      if (data.datasets.length > 0) {
+        setDatasetName((prevDatasetName) => prevDatasetName || data.datasets[0]);
+      }
+    } else {
+      setDatasets([]);
+      console.error('No datasets available in the response.');
+    }
+  } catch (error) {
+    console.error('Error fetching datasets:', error);
+    setDatasets([]);
+  }
+};
+
+export const fetchStatus = async (
+  setStatus,
+  setIsTraining,
+  setResults,
+  setClientParticipation,
+  setClientDataDistribution,
+  setClientTrainingTimes,
+  setCentralizedResult 
+) => {
+  try {
+    const response = await fetch('http://localhost:5001/status');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    setStatus(data.status || 'Idle');
+    setIsTraining(data.status === 'Running');
+    setResults(data.accuracy_data || []);
+    setClientParticipation(data.client_participation || {});
+    setClientDataDistribution(data.client_data_distribution || {});
+    setClientTrainingTimes(data.client_training_times || {});
+    setCentralizedResult(data.centralized_metrics || {});
+    
+    if (typeof setCentralizedResult === 'function') {
+      setCentralizedResult(data.centralized_metrics || {});
+    } else {
+      console.warn('setCentralizedResult is not a function');
+    }
+  } catch (error) {
+    console.error('Error fetching status:', error);
+  }
+};
+
+export const formatDatasetName = (dataset) => {
+  const names = {
+    mnist: 'MNIST',
+    fashion_mnist: 'Fashion MNIST',
+    cifar10: 'CIFAR-10',
+    cifar100: 'CIFAR-100',
+    svhn: 'SVHN',
+    chest_xray: 'Chest X-Ray',
+    isic: 'ISIC',
+    // Add any other datasets as needed
+  };
+  return names[dataset] || dataset;
+};
+
+export const configureExperiment = async (
+  datasetName,
+  numClients,
+  clientTypeConfig,
+  clientDynamismConfig
+) => {
+  try {
+    const configPayload = {
+      dataset_name: datasetName,
+      num_clients: parseInt(numClients),
+      client_types: clientTypeConfig,
+      client_dynamism: clientDynamismConfig,
+    };
+
+    console.log('Configuration payload:', configPayload);
+
+    const response = await fetch('http://localhost:5001/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(configPayload),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    }
+
+    console.log('System configured successfully.');
+  } catch (error) {
+    console.error('Error configuring experiment:', error);
+    throw error; // Re-throw the error to prevent starting the experiment
+  }
+};
+
+export const startExperiment = async (payload) => {
+  try {
+    const response = await fetch('http://localhost:5001/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log('Experiment started:', data);
+  } catch (error) {
+    console.error('Error starting experiment:', error);
+    throw error;
+  }
+};
+
+export const stopExperiment = async () => {
+  try {
+    const response = await fetch('http://localhost:5001/stop', {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log('Experiment stopped:', data);
+  } catch (error) {
+    console.error('Error stopping experiment:', error);
+    throw error;
+  }
+};
+
+  

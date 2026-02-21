@@ -1,0 +1,21 @@
+/* src/components/ExperimentConfiguration.css */
+
+.experiment-configuration {
+  margin: 20px;
+}
+
+.experiment-configuration table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.experiment-configuration th,
+.experiment-configuration td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.experiment-configuration th {
+  background-color: #f2f2f2;
+  text-align: left;
+}

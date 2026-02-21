@@ -1,0 +1,22 @@
+.info-box-trigger {
+    transition: all 0.3s ease;
+  }
+  
+  .info-box-trigger:hover {
+    transform: scale(1.05);
+  }
+  
+  .info-box-content {
+    line-height: 1.6;
+  }
+  
+  .info-box-content h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .info-box-content h2 {
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }

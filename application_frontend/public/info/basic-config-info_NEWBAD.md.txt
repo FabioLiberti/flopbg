@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parametri Federated Learning</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        h3 {
+            color: #2980b9;
+            margin-top: 25px;
+        }
+
+        .parameter-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .parameter-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .code {
+            background-color: #f1f1f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #e74c3c;
+        }
+
+        .typical-value {
+            background-color: #e8f4f8;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        li:before {
+            content: "•";
+            color: #3498db;
+            font-weight: bold;
+            position: absolute;
+            left: 10px;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Stile per le formule matematiche */
+        .math {
+            font-size: 1em;
+            color: #2c3e50;
+            margin: 15px 0;
+            text-align: center;
+        }
+    </style>
+    <!-- Inclusione di MathJax per il rendering delle formule matematiche -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>🛠️ Parametri Chiave nel Federated Learning</h1>
+
+        <h2>📐 Parametri di Training</h2>
+
+        <!-- Number of Rounds -->
+        <div class="parameter-box">
+            <div class="parameter-title">
+                <span class="emoji">1️⃣</span> Number of Rounds 
+                <span class="code">num_rounds: int = 100</span>
+            </div>
+            <ul>
+                <li>Rappresenta il numero totale di cicli di training federato, denotato come \( R \)</li>
+                <li>Ogni round include: selezione dei client, training locale, aggregazione dei modelli</li>
+                <li class="math">\( R = \text{Numero totale di round di comunicazione} \)</li>
+                <li class="typical-value">💡 Valore tipico: 50-200 round, dipende dalla complessità del task</li>
+            </ul>
+        </div>
+
+        <!-- Number of Clients -->
+        <div class="parameter-box">
+            <div class="parameter-title">
+                <span class="emoji">2️⃣</span> Number of Clients 
+                <span class="code">num_clients: int = 10</span>
+            </div>
+            <ul>
+                <li>Numero totale di dispositivi/nodi partecipanti, indicato come \( K \)</li>
+                <li>Influenza la distribuzione dei dati e la velocità di convergenza</li>
+                <li class="math">\( K = \text{Numero totale di client nel sistema} \)</li>
+                <li class="typical-value">💡 Valore tipico: 10-1000 client, basato sull'applicazione</li>
+            </ul>
+        </div>
+
+        <!-- Local Epochs -->
+        <div class="parameter-box">
+            <div class="parameter-title">
+                <span class="emoji">3️⃣</span> Local Epochs 
+                <span class="code">local_epochs: int = 5</span>
+            </div>
+            <ul>
+                <li>Numero di epoche di training su ogni client prima dell'aggregazione, denotato come \( E \)</li>
+                <li>Bilancia computazione locale vs comunicazione</li>
+                <li class="math">\( E = \text{Numero di epoche di training locale} \)</li>
+                <li class="typical-value">💡 Valore tipico: 1-10 epoche</li>
+            </ul>
+        </div>
+
+        <h2>🛠️ Parametri di Ottimizzazione</h2>
+
+        <!-- Batch Size -->
+        <div class="parameter-box">
+            <div class="parameter-title">
+                <span class="emoji">4️⃣</span> Batch Size 
+                <span class="code">batch_size: int = 32</span>
+            </div>
+            <ul>
+                <li>Dimensione dei batch per il training locale, indicato come \( B \)</li>
+                <li>Impatta memoria utilizzata e velocità di convergenza</li>
+                <li class="math">\( B = \text{Dimensione del batch locale} \)</li>
+                <li class="typical-value">💡 Valore tipico: 16-128</li>
+            </ul>
+        </div>
+
+        <!-- Learning Rate -->
+        <div class="parameter-box">
+            <div class="parameter-title">
+                <span class="emoji">5️⃣</span> Learning Rate 
+                <span class="code">learning_rate: float = 0.01</span>
+            </div>
+            <ul>
+                <li>Tasso di apprendimento per l'ottimizzazione locale, denotato come \( \eta \)</li>
+                <li>Cruciale per la convergenza del modello</li>
+                <li class="math">Aggiornamento locale dei pesi:
+                    \[
+                    w_{k}^{t+1} = w_{k}^{t} - \eta \nabla L_{k}(w_{k}^{t})
+                    \]
+                    dove \( w_{k}^{t} \) sono i pesi del modello al client \( k \) al tempo \( t \), e \( L_{k} \) è la funzione di perdita locale.
+                </li>
+                <li class="typical-value">💡 Valore tipico: 0.001-0.1</li>
+            </ul>
+        </div>
+
+        <!-- Mu (FedProx) -->
+        <div class="parameter-box">
+            <div class="parameter-title">
+                <span class="emoji">6️⃣</span> Mu (FedProx) 
+                <span class="code">mu: float = 0.01</span>
+            </div>
+            <ul>
+                <li>Parametro di regolarizzazione per FedProx, indicato come \( \mu \)</li>
+                <li>Controlla quanto il modello locale può deviare dal modello globale</li>
+                <li class="math">Problema di ottimizzazione locale in FedProx:
+                    \[
+                    \min_{w} L_{k}(w) + \frac{\mu}{2} \| w - w^{t} \|^{2}
+                    \]
+                    dove \( w^{t} \) è il modello globale al round \( t \).
+                </li>
+                <li class="typical-value">💡 Valore tipico: 0.001-0.1</li>
+            </ul>
+        </div>
+
+        <h2>🌐 Parametri di Sistema</h2>
+
+        <!-- Quantization Bits -->
+        <div class="parameter-box">
+            <div class="parameter-title">
+                <span class="emoji">7️⃣</span> Quantization Bits 
+                <span class="code">quant_bits: int = 8</span>
+            </div>
+            <ul>
+                <li>Bits usati per quantizzare i parametri del modello, denotati come \( q \)</li>
+                <li>Riduce overhead di comunicazione</li>
+                <li class="math">Quantizzazione dei pesi:
+                    \[
+                    w_{\text{quant}} = \text{Quantize}(w, q)
+                    \]
+                    dove \( \text{Quantize} \) è la funzione di quantizzazione.
+                </li>
+                <li class="typical-value"> 💡 Valore tipico: 8-32 bits</li>
+            </ul>
+        </div>
+
+        <!-- Global Participation Rate -->
+        <div class="parameter-box">
+            <div class="parameter-title">
+                <span class="emoji">8️⃣</span> Global Participation Rate 
+                <span class="code">participation_rate: float = 0.8</span>
+            </div>
+            <ul>
+                <li>Frazione di client che partecipano in ogni round, indicata come \( C \)</li>
+                <li>Bilancia convergenza vs efficienza computazionale</li>
+                <li class="math">Numero di client partecipanti per round:
+                    \[
+                    m = C \times K
+                    \]
+                </li>
+                <li class="math">Aggregazione dei modelli (Federated Averaging):
+                    \[
+                    w^{t+1} = \sum_{k=1}^{K} \frac{n_{k}}{n} w_{k}^{t+1}
+                    \]
+                    dove \( n_{k} \) è il numero di campioni sul client \( k \) e \( n = \sum_{k=1}^{K} n_{k} \).
+                </li>
+                <li class="typical-value">💡 Valore tipico: 0.1-1.0 (10%-100% dei client)</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>Questa guida fornisce una panoramica dei parametri chiave utilizzati nel Federated Learning, 
+            aiutando a comprendere il loro impatto sulle prestazioni e l'efficienza del sistema.</p>
+        </footer>
+    </div>
+</body>
+</html>

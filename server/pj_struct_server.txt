@@ -1,0 +1,7 @@
+.
+├── __pycache__
+│   └── server.cpython-310.pyc
+├── pj_struct_server.txt
+└── server.py
+
+2 directories, 3 files

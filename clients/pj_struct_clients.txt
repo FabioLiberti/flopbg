@@ -1,0 +1,11 @@
+.
+├── __init__.py
+├── __pycache__
+│   ├── __init__.cpython-310.pyc
+│   ├── client.cpython-310.pyc
+│   └── client_manager.cpython-310.pyc
+├── client.py
+├── client_manager.py
+└── pj_struct_clients.txt
+
+2 directories, 7 files

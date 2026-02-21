@@ -1,0 +1,283 @@
+# ../data/data_loading.py
+
+import os
+import numpy as np
+import tensorflow as tf
+from scipy.io import loadmat
+import requests
+import random
+import logging
+from sklearn.utils import shuffle
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+
+# Get the absolute path of the current directory (where data_loading.py is located)
+current_dir = os.path.abspath(os.path.dirname(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+
+def download_svhn(url, filepath):
+    """
+    Downloads the SVHN dataset if not already present locally.
+
+    Parameters:
+        url (str): URL to download the dataset from.
+        filepath (str): Local file path to save the dataset.
+
+    Returns:
+        dict: Data loaded from the .mat file.
+    """
+    if not os.path.exists(filepath):
+        logging.info(f"Downloading {filepath}...")
+        try:
+            response = requests.get(url, timeout=30)
+            response.raise_for_status()
+            with open(filepath, 'wb') as f:
+                f.write(response.content)
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Error during download: {e}")
+            return None
+    return loadmat(filepath)
+
+def convert_dataset_to_numpy(dataset):
+    """
+    Converts a tf.data.Dataset into NumPy arrays.
+
+    Parameters:
+        dataset (tf.data.Dataset): The dataset to convert.
+
+    Returns:
+        tuple: Arrays of images and labels.
+    """
+    images = []
+    labels = []
+    for batch in dataset:
+        images.extend(batch[0].numpy())
+        labels.extend(batch[1].numpy())
+    return np.array(images), np.array(labels)
+
+# Standard dataset loading functions
+
+def load_mnist():
+    """
+    Loads the MNIST dataset.
+    """
+    (train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.mnist.load_data()
+    # Adjust image dimensions to include the channel
+    train_images = train_images[..., np.newaxis].astype(np.float32) / 255.0
+    test_images = test_images[..., np.newaxis].astype(np.float32) / 255.0
+    return (train_images, train_labels), (test_images, test_labels)
+
+def load_fashion_mnist():
+    """
+    Loads the Fashion MNIST dataset.
+    """
+    (train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.fashion_mnist.load_data()
+    # Adjust image dimensions to include the channel
+    train_images = train_images[..., np.newaxis].astype(np.float32) / 255.0
+    test_images = test_images[..., np.newaxis].astype(np.float32) / 255.0
+    return (train_images, train_labels), (test_images, test_labels)
+
+def load_cifar10():
+    """
+    Loads the CIFAR-10 dataset.
+    """
+    (train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.cifar10.load_data()
+    # Flatten the labels array
+    train_images = train_images.astype(np.float32) / 255.0
+    test_images = test_images.astype(np.float32) / 255.0
+    train_labels = train_labels.flatten()
+    test_labels = test_labels.flatten()
+    return (train_images, train_labels), (test_images, test_labels)
+
+def load_cifar100():
+    """
+    Loads the CIFAR-100 dataset.
+    """
+    (train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.cifar100.load_data()
+    # Flatten the labels array
+    train_images = train_images.astype(np.float32) / 255.0
+    test_images = test_images.astype(np.float32) / 255.0
+    train_labels = train_labels.flatten()
+    test_labels = test_labels.flatten()
+    return (train_images, train_labels), (test_images, test_labels)
+
+def load_svhn():
+    """
+    Loads the SVHN dataset.
+    """
+    train_url = "http://ufldl.stanford.edu/housenumbers/train_32x32.mat"
+    test_url = "http://ufldl.stanford.edu/housenumbers/test_32x32.mat"
+    # Paths for the SVHN .mat files
+    train_filepath = os.path.join(parent_dir, 'data', 'svhn', 'train_32x32.mat')
+    test_filepath = os.path.join(parent_dir, 'data', 'svhn', 'test_32x32.mat')
+    os.makedirs(os.path.dirname(train_filepath), exist_ok=True)
+
+    train_data = download_svhn(train_url, train_filepath)
+    test_data = download_svhn(test_url, test_filepath)
+    if train_data is None or test_data is None:
+        raise Exception("Error loading SVHN data.")
+    
+    train_images = np.transpose(train_data['X'], (3, 0, 1, 2)).astype(np.float32) / 255.0
+    train_labels = train_data['y'].flatten()
+    
+    test_images = np.transpose(test_data['X'], (3, 0, 1, 2)).astype(np.float32) / 255.0
+    test_labels = test_data['y'].flatten()
+    
+    train_labels[train_labels == 10] = 0
+    test_labels[test_labels == 10] = 0
+    
+    return (train_images, train_labels), (test_images, test_labels)
+
+# Clinical dataset loading functions
+
+def load_chest_xray():
+    """
+    Loads the Chest X-ray dataset and returns it as NumPy arrays.
+    """
+    data_dir = os.path.join(parent_dir, 'data', 'chest_xray')
+    image_size = (150, 150)
+    
+    # Verify if the directory exists
+    if not os.path.exists(data_dir):
+        raise FileNotFoundError(f"The directory {data_dir} does not exist. Ensure the dataset is downloaded and placed correctly.")
+    
+    try:
+        # Load training data
+        train_dataset = tf.keras.utils.image_dataset_from_directory(
+            os.path.join(data_dir, 'train'),
+            image_size=image_size,
+            batch_size=32,
+            shuffle=False
+        )
+        
+        # Load test data
+        test_dataset = tf.keras.utils.image_dataset_from_directory(
+            os.path.join(data_dir, 'test'),
+            image_size=image_size,
+            batch_size=32,
+            shuffle=False
+        )
+    except Exception as e:
+        raise Exception(f"Error loading Chest X-ray dataset: {e}")
+    
+    # Convert to NumPy arrays
+    train_images, train_labels = convert_dataset_to_numpy(train_dataset)
+    test_images, test_labels = convert_dataset_to_numpy(test_dataset)
+    
+    # Normalize images
+    train_images = train_images.astype(np.float32) / 255.0
+    test_images = test_images.astype(np.float32) / 255.0
+    
+    return (train_images, train_labels), (test_images, test_labels)
+
+def load_isic():
+    """
+    Loads the ISIC dataset and returns it as NumPy arrays.
+    """
+    data_dir = os.path.join(parent_dir, 'data', 'ISIC')
+    image_size = (224, 224)
+    
+    # Verify if the directory exists
+    if not os.path.exists(data_dir):
+        raise FileNotFoundError(f"The directory {data_dir} does not exist. Ensure the dataset is downloaded and placed correctly.")
+    
+    try:
+        # Load training data
+        train_dataset = tf.keras.utils.image_dataset_from_directory(
+            os.path.join(data_dir, 'train'),
+            image_size=image_size,
+            batch_size=32,
+            shuffle=False
+        )
+        
+        # Load test data
+        test_dataset = tf.keras.utils.image_dataset_from_directory(
+            os.path.join(data_dir, 'test'),
+            image_size=image_size,
+            batch_size=32,
+            shuffle=False
+        )
+    except Exception as e:
+        raise Exception(f"Error loading ISIC dataset: {e}")
+    
+    # Convert to NumPy arrays
+    train_images, train_labels = convert_dataset_to_numpy(train_dataset)
+    test_images, test_labels = convert_dataset_to_numpy(test_dataset)
+    
+    # Normalize images
+    train_images = train_images.astype(np.float32) / 255.0
+    test_images = test_images.astype(np.float32) / 255.0
+    
+    return (train_images, train_labels), (test_images, test_labels)
+
+def load_data(dataset_name):
+    """
+    Loads the specified dataset.
+
+    Parameters:
+        dataset_name (str): Name of the dataset ('mnist', 'fashion_mnist', 'cifar10', 'cifar100', 'svhn', 'chest_xray', 'isic').
+
+    Returns:
+        tuple: Training and test data.
+    """
+    if dataset_name == 'mnist':
+        return load_mnist()
+    elif dataset_name == 'fashion_mnist':
+        return load_fashion_mnist()
+    elif dataset_name == 'cifar10':
+        return load_cifar10()
+    elif dataset_name == 'cifar100':
+        return load_cifar100()
+    elif dataset_name == 'svhn':
+        return load_svhn()
+    elif dataset_name == 'chest_xray':
+        return load_chest_xray()
+    elif dataset_name == 'isic':
+        return load_isic()
+    else:
+        raise ValueError(f"Dataset '{dataset_name}' not supported.")
+
+def split_data_non_iid(images, labels, num_clients, num_shards=200):
+    """
+    Splits data among clients in a non-IID fashion using the shard method.
+
+    Parameters:
+        images (np.ndarray): Array of images.
+        labels (np.ndarray): Array of labels.
+        num_clients (int): Number of clients.
+        num_shards (int): Number of shards to create.
+
+    Returns:
+        dict: Dictionary with keys as client_id and values as tuples of (images, labels).
+    """
+    data_per_shard = len(images) // num_shards
+
+    # Sort indices based on labels
+    idxs = np.argsort(labels)
+
+    # Split indices into shards
+    shards = [idxs[i * data_per_shard:(i + 1) * data_per_shard] for i in range(num_shards)]
+
+    # Shuffle the shards
+    random.shuffle(shards)
+
+    # Calculate the base number of shards per client and extra shards
+    base_shards_per_client = num_shards // num_clients
+    extra_shards = num_shards % num_clients
+
+    client_data = {}
+    shard_idx = 0
+
+    for client_id in range(num_clients):
+        num_shards_for_client = base_shards_per_client + (1 if client_id < extra_shards else 0)
+        client_shards = shards[shard_idx:shard_idx + num_shards_for_client]
+        shard_idx += num_shards_for_client
+
+        client_indices = np.concatenate(client_shards, axis=0)
+        client_images = images[client_indices]
+        client_labels = labels[client_indices]
+
+        client_data[client_id] = (client_images, client_labels)
+
+    return client_data

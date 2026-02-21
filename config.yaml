@@ -1,0 +1,120 @@
+batch_size: 32
+client_dynamism:
+  fast:
+    participation_rate: 0.9
+    proportion: 0.3
+  normal:
+    participation_rate: 0.7
+    proportion: 0.5
+  slow:
+    participation_rate: 0.5
+    proportion: 0.2
+client_types:
+  medium:
+    computational_power: 0.7
+    network_speed: 0.7
+    proportion: 0.5
+  strong:
+    computational_power: 1
+    network_speed: 1
+    proportion: 0.3
+  weak:
+    computational_power: 0.4
+    network_speed: 0.5
+    proportion: 0.2
+dataset_name: mnist
+datasets:
+- input_shape:
+  - 28
+  - 28
+  - 1
+  name: mnist
+  num_classes: 10
+- input_shape:
+  - 28
+  - 28
+  - 1
+  name: fashion_mnist
+  num_classes: 10
+- input_shape:
+  - 32
+  - 32
+  - 3
+  name: cifar10
+  num_classes: 10
+- input_shape:
+  - 32
+  - 32
+  - 3
+  name: cifar100
+  num_classes: 100
+- input_shape:
+  - 32
+  - 32
+  - 3
+  name: svhn
+  num_classes: 10
+- input_shape:
+  - 150
+  - 150
+  - 3
+  name: chest_xray
+  num_classes: 2
+- input_shape:
+  - 224
+  - 224
+  - 3
+  name: isic
+  num_classes: 9
+- input_shape:
+  - 224
+  - 224
+  - 3
+  name: brain_tumor
+  num_classes: 4
+- input_shape:
+  - 224
+  - 224
+  - 3
+  name: brain_tumor_mri
+  num_classes: 4
+- input_shape:
+  - 224
+  - 224
+  - 3
+  name: retinopathy
+  num_classes: 5
+- input_shape:
+  - 224
+  - 224
+  - 3
+  name: skin_cancer
+  num_classes: 2
+global_epochs: 2
+global_participation_rate: 1.0
+learning_rate: 0.001
+local_epochs: 1
+mu: 0.1
+nodes:
+- city: Rome
+  client_type: strong
+  dynamism_type: fast
+  id: 1
+  latitude: 41.9028
+  longitude: 12.4964
+  name: Node 1
+- city: Krypton
+  client_type: medium
+  dynamism_type: normal
+  id: 2
+  latitude: 5
+  longitude: 2
+  name: Node 2
+- city: Troppus
+  client_type: strong
+  dynamism_type: fast
+  id: 3
+  latitude: 0
+  longitude: 0
+  name: Node 3
+num_clients: 4

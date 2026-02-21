@@ -1,0 +1,18 @@
+.
+├── __init__.py
+├── __pycache__
+│   ├── __init__.cpython-310.pyc
+│   ├── app.cpython-310.pyc
+│   └── federated_learning_system.cpython-310.pyc
+├── app.py
+├── data
+│   └── training_results
+├── federated_learning_system.py
+├── nodes.json
+├── pj_struct_application.txt
+├── reports
+│   └── __init__.py
+├── test_32x32.mat
+└── train_32x32.mat
+
+5 directories, 11 files
