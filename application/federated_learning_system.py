@@ -70,6 +70,7 @@ class FederatedLearningSystem:
                   client_types: Optional[Dict[str, Any]] = None,
                   client_dynamism: Optional[Dict[str, Any]] = None) -> None:
         self.dataset_name = dataset_name
+        self.model = None  # Reset cached model to force reload from new server
 
         try:
             # Carica i dati
