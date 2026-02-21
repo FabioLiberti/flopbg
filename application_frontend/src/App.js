@@ -1127,7 +1127,7 @@ return (
           letterSpacing: '-0.5px',
           textAlign: 'center'
         }}>
-          Federated Learning Dashboard 🤖📊
+          Federated Learning Dashboard
         </h2>
         <InfoBox
           infoFile="dashboard-info"
