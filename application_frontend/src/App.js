@@ -129,6 +129,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('overview');
   const [nodeDistView, setNodeDistView] = useState('global');
   const [selectedUseCase, setSelectedUseCase] = useState(null);
+  const [algorithmsExpanded, setAlgorithmsExpanded] = useState(false);
 
   const handleNodesUpdate = (updatedNodes) => {
     setNodes(updatedNodes);
@@ -1821,6 +1822,254 @@ return (
               </span>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* === FL ALGORITHMS === */}
+      <div style={{
+        padding: '24px',
+        backgroundColor: '#fff',
+        borderRadius: '12px',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+        marginBottom: '36px',
+      }}>
+        <h4 style={{
+          margin: '0 0 14px 0',
+          fontSize: '0.95rem',
+          color: '#333',
+          fontWeight: '600',
+        }}>
+          Algoritmi di Federated Learning
+        </h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+          {/* Header row */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '140px 1fr 180px 170px',
+            gap: '12px',
+            padding: '8px 12px',
+            borderBottom: '2px solid #e0e0e0',
+          }}>
+            <span style={{ fontSize: '0.68rem', fontWeight: '700', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Algoritmo</span>
+            <span style={{ fontSize: '0.68rem', fontWeight: '700', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Descrizione</span>
+            <span style={{ fontSize: '0.68rem', fontWeight: '700', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Ambito consigliato</span>
+            <span style={{ fontSize: '0.68rem', fontWeight: '700', color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Riferimento</span>
+          </div>
+          {/* --- Implemented algorithms --- */}
+          {[
+            {
+              name: 'FedAvg',
+              abbr: 'Avg',
+              color: '#1565c0',
+              bg: '#e3f2fd',
+              desc: 'Media pesata dei pesi per numero di campioni. Algoritmo base del Federated Learning, semplice ed efficace con dati IID.',
+              scope: 'Benchmark, dati IID, baseline di confronto',
+              paper: 'McMahan et al., 2017',
+            },
+            {
+              name: 'FedProx',
+              abbr: 'Prx',
+              color: '#2e7d32',
+              bg: '#e8f5e9',
+              desc: 'Aggiunge un termine prossimale alla loss locale per vincolare i pesi vicino al modello globale, migliorando la convergenza in ambienti eterogenei.',
+              scope: 'Dati non-IID, nodi eterogenei',
+              paper: 'Li et al., 2020',
+            },
+            {
+              name: 'SCAFFOLD',
+              abbr: 'SCA',
+              color: '#6a1b9a',
+              bg: '#f3e5f5',
+              desc: 'Utilizza control variates (server/client) per correggere il drift dei gradienti locali, riducendo la varianza su dati non-IID.',
+              scope: 'Forte non-IID, molti client, EHDS',
+              paper: 'Karimireddy et al., 2020',
+            },
+            {
+              name: 'FedNova',
+              abbr: 'Nov',
+              color: '#e65100',
+              bg: '#fff3e0',
+              desc: 'Normalizza i contributi per il numero di gradient steps locali, eliminando il bias da epoche e dataset size diversi tra nodi.',
+              scope: 'Nodi con risorse disomogenee, scenari globali',
+              paper: 'Wang et al., 2020',
+            },
+          ].map((algo, i, arr) => (
+            <div key={`impl-${i}`} style={{
+              display: 'grid',
+              gridTemplateColumns: '140px 1fr 180px 170px',
+              gap: '12px',
+              padding: '10px 12px',
+              borderBottom: i < arr.length - 1 ? '1px solid #f0f0f0' : 'none',
+              alignItems: 'center',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{
+                  width: '26px', height: '26px', borderRadius: '6px',
+                  backgroundColor: algo.color, color: '#fff',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '0.62rem', fontWeight: '700', flexShrink: 0,
+                }}>{algo.abbr}</div>
+                <span style={{ fontSize: '0.82rem', fontWeight: '600', color: algo.color }}>{algo.name}</span>
+              </div>
+              <span style={{ fontSize: '0.76rem', color: '#555', lineHeight: '1.5' }}>{algo.desc}</span>
+              <span style={{
+                fontSize: '0.72rem', color: '#444', fontWeight: '500',
+                padding: '4px 8px', backgroundColor: algo.bg, borderRadius: '6px',
+                textAlign: 'center', lineHeight: '1.4',
+              }}>{algo.scope}</span>
+              <span style={{
+                fontSize: '0.68rem', color: algo.color, fontWeight: '600',
+                padding: '3px 8px', backgroundColor: `${algo.color}10`, borderRadius: '8px',
+                textAlign: 'center',
+              }}>{algo.paper}</span>
+            </div>
+          ))}
+
+          {/* --- Collapsible: Stato dell'arte recente --- */}
+          <div
+            onClick={() => setAlgorithmsExpanded(!algorithmsExpanded)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 12px',
+              borderTop: '2px solid #e0e0e0',
+              marginTop: '4px',
+              cursor: 'pointer',
+              userSelect: 'none',
+              transition: 'background-color 0.15s ease',
+              borderRadius: '0 0 8px 8px',
+              backgroundColor: algorithmsExpanded ? '#f8f9fa' : 'transparent',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#f8f9fa'; }}
+            onMouseLeave={(e) => { if (!algorithmsExpanded) e.currentTarget.style.backgroundColor = 'transparent'; }}
+          >
+            <span style={{
+              fontSize: '0.72rem',
+              transition: 'transform 0.25s ease',
+              transform: algorithmsExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+              color: '#888',
+            }}>&#9654;</span>
+            <span style={{
+              fontSize: '0.72rem', fontWeight: '700', color: '#888',
+              textTransform: 'uppercase', letterSpacing: '0.5px',
+            }}>Stato dell'arte recente</span>
+            <span style={{
+              fontSize: '0.65rem', color: '#aaa', fontWeight: '400',
+              marginLeft: '4px',
+            }}>
+              (8 algoritmi &mdash; 2021&ndash;2025)
+            </span>
+          </div>
+
+          {algorithmsExpanded && (
+            <div style={{ animation: 'fadeIn 0.2s ease' }}>
+              {[
+                {
+                  name: 'MOON',
+                  abbr: 'MON',
+                  color: '#00838f',
+                  bg: '#e0f7fa',
+                  desc: 'Contrastive learning a livello di modello: massimizza l\'accordo tra rappresentazioni locali e globali, correggendo il drift locale su dati non-IID.',
+                  scope: 'Image classification, non-IID visivo',
+                  paper: 'Li et al., CVPR 2021',
+                },
+                {
+                  name: 'FedDyn',
+                  abbr: 'Dyn',
+                  color: '#4527a0',
+                  bg: '#ede7f6',
+                  desc: 'Regolarizzazione dinamica: aggiorna il regolarizzatore ad ogni round per allineare gli ottimi locali con la loss globale, con convergenza pi\u00f9 rapida.',
+                  scope: 'Large-scale, convergenza rapida',
+                  paper: 'Acar et al., ICLR 2021',
+                },
+                {
+                  name: 'FedExP',
+                  abbr: 'ExP',
+                  color: '#bf360c',
+                  bg: '#fbe9e7',
+                  desc: 'Estrapolazione lato server: calcola dinamicamente lo step size ottimale dai pseudo-gradienti dei client, accelerando la convergenza senza overhead.',
+                  scope: 'Communication-efficient, fast convergence',
+                  paper: 'Jhunjhunwala et al., ICLR 2023',
+                },
+                {
+                  name: 'FedDisco',
+                  abbr: 'Dis',
+                  color: '#00695c',
+                  bg: '#e0f2f1',
+                  desc: 'Pesi di aggregazione basati sulla discrepanza tra distribuzione locale e globale delle categorie, con garanzie teoriche pi\u00f9 strette.',
+                  scope: 'Non-IID severo, label imbalance',
+                  paper: 'Ye et al., ICML 2023',
+                },
+                {
+                  name: 'FedSpeed',
+                  abbr: 'Spd',
+                  color: '#ad1457',
+                  bg: '#fce4ec',
+                  desc: 'Correzione del prox-term sugli aggiornamenti locali per ridurre il bias introdotto dalla regolarizzazione, con bound di convergenza pi\u00f9 stretto.',
+                  scope: 'Eterogeneit\u00e0 elevata, pochi round',
+                  paper: 'Sun et al., ICLR 2023',
+                },
+                {
+                  name: 'FedLPA',
+                  abbr: 'LPA',
+                  color: '#33691e',
+                  bg: '#f1f8e9',
+                  desc: 'Aggregazione one-shot con posterior bayesiano layer-wise: un singolo round di comunicazione sfruttando la struttura a livelli della rete neurale.',
+                  scope: 'One-shot FL, privacy estrema',
+                  paper: 'NeurIPS 2024',
+                },
+                {
+                  name: 'DeepAFL',
+                  abbr: 'AFL',
+                  color: '#1a237e',
+                  bg: '#e8eaf6',
+                  desc: 'Analytic FL gradient-free: usa soluzioni analitiche (least squares) su feature estratte da modelli pre-trained, invariante al grado di non-IID dei dati.',
+                  scope: 'Non-IID estremo, robustezza',
+                  paper: 'Zhai et al., ICLR 2025',
+                },
+                {
+                  name: 'FedEL',
+                  abbr: 'EL',
+                  color: '#795548',
+                  bg: '#efebe9',
+                  desc: 'Elastic learning con selezione dinamica dei tensori rilevanti per round e budget di comunicazione adattivo, bilanciando accuratezza ed efficienza.',
+                  scope: 'Device eterogenei, edge computing',
+                  paper: 'NeurIPS 2025',
+                },
+              ].map((algo, i, arr) => (
+                <div key={`ref-${i}`} style={{
+                  display: 'grid',
+                  gridTemplateColumns: '140px 1fr 180px 170px',
+                  gap: '12px',
+                  padding: '10px 12px',
+                  borderBottom: i < arr.length - 1 ? '1px solid #f0f0f0' : 'none',
+                  alignItems: 'center',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{
+                      width: '26px', height: '26px', borderRadius: '6px',
+                      backgroundColor: algo.color, color: '#fff',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '0.62rem', fontWeight: '700', flexShrink: 0,
+                    }}>{algo.abbr}</div>
+                    <span style={{ fontSize: '0.82rem', fontWeight: '600', color: algo.color }}>{algo.name}</span>
+                  </div>
+                  <span style={{ fontSize: '0.76rem', color: '#555', lineHeight: '1.5' }}>{algo.desc}</span>
+                  <span style={{
+                    fontSize: '0.72rem', color: '#444', fontWeight: '500',
+                    padding: '4px 8px', backgroundColor: algo.bg, borderRadius: '6px',
+                    textAlign: 'center', lineHeight: '1.4',
+                  }}>{algo.scope}</span>
+                  <span style={{
+                    fontSize: '0.68rem', color: algo.color, fontWeight: '600',
+                    padding: '3px 8px', backgroundColor: `${algo.color}10`, borderRadius: '8px',
+                    textAlign: 'center',
+                  }}>{algo.paper}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
