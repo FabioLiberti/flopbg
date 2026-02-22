@@ -1678,22 +1678,21 @@ return (
     {activeTab === 'advanced' && (
     <>
 {/* Advanced Configuration Section */}
-<div style={{ 
+<div style={{
   width: '100%',
   maxWidth: '1400px',
   margin: '0 auto',
-  padding: '0 2rem',
-  marginBottom: '100px'
+  padding: '30px',
+  boxSizing: 'border-box'
 }}>
   {/* Header Section */}
   <div style={{
-    marginTop: '2rem',
-    marginBottom: '2rem',
+    marginBottom: '1.5rem',
     position: 'relative',
-    padding: '1rem 0',
+    padding: '0.5rem 0',
     textAlign: 'center'
   }}>
-    <h3 style={{ 
+    <h3 style={{
       fontSize: '1.5rem',
       color: '#666',
       margin: '0',
@@ -1718,18 +1717,16 @@ return (
 
   {/* Configuration Cards Container */}
   <div style={{
-    display: 'flex',
-    gap: '2rem',
-    flexWrap: 'wrap',
-    justifyContent: 'center'
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '1.5rem',
+    alignItems: 'start',
   }}>
     {/* Client Heterogeneity Card */}
-    <div style={{ 
-      flex: '1 1 500px',
-      minWidth: '500px',
+    <div style={{
       backgroundColor: '#f8f9fa',
       borderRadius: '10px',
-      padding: '1.5rem',
+      padding: '1.2rem',
       boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
     }}>
       <div style={{
@@ -1737,47 +1734,39 @@ return (
         alignItems: 'center',
         justifyContent: 'center',
         gap: '0.5rem',
-        marginBottom: '1.5rem'
+        marginBottom: '1rem'
       }}>
         <h4 style={{
           margin: 0,
           color: '#444',
-          fontSize: '1.2rem',
+          fontSize: '1.1rem',
           fontWeight: '500'
         }}>
-          Client Heterogeneity Configuration
+          Client Heterogeneity
         </h4>
-        <InfoBox 
-          title="Informazioni sulla Configurazione dell'Eterogeneità dei Client" 
+        <InfoBox
+          title="Informazioni sulla Configurazione dell'Eterogeneità dei Client"
           infoFile="client-heterogeneity-info"
         />
       </div>
       <div style={{
         backgroundColor: '#ffffff',
-        padding: '1.5rem',
+        padding: '1rem',
         borderRadius: '8px',
         boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)',
-        maxHeight: '500px',
-        overflowY: 'auto'
       }}>
-        <ClientHeterogeneityConfig 
+        <ClientHeterogeneityConfig
           clientTypeConfig={clientTypeConfig}
           setExperimentConfig={handleExperimentConfigUpdate}
-          style={{
-            fontSize: '0.9rem',
-            lineHeight: '1.5'
-          }}
         />
       </div>
     </div>
 
     {/* Client Dynamism Card */}
-    <div style={{ 
-      flex: '1 1 500px',
-      minWidth: '500px',
+    <div style={{
       backgroundColor: '#f8f9fa',
       borderRadius: '10px',
-      padding: '1.5rem',
+      padding: '1.2rem',
       boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
     }}>
       <div style={{
@@ -1785,36 +1774,30 @@ return (
         alignItems: 'center',
         justifyContent: 'center',
         gap: '0.5rem',
-        marginBottom: '1.5rem'
+        marginBottom: '1rem'
       }}>
         <h4 style={{
           margin: 0,
           color: '#444',
-          fontSize: '1.2rem',
+          fontSize: '1.1rem',
           fontWeight: '500'
         }}>
-          Client Dynamism Configuration
+          Client Dynamism
         </h4>
-        <InfoBox 
-          title="Informazioni sul Dinamismo dei Client" 
+        <InfoBox
+          title="Informazioni sul Dinamismo dei Client"
           infoFile="client-dynamism-info"
         />
       </div>
       <div style={{
         backgroundColor: '#ffffff',
-        padding: '1.5rem',
+        padding: '1rem',
         borderRadius: '8px',
         boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)',
-        maxHeight: '500px',
-        overflowY: 'auto'
       }}>
-        <ClientDynamismConfig 
+        <ClientDynamismConfig
           clientDynamismConfig={clientDynamismConfig}
           setExperimentConfig={handleExperimentConfigUpdate}
-          style={{
-            fontSize: '0.9rem',
-            lineHeight: '1.5'
-          }}
         />
       </div>
     </div>
