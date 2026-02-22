@@ -1604,7 +1604,7 @@ return (
           maxWidth: '800px',
           lineHeight: '1.6',
         }}>
-          Il framework integra sei componenti chiave che affrontano le principali sfide del Federated Learning in ambienti reali, dalla gestione dell'eterogeneit&agrave; dei nodi alla compressione dei modelli per reti a banda limitata.
+          Il framework integra sette componenti chiave che affrontano le principali sfide del Federated Learning in ambienti reali, dalla gestione dell'eterogeneit&agrave; dei nodi al sistema di raccomandazione per la selezione ottimale di algoritmo e configurazione.
         </p>
         <div style={{
           display: 'grid',
@@ -1615,7 +1615,7 @@ return (
             {
               icon: '{}',
               title: 'FL Algorithms',
-              desc: 'Implementazione completa di FedAvg, FedProx, SCAFFOLD e FedNova per confrontare strategie di aggregazione, variance reduction e normalizzazione dei gradient steps.',
+              desc: 'Implementazione di 12 algoritmi FL (FedAvg, FedProx, SCAFFOLD, FedNova, FedExP, FedDyn, MOON, FedDisco, FedSpeed, FedLPA, DeepAFL, FedEL) per confrontare aggregazione, variance reduction, contrastive learning e selezione dinamica.',
               color: '#1565c0',
               bg: '#e3f2fd',
             },
@@ -1653,6 +1653,13 @@ return (
               desc: 'Sistema di reputazione basato sulle prestazioni dei client per ponderare i contributi durante l\'aggregazione, migliorando la robustezza del modello globale.',
               color: '#c62828',
               bg: '#ffebee',
+            },
+            {
+              icon: '\u{1F3AF}',
+              title: 'Recommendation System',
+              desc: 'Sistema di raccomandazione condizionale che suggerisce algoritmo e iperparametri ottimali in base al dataset selezionato, considerando complessità, distribuzione e caratteristiche cliniche.',
+              color: '#bf360c',
+              bg: '#fbe9e7',
             },
           ].map((item, i) => (
             <div key={i} style={{
