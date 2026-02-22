@@ -1,88 +1,70 @@
 [
   {
     "id": 1,
-    "name": "Johns Hopkins Hospital",
-    "city": "New York",
-    "latitude": 40.7128,
-    "longitude": -74.006,
+    "name": "Charit\u00e9 Universit\u00e4tsmedizin",
+    "city": "Genoa",
+    "latitude": 44.4056,
+    "longitude": 8.9463,
     "client_type": "strong",
     "dynamism_type": "fast"
   },
   {
     "id": 2,
-    "name": "Stanford Medical Center",
-    "city": "San Francisco",
-    "latitude": 37.7749,
-    "longitude": -122.4194,
+    "name": "AP-HP H\u00f4pital Saint-Louis",
+    "city": "Potenza",
+    "latitude": 40.6404,
+    "longitude": 15.8056,
     "client_type": "strong",
     "dynamism_type": "fast"
   },
   {
     "id": 3,
-    "name": "UCL Hospital",
-    "city": "London",
-    "latitude": 51.5074,
-    "longitude": -0.1278,
+    "name": "NHS Royal London Hospital",
+    "city": "Florence",
+    "latitude": 43.7696,
+    "longitude": 11.2558,
     "client_type": "strong",
     "dynamism_type": "fast"
   },
   {
     "id": 4,
-    "name": "Charit\u00e9 Universit\u00e4tsmedizin",
-    "city": "Berlin",
-    "latitude": 52.52,
-    "longitude": 13.405,
+    "name": "Istituto Europeo di Oncologia",
+    "city": "Delhi",
+    "latitude": 28.7041,
+    "longitude": 77.1025,
     "client_type": "strong",
     "dynamism_type": "fast"
   },
   {
     "id": 5,
-    "name": "University of Tokyo Hospital",
-    "city": "Tokyo",
-    "latitude": 35.6762,
-    "longitude": 139.6503,
-    "client_type": "strong",
+    "name": "Hospital 12 de Octubre",
+    "city": "Mumbai",
+    "latitude": 19.076,
+    "longitude": 72.8777,
+    "client_type": "medium",
     "dynamism_type": "normal"
   },
   {
     "id": 6,
-    "name": "Peking Union Medical College",
-    "city": "Beijing",
-    "latitude": 39.9042,
-    "longitude": 116.4074,
+    "name": "Amsterdam UMC",
+    "city": "Vancouver",
+    "latitude": 49.2827,
+    "longitude": -123.1207,
     "client_type": "medium",
     "dynamism_type": "normal"
   },
   {
     "id": 7,
-    "name": "Singapore General Hospital",
-    "city": "Singapore",
-    "latitude": 1.3521,
-    "longitude": 103.8198,
+    "name": "Karolinska Universitetssjukhuset",
+    "city": "Hong Kong",
+    "latitude": 22.3193,
+    "longitude": 114.1694,
     "client_type": "medium",
-    "dynamism_type": "fast"
+    "dynamism_type": "normal"
   },
   {
     "id": 8,
-    "name": "Hospital das Cl\u00ednicas USP",
-    "city": "S\u00e3o Paulo",
-    "latitude": -23.5505,
-    "longitude": -46.6333,
-    "client_type": "medium",
-    "dynamism_type": "normal"
-  },
-  {
-    "id": 9,
-    "name": "Hospital Italiano",
-    "city": "Buenos Aires",
-    "latitude": -34.6037,
-    "longitude": -58.3816,
-    "client_type": "medium",
-    "dynamism_type": "normal"
-  },
-  {
-    "id": 10,
-    "name": "Royal Melbourne Hospital",
+    "name": "AKH Wien \u2013 Univ. Dermatologie",
     "city": "Melbourne",
     "latitude": -37.8136,
     "longitude": 144.9631,
@@ -90,47 +72,38 @@
     "dynamism_type": "normal"
   },
   {
+    "id": 9,
+    "name": "Universit\u00e4tsspital Z\u00fcrich",
+    "city": "Johannesburg",
+    "latitude": -26.2041,
+    "longitude": 28.0473,
+    "client_type": "weak",
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 10,
+    "name": "Hospital de Santa Maria",
+    "city": "Bologna",
+    "latitude": 44.4949,
+    "longitude": 11.3426,
+    "client_type": "weak",
+    "dynamism_type": "slow"
+  },
+  {
     "id": 11,
-    "name": "AIIMS New Delhi",
-    "city": "Delhi",
-    "latitude": 28.7041,
-    "longitude": 77.1025,
+    "name": "ATTIKON University Hospital",
+    "city": "Singapore",
+    "latitude": 1.3521,
+    "longitude": 103.8198,
     "client_type": "weak",
     "dynamism_type": "slow"
   },
   {
     "id": 12,
-    "name": "Lagos University Teaching Hospital",
-    "city": "Lagos",
-    "latitude": 6.5244,
-    "longitude": 3.3792,
-    "client_type": "weak",
-    "dynamism_type": "slow"
-  },
-  {
-    "id": 13,
-    "name": "Kasr Al Ainy Hospital",
-    "city": "Cairo",
-    "latitude": 30.0444,
-    "longitude": 31.2357,
-    "client_type": "weak",
-    "dynamism_type": "slow"
-  },
-  {
-    "id": 14,
-    "name": "Groote Schuur Hospital",
-    "city": "Cape Town",
-    "latitude": -33.9249,
-    "longitude": 18.4241,
-    "client_type": "weak",
-    "dynamism_type": "slow"
-  },
-  {
-    "id": 15,
-    "name": "H\u00f4pital Bichat-Claude Bernard",
-    "city": "Paris",
-    "latitude": 48.8566,
-    "longitude": 2.3522,
+    "name": "Centralny Szpital Kliniczny",
+    "city": "Tokyo",
+    "latitude": 35.6762,
+    "longitude": 139.6503,
     "client_type": "weak",
     "dynamism_type": "slow"
   }

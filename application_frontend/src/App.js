@@ -125,7 +125,7 @@ function App() {
   const [experimentEndTime, setExperimentEndTime] = useState(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [isConfiguring, setIsConfiguring] = useState(false);
-  const [activeTab, setActiveTab] = useState('experiment');
+  const [activeTab, setActiveTab] = useState('overview');
   const [nodeDistView, setNodeDistView] = useState('global');
   const [selectedUseCase, setSelectedUseCase] = useState(null);
 
@@ -1193,6 +1193,7 @@ return (
         margin: '0 auto',
       }}>
         {[
+          { id: 'overview', label: 'Overview' },
           { id: 'datasets', label: 'Datasets' },
           { id: 'basic', label: 'Basic Configuration' },
           { id: 'advanced', label: 'Advanced Configuration' },
@@ -1244,6 +1245,660 @@ return (
         })}
       </nav>
     </header>
+
+    {/* === TAB: OVERVIEW === */}
+    {activeTab === 'overview' && (
+    <div style={{
+      width: '100%',
+      maxWidth: '1400px',
+      margin: '0 auto',
+      padding: '30px',
+      boxSizing: 'border-box',
+    }}>
+
+      {/* === HERO SECTION === */}
+      <div style={{
+        textAlign: 'center',
+        marginBottom: '40px',
+        padding: '40px 30px',
+        background: 'linear-gradient(135deg, #f5f7fa 0%, #e8edf5 100%)',
+        borderRadius: '16px',
+        border: '1px solid #e0e4ea',
+      }}>
+        <div style={{
+          fontSize: '0.75rem',
+          fontWeight: '600',
+          color: '#1976d2',
+          textTransform: 'uppercase',
+          letterSpacing: '2.5px',
+          marginBottom: '12px',
+        }}>
+          PhD Research Project — Big Data and Artificial Intelligence
+        </div>
+        <h2 style={{
+          margin: '0 0 10px 0',
+          fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
+          color: '#1a237e',
+          fontWeight: '700',
+          lineHeight: '1.3',
+        }}>
+          FLOPBG
+        </h2>
+        <h3 style={{
+          margin: '0 0 20px 0',
+          fontSize: 'clamp(1rem, 2vw, 1.3rem)',
+          color: '#37474f',
+          fontWeight: '400',
+          lineHeight: '1.5',
+          maxWidth: '800px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }}>
+          Federated Learning in Dynamic and Heterogeneous Environments:
+          <br />
+          A Simulation Platform for Privacy-Preserving Medical AI
+        </h3>
+
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '20px',
+          flexWrap: 'wrap',
+          marginTop: '16px',
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}>
+            <img src={logo1} alt="OPBG" style={{ height: '32px', objectFit: 'contain' }} />
+            <span style={{ fontSize: '0.82rem', color: '#555' }}>Ospedale Pediatrico Bambino Gesù</span>
+          </div>
+          <span style={{ color: '#ccc', fontSize: '1.2rem' }}>|</span>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}>
+            <img src={logo2} alt="Mercatorum" style={{ height: '32px', objectFit: 'contain' }} />
+            <span style={{ fontSize: '0.82rem', color: '#555' }}>Universitas Mercatorum</span>
+          </div>
+        </div>
+
+        <div style={{
+          marginTop: '18px',
+          fontSize: '0.82rem',
+          color: '#666',
+        }}>
+          <strong>Fabio Liberti</strong> — Dottorato in Big Data and Artificial Intelligence
+        </div>
+      </div>
+
+      {/* === ABSTRACT === */}
+      <div style={{
+        marginBottom: '36px',
+        padding: '24px 28px',
+        backgroundColor: '#fff',
+        borderRadius: '12px',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+        borderLeft: '4px solid #1976d2',
+      }}>
+        <h4 style={{
+          margin: '0 0 10px 0',
+          fontSize: '0.95rem',
+          color: '#1976d2',
+          fontWeight: '600',
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+        }}>
+          Abstract
+        </h4>
+        <p style={{
+          margin: 0,
+          fontSize: '0.88rem',
+          color: '#444',
+          lineHeight: '1.8',
+          textAlign: 'justify',
+        }}>
+          Il Federated Learning (FL) rappresenta un cambio di paradigma nell'addestramento distribuito
+          di modelli di machine learning, consentendo a molteplici istituzioni di collaborare senza condividere
+          i dati grezzi. Questa piattaforma di simulazione affronta le sfide reali del FL in ambito clinico:
+          <strong> eterogeneità computazionale</strong> tra i nodi partecipanti (ospedali con risorse diverse),
+          <strong> dinamismo nella partecipazione</strong> (disponibilità variabile dei client),
+          <strong> distribuzione non-IID dei dati</strong> (casistiche cliniche diverse per sede),
+          e <strong> vincoli di comunicazione</strong> (banda limitata, latenza variabile).
+          Il framework implementa e confronta algoritmi FedAvg e FedProx con meccanismi avanzati di
+          quantizzazione dei pesi, sistema di reputazione dei client, e supporto per scenari multi-scala
+          (nazionale, europeo, globale), con particolare applicazione all'imaging medico diagnostico.
+        </p>
+      </div>
+
+      {/* === RESEARCH CONTRIBUTIONS === */}
+      <div style={{ marginBottom: '36px' }}>
+        <h4 style={{
+          textAlign: 'center',
+          margin: '0 0 20px 0',
+          fontSize: '1rem',
+          color: '#333',
+          fontWeight: '600',
+        }}>
+          Contributi di Ricerca Principali
+        </h4>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '16px',
+        }}>
+          {[
+            {
+              icon: '{}',
+              title: 'FedAvg & FedProx',
+              desc: 'Implementazione completa di Federated Averaging e FedProx con proximal term configurabile (mu) per gestire l\'eterogeneità statistica tra i client.',
+              color: '#1565c0',
+              bg: '#e3f2fd',
+            },
+            {
+              icon: '\u2696',
+              title: 'Client Heterogeneity',
+              desc: 'Simulazione realistica di nodi con potenza computazionale e velocità di rete variabili (strong, medium, weak), riflettendo le disparità infrastrutturali reali.',
+              color: '#2e7d32',
+              bg: '#e8f5e9',
+            },
+            {
+              icon: '\u21c4',
+              title: 'Client Dynamism',
+              desc: 'Modellazione della partecipazione intermittente dei client (fast, normal, slow) con tassi di partecipazione configurabili per simulare scenari realistici.',
+              color: '#e65100',
+              bg: '#fff3e0',
+            },
+            {
+              icon: '\u2260',
+              title: 'Non-IID Data Distribution',
+              desc: 'Supporto per distribuzioni non identicamente distribuite dei dati tra i nodi, condizione tipica degli scenari clinici multi-istituzionali.',
+              color: '#6a1b9a',
+              bg: '#f3e5f5',
+            },
+            {
+              icon: '\u25a3',
+              title: 'Weight Quantization',
+              desc: 'Compressione dei pesi del modello (32, 16, 8 bit) per ridurre i costi di comunicazione, cruciale per nodi con connettività limitata.',
+              color: '#00695c',
+              bg: '#e0f2f1',
+            },
+            {
+              icon: '\u2605',
+              title: 'Reputation System',
+              desc: 'Sistema di reputazione basato sulle prestazioni dei client per ponderare i contributi durante l\'aggregazione, migliorando la robustezza del modello globale.',
+              color: '#c62828',
+              bg: '#ffebee',
+            },
+          ].map((item, i) => (
+            <div key={i} style={{
+              padding: '20px',
+              backgroundColor: item.bg,
+              borderRadius: '10px',
+              border: `1px solid ${item.color}22`,
+              transition: 'transform 0.2s ease',
+            }}>
+              <div style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                backgroundColor: item.color,
+                color: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.1rem',
+                fontWeight: '700',
+                marginBottom: '10px',
+              }}>
+                {item.icon}
+              </div>
+              <h5 style={{
+                margin: '0 0 6px 0',
+                fontSize: '0.88rem',
+                color: item.color,
+                fontWeight: '600',
+              }}>
+                {item.title}
+              </h5>
+              <p style={{
+                margin: 0,
+                fontSize: '0.78rem',
+                color: '#555',
+                lineHeight: '1.6',
+              }}>
+                {item.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* === ARCHITECTURE FLOW === */}
+      <div style={{
+        marginBottom: '36px',
+        padding: '28px',
+        backgroundColor: '#fff',
+        borderRadius: '12px',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+      }}>
+        <h4 style={{
+          textAlign: 'center',
+          margin: '0 0 24px 0',
+          fontSize: '1rem',
+          color: '#333',
+          fontWeight: '600',
+        }}>
+          Architettura del Framework
+        </h4>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '12px',
+          flexWrap: 'wrap',
+        }}>
+          {[
+            { label: 'Dataset\nSelection', sub: '11 datasets', color: '#1565c0' },
+            { label: 'Client\nConfiguration', sub: 'Heterogeneity + Dynamism', color: '#2e7d32' },
+            { label: 'Node\nDistribution', sub: 'Geographic deployment', color: '#e65100' },
+            { label: 'FL Training', sub: 'FedAvg / FedProx', color: '#6a1b9a' },
+            { label: 'Aggregation', sub: 'Weighted + Reputation', color: '#00695c' },
+            { label: 'Evaluation', sub: 'Accuracy, Loss, ROC, CM', color: '#c62828' },
+          ].map((step, i) => (
+            <React.Fragment key={i}>
+              <div style={{
+                padding: '14px 16px',
+                backgroundColor: `${step.color}0d`,
+                borderRadius: '10px',
+                border: `2px solid ${step.color}33`,
+                textAlign: 'center',
+                minWidth: '130px',
+              }}>
+                <div style={{
+                  fontSize: '0.82rem',
+                  fontWeight: '600',
+                  color: step.color,
+                  whiteSpace: 'pre-line',
+                  lineHeight: '1.3',
+                  marginBottom: '4px',
+                }}>
+                  {step.label}
+                </div>
+                <div style={{
+                  fontSize: '0.68rem',
+                  color: '#888',
+                }}>
+                  {step.sub}
+                </div>
+              </div>
+              {i < 5 && (
+                <div style={{
+                  fontSize: '1.2rem',
+                  color: '#bbb',
+                  fontWeight: '300',
+                }}>
+                  &#8594;
+                </div>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+
+      {/* === DATASETS & TECHNOLOGY === */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '20px',
+        marginBottom: '36px',
+      }}>
+
+        {/* Datasets */}
+        <div style={{
+          padding: '24px',
+          backgroundColor: '#fff',
+          borderRadius: '12px',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+        }}>
+          <h4 style={{
+            margin: '0 0 14px 0',
+            fontSize: '0.95rem',
+            color: '#333',
+            fontWeight: '600',
+          }}>
+            Dataset Supportati
+          </h4>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            {/* Colonna Benchmark */}
+            <div>
+              <div style={{ fontSize: '0.72rem', fontWeight: '600', color: '#1565c0', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#1565c0' }} />
+                Benchmark
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                {[
+                  { name: 'MNIST', classes: 10 },
+                  { name: 'Fashion-MNIST', classes: 10 },
+                  { name: 'CIFAR-10', classes: 10 },
+                  { name: 'CIFAR-100', classes: 100 },
+                  { name: 'SVHN', classes: 10 },
+                ].map((ds, i) => (
+                  <div key={i} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '5px 8px',
+                    backgroundColor: '#f5f5f5',
+                    borderRadius: '5px',
+                    fontSize: '0.75rem',
+                  }}>
+                    <span style={{ color: '#444', fontWeight: '500' }}>{ds.name}</span>
+                    <span style={{ color: '#999', marginLeft: 'auto', fontSize: '0.68rem' }}>{ds.classes}cl</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Colonna Clinical Imaging */}
+            <div>
+              <div style={{ fontSize: '0.72rem', fontWeight: '600', color: '#e65100', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#e65100' }} />
+                Clinical Imaging
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                {[
+                  { name: 'Chest X-Ray', classes: 2 },
+                  { name: 'ISIC Skin Lesion', classes: 9 },
+                  { name: 'Brain Tumor', classes: 4 },
+                  { name: 'Brain Tumor MRI', classes: 4 },
+                  { name: 'Retinopathy', classes: 5 },
+                  { name: 'Skin Cancer', classes: 2 },
+                ].map((ds, i) => (
+                  <div key={i} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '5px 8px',
+                    backgroundColor: '#fff3e0',
+                    borderRadius: '5px',
+                    fontSize: '0.75rem',
+                  }}>
+                    <span style={{ color: '#444', fontWeight: '500' }}>{ds.name}</span>
+                    <span style={{ color: '#999', marginLeft: 'auto', fontSize: '0.68rem' }}>{ds.classes}cl</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Technology Stack */}
+        <div style={{
+          padding: '24px',
+          backgroundColor: '#fff',
+          borderRadius: '12px',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+        }}>
+          <h4 style={{
+            margin: '0 0 14px 0',
+            fontSize: '0.95rem',
+            color: '#333',
+            fontWeight: '600',
+          }}>
+            Stack Tecnologico
+          </h4>
+          {[
+            { category: 'Backend', items: 'Python, Flask, TensorFlow / Keras', color: '#1565c0' },
+            { category: 'Frontend', items: 'React, Chart.js, react-simple-maps', color: '#2e7d32' },
+            { category: 'FL Framework', items: 'FedAvg, FedProx, Weight Quantization', color: '#6a1b9a' },
+            { category: 'Data Processing', items: 'NumPy, Scikit-learn, Pillow', color: '#e65100' },
+            { category: 'Visualization', items: 'Chart.js (metrics), D3.js (geo maps)', color: '#00695c' },
+            { category: 'Communication', items: 'REST API, JSON, YAML configuration', color: '#c62828' },
+          ].map((tech, i) => (
+            <div key={i} style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              gap: '10px',
+              padding: '7px 0',
+              borderBottom: i < 5 ? '1px solid #f0f0f0' : 'none',
+            }}>
+              <span style={{
+                fontSize: '0.72rem',
+                fontWeight: '600',
+                color: tech.color,
+                minWidth: '100px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}>
+                {tech.category}
+              </span>
+              <span style={{
+                fontSize: '0.8rem',
+                color: '#555',
+              }}>
+                {tech.items}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* === MULTI-SCALE SCENARIOS === */}
+      <div style={{
+        padding: '24px',
+        backgroundColor: '#fff',
+        borderRadius: '12px',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+        marginBottom: '36px',
+      }}>
+        <h4 style={{
+          textAlign: 'center',
+          margin: '0 0 18px 0',
+          fontSize: '1rem',
+          color: '#333',
+          fontWeight: '600',
+        }}>
+          Scenari Multi-Scala
+        </h4>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '16px',
+        }}>
+          {[
+            {
+              scale: 'Nazionale',
+              region: 'Italia',
+              desc: 'Rete di ospedali di montagna italiani per la detection di polmonite pediatrica. Simulazione di nodi con risorse limitate e connettività variabile.',
+              nodes: '10 nodi',
+              dataset: 'Chest X-Ray',
+              rounds: '100 rounds',
+              color: '#2e7d32',
+            },
+            {
+              scale: 'Europeo',
+              region: 'EHDS',
+              desc: 'Classificazione di lesioni cutanee distribuita su 12 centri in Europa nel framework EHDS. Eterogeneità tra grandi ospedali universitari e cliniche specializzate.',
+              nodes: '12 nodi',
+              dataset: 'Skin Cancer',
+              rounds: '150 rounds',
+              color: '#1565c0',
+            },
+            {
+              scale: 'Globale',
+              region: 'WHO',
+              desc: 'Rilevamento della tubercolosi coordinato dall\'OMS su 15 centri in 6 continenti. Massima eterogeneità computazionale e partecipazione intermittente.',
+              nodes: '15 nodi',
+              dataset: 'Chest X-Ray',
+              rounds: '200 rounds',
+              color: '#c62828',
+            },
+          ].map((scenario, i) => (
+            <div key={i} style={{
+              padding: '18px',
+              backgroundColor: `${scenario.color}08`,
+              borderRadius: '10px',
+              border: `1px solid ${scenario.color}20`,
+              textAlign: 'center',
+            }}>
+              <div style={{
+                fontSize: '0.7rem',
+                fontWeight: '600',
+                color: scenario.color,
+                textTransform: 'uppercase',
+                letterSpacing: '1.5px',
+                marginBottom: '4px',
+              }}>
+                {scenario.scale}
+              </div>
+              <div style={{
+                fontSize: '1.1rem',
+                fontWeight: '700',
+                color: scenario.color,
+                marginBottom: '8px',
+              }}>
+                {scenario.region}
+              </div>
+              <p style={{
+                margin: '0 0 10px 0',
+                fontSize: '0.76rem',
+                color: '#555',
+                lineHeight: '1.6',
+              }}>
+                {scenario.desc}
+              </p>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '6px',
+                flexWrap: 'wrap',
+              }}>
+                <span style={{
+                  padding: '3px 10px',
+                  backgroundColor: '#e3f2fd',
+                  color: '#1565c0',
+                  borderRadius: '10px',
+                  fontSize: '0.72rem',
+                  fontWeight: '600',
+                }}>
+                  {scenario.dataset}
+                </span>
+                <span style={{
+                  padding: '3px 10px',
+                  backgroundColor: `${scenario.color}15`,
+                  color: scenario.color,
+                  borderRadius: '10px',
+                  fontSize: '0.72rem',
+                  fontWeight: '600',
+                }}>
+                  {scenario.nodes}
+                </span>
+                <span style={{
+                  padding: '3px 10px',
+                  backgroundColor: '#f3e5f5',
+                  color: '#6a1b9a',
+                  borderRadius: '10px',
+                  fontSize: '0.72rem',
+                  fontWeight: '600',
+                }}>
+                  {scenario.rounds}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* === QUICK START === */}
+      <div style={{
+        textAlign: 'center',
+        padding: '28px',
+        backgroundColor: '#f5f7fa',
+        borderRadius: '12px',
+        border: '1px solid #e0e4ea',
+      }}>
+        <h4 style={{
+          margin: '0 0 8px 0',
+          fontSize: '0.95rem',
+          color: '#333',
+          fontWeight: '600',
+        }}>
+          Quick Start
+        </h4>
+        <p style={{
+          margin: '0 0 16px 0',
+          fontSize: '0.82rem',
+          color: '#666',
+          maxWidth: '600px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }}>
+          Seleziona un Use Case preconfigurato oppure configura manualmente dataset, parametri e distribuzione dei nodi.
+        </p>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '12px',
+          flexWrap: 'wrap',
+        }}>
+          <button
+            onClick={() => setActiveTab('usecases')}
+            style={{
+              padding: '10px 24px',
+              backgroundColor: '#2e7d32',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '0.85rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            Esplora Use Cases
+          </button>
+          <button
+            onClick={() => setActiveTab('datasets')}
+            style={{
+              padding: '10px 24px',
+              backgroundColor: '#fff',
+              color: '#1976d2',
+              border: '2px solid #1976d2',
+              borderRadius: '8px',
+              fontSize: '0.85rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            Configurazione Manuale
+          </button>
+          <button
+            onClick={() => setActiveTab('experiment')}
+            style={{
+              padding: '10px 24px',
+              backgroundColor: '#c62828',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '0.85rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+            }}
+          >
+            Avvia Esperimento
+          </button>
+        </div>
+      </div>
+
+    </div>
+    )}
 
     {/* === TAB: USE CASES === */}
     {activeTab === 'usecases' && (

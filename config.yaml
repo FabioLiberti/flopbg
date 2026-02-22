@@ -96,110 +96,89 @@ learning_rate: 0.001
 local_epochs: 1
 mu: 0.1
 nodes:
-- city: New York
+- city: Genoa
   client_type: strong
   dynamism_type: fast
   id: 1
-  latitude: 40.7128
-  longitude: -74.006
-  name: Johns Hopkins Hospital
-- city: San Francisco
+  latitude: 44.4056
+  longitude: 8.9463
+  name: "Charit\xE9 Universit\xE4tsmedizin"
+- city: Potenza
   client_type: strong
   dynamism_type: fast
   id: 2
-  latitude: 37.7749
-  longitude: -122.4194
-  name: Stanford Medical Center
-- city: London
+  latitude: 40.6404
+  longitude: 15.8056
+  name: "AP-HP H\xF4pital Saint-Louis"
+- city: Florence
   client_type: strong
   dynamism_type: fast
   id: 3
-  latitude: 51.5074
-  longitude: -0.1278
-  name: UCL Hospital
-- city: Berlin
+  latitude: 43.7696
+  longitude: 11.2558
+  name: NHS Royal London Hospital
+- city: Delhi
   client_type: strong
   dynamism_type: fast
   id: 4
-  latitude: 52.52
-  longitude: 13.405
-  name: "Charit\xE9 Universit\xE4tsmedizin"
-- city: Tokyo
-  client_type: strong
+  latitude: 28.7041
+  longitude: 77.1025
+  name: Istituto Europeo di Oncologia
+- city: Mumbai
+  client_type: medium
   dynamism_type: normal
   id: 5
-  latitude: 35.6762
-  longitude: 139.6503
-  name: University of Tokyo Hospital
-- city: Beijing
+  latitude: 19.076
+  longitude: 72.8777
+  name: Hospital 12 de Octubre
+- city: Vancouver
   client_type: medium
   dynamism_type: normal
   id: 6
-  latitude: 39.9042
-  longitude: 116.4074
-  name: Peking Union Medical College
-- city: Singapore
+  latitude: 49.2827
+  longitude: -123.1207
+  name: Amsterdam UMC
+- city: Hong Kong
   client_type: medium
-  dynamism_type: fast
+  dynamism_type: normal
   id: 7
-  latitude: 1.3521
-  longitude: 103.8198
-  name: Singapore General Hospital
-- city: "S\xE3o Paulo"
-  client_type: medium
-  dynamism_type: normal
-  id: 8
-  latitude: -23.5505
-  longitude: -46.6333
-  name: "Hospital das Cl\xEDnicas USP"
-- city: Buenos Aires
-  client_type: medium
-  dynamism_type: normal
-  id: 9
-  latitude: -34.6037
-  longitude: -58.3816
-  name: Hospital Italiano
+  latitude: 22.3193
+  longitude: 114.1694
+  name: Karolinska Universitetssjukhuset
 - city: Melbourne
   client_type: medium
   dynamism_type: normal
-  id: 10
+  id: 8
   latitude: -37.8136
   longitude: 144.9631
-  name: Royal Melbourne Hospital
-- city: Delhi
+  name: "AKH Wien \u2013 Univ. Dermatologie"
+- city: Johannesburg
+  client_type: weak
+  dynamism_type: normal
+  id: 9
+  latitude: -26.2041
+  longitude: 28.0473
+  name: "Universit\xE4tsspital Z\xFCrich"
+- city: Bologna
+  client_type: weak
+  dynamism_type: slow
+  id: 10
+  latitude: 44.4949
+  longitude: 11.3426
+  name: Hospital de Santa Maria
+- city: Singapore
   client_type: weak
   dynamism_type: slow
   id: 11
-  latitude: 28.7041
-  longitude: 77.1025
-  name: AIIMS New Delhi
-- city: Lagos
+  latitude: 1.3521
+  longitude: 103.8198
+  name: ATTIKON University Hospital
+- city: Tokyo
   client_type: weak
   dynamism_type: slow
   id: 12
-  latitude: 6.5244
-  longitude: 3.3792
-  name: Lagos University Teaching Hospital
-- city: Cairo
-  client_type: weak
-  dynamism_type: slow
-  id: 13
-  latitude: 30.0444
-  longitude: 31.2357
-  name: Kasr Al Ainy Hospital
-- city: Cape Town
-  client_type: weak
-  dynamism_type: slow
-  id: 14
-  latitude: -33.9249
-  longitude: 18.4241
-  name: Groote Schuur Hospital
-- city: Paris
-  client_type: weak
-  dynamism_type: slow
-  id: 15
-  latitude: 48.8566
-  longitude: 2.3522
-  name: "H\xF4pital Bichat-Claude Bernard"
+  latitude: 35.6762
+  longitude: 139.6503
+  name: Centralny Szpital Kliniczny
 num_clients: 5
 ts: 5
