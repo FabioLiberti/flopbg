@@ -131,6 +131,98 @@ function App() {
   const [selectedUseCase, setSelectedUseCase] = useState(null);
   const [algorithmsExpanded, setAlgorithmsExpanded] = useState(false);
 
+  // Recommendation data per dataset
+  const datasetRecommendations = {
+    mnist: {
+      algorithm: 'fedavg',
+      algorithmLabel: 'FedAvg',
+      alternatives: ['DeepAFL', 'FedProx'],
+      numRounds: 10, localEpochs: 1, batchSize: 32, learningRate: 0.01, mu: 0.0,
+      rationale: 'Dataset semplice (28×28 grayscale, 10 classi, 60K campioni). FedAvg converge rapidamente senza bisogno di regolarizzazione aggiuntiva.'
+    },
+    fashion_mnist: {
+      algorithm: 'fedavg',
+      algorithmLabel: 'FedAvg',
+      alternatives: ['FedProx', 'SCAFFOLD'],
+      numRounds: 15, localEpochs: 2, batchSize: 32, learningRate: 0.01, mu: 0.0,
+      rationale: 'Complessità moderata (28×28 grayscale, 10 classi). FedAvg è sufficiente; in scenari non-IID considerare FedProx o SCAFFOLD.'
+    },
+    cifar10: {
+      algorithm: 'scaffold',
+      algorithmLabel: 'SCAFFOLD',
+      alternatives: ['FedProx', 'FedDyn'],
+      numRounds: 30, localEpochs: 3, batchSize: 32, learningRate: 0.001, mu: 0.0,
+      rationale: 'Immagini a colori (32×32, 10 classi). SCAFFOLD riduce la varianza tra client con control variates, ideale per scenari non-IID.'
+    },
+    cifar100: {
+      algorithm: 'scaffold',
+      algorithmLabel: 'SCAFFOLD',
+      alternatives: ['FedDyn', 'MOON'],
+      numRounds: 50, localEpochs: 3, batchSize: 64, learningRate: 0.001, mu: 0.1,
+      rationale: 'Alta complessità (100 classi fine-grained). SCAFFOLD gestisce bene la varianza; FedDyn o MOON aiutano in caso di forte eterogeneità.'
+    },
+    svhn: {
+      algorithm: 'fedavg',
+      algorithmLabel: 'FedAvg',
+      alternatives: ['FedNova', 'FedExP'],
+      numRounds: 20, localEpochs: 2, batchSize: 64, learningRate: 0.001, mu: 0.0,
+      rationale: 'Dataset grande (~600K campioni, 10 classi). La dimensione dei dati compensa l\'eterogeneità; FedAvg è efficiente.'
+    },
+    chest_xray: {
+      algorithm: 'fedprox',
+      algorithmLabel: 'FedProx',
+      alternatives: ['FedDyn', 'FedDisco'],
+      numRounds: 30, localEpochs: 3, batchSize: 16, learningRate: 0.0005, mu: 0.01,
+      rationale: 'Classificazione binaria (polmonite), dati clinici sbilanciati tra centri. FedProx limita il drift locale con il termine prossimale.'
+    },
+    isic: {
+      algorithm: 'feddisco',
+      algorithmLabel: 'FedDisco',
+      alternatives: ['SCAFFOLD', 'FedDyn'],
+      numRounds: 40, localEpochs: 3, batchSize: 16, learningRate: 0.0005, mu: 0.0,
+      rationale: 'Dermatologia multi-classe (9 classi), forte variabilità di distribuzione tra ospedali. FedDisco pesa l\'aggregazione in base alla discrepanza distributiva.'
+    },
+    brain_tumor: {
+      algorithm: 'fedprox',
+      algorithmLabel: 'FedProx',
+      alternatives: ['MOON', 'FedDyn'],
+      numRounds: 30, localEpochs: 3, batchSize: 16, learningRate: 0.0005, mu: 0.01,
+      rationale: 'Imaging cerebrale (4 classi). FedProx stabilizza il training con regolarizzazione prossimale; MOON può migliorare con loss contrastiva.'
+    },
+    brain_tumor_mri: {
+      algorithm: 'moon',
+      algorithmLabel: 'MOON',
+      alternatives: ['FedProx', 'FedDyn'],
+      numRounds: 30, localEpochs: 3, batchSize: 16, learningRate: 0.0005, mu: 1.0,
+      rationale: 'MRI cerebrale (4 classi, immagini 224×224). MOON corregge il drift locale con loss contrastiva sulle rappresentazioni, efficace per imaging medico complesso.'
+    },
+    retinopathy: {
+      algorithm: 'feddisco',
+      algorithmLabel: 'FedDisco',
+      alternatives: ['SCAFFOLD', 'FedDyn'],
+      numRounds: 40, localEpochs: 3, batchSize: 16, learningRate: 0.0005, mu: 0.0,
+      rationale: 'Retinopatia diabetica (5 classi). Forte eterogeneità tra centri ospedalieri; FedDisco adatta i pesi di aggregazione alla discrepanza distributiva.'
+    },
+    skin_cancer: {
+      algorithm: 'fedprox',
+      algorithmLabel: 'FedProx',
+      alternatives: ['FedDyn', 'DeepAFL'],
+      numRounds: 30, localEpochs: 3, batchSize: 16, learningRate: 0.0005, mu: 0.01,
+      rationale: 'Classificazione binaria (cancro cutaneo). Dati clinici con distribuzione eterogenea; FedProx bilancia convergenza e privacy.'
+    }
+  };
+
+  const applyRecommendation = (datasetKey) => {
+    const rec = datasetRecommendations[datasetKey];
+    if (!rec) return;
+    setAlgorithm(rec.algorithm);
+    setNumRounds(rec.numRounds);
+    setLocalEpochs(rec.localEpochs);
+    setBatchSize(rec.batchSize);
+    setLearningRate(rec.learningRate);
+    setMu(rec.mu);
+  };
+
   const handleNodesUpdate = (updatedNodes) => {
     setNodes(updatedNodes);
     setNumClients(updatedNodes.length);
@@ -2567,6 +2659,7 @@ return (
 
     {/* === TAB: DATASETS === */}
     {activeTab === 'datasets' && (
+    <>
     <div style={{
       width:'100%',
       maxWidth:'1400px',
@@ -2677,6 +2770,136 @@ return (
          </ul>
        </div>
      </div>
+
+    {/* Recommendation Box */}
+    {datasetName && datasetRecommendations[datasetName] && (() => {
+      const rec = datasetRecommendations[datasetName];
+      const isApplied = algorithm === rec.algorithm
+        && numRounds === rec.numRounds
+        && localEpochs === rec.localEpochs
+        && batchSize === rec.batchSize
+        && learningRate === rec.learningRate;
+      return (
+      <div style={{
+        width: '100%',
+        maxWidth: '1400px',
+        margin: '0 auto',
+        padding: '0 30px 30px 30px',
+        boxSizing: 'border-box'
+      }}>
+        <div style={{
+          backgroundColor: isApplied ? '#e8f5e9' : '#fff8e1',
+          border: `1px solid ${isApplied ? '#a5d6a7' : '#ffe082'}`,
+          borderRadius: '10px',
+          padding: '20px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
+          transition: 'all 0.3s ease'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+            <span style={{ fontSize: '24px', lineHeight: '1' }}>
+              {isApplied ? '\u2705' : '\uD83D\uDCA1'}
+            </span>
+            <div style={{ flex: 1 }}>
+              <h4 style={{ margin: '0 0 8px 0', color: '#2c3e50', fontSize: '15px' }}>
+                {isApplied ? 'Configurazione consigliata applicata' : 'Configurazione consigliata'}
+              </h4>
+              <p style={{ margin: '0 0 12px 0', color: '#555', fontSize: '13px', lineHeight: '1.5' }}>
+                {rec.rationale}
+              </p>
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px',
+                marginBottom: '12px'
+              }}>
+                <span style={{
+                  padding: '4px 10px',
+                  backgroundColor: isApplied ? '#c8e6c9' : '#fff3e0',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  color: '#333'
+                }}>
+                  {rec.algorithmLabel}
+                </span>
+                <span style={{
+                  padding: '4px 10px',
+                  backgroundColor: isApplied ? '#c8e6c9' : '#f3f4f6',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  color: '#555'
+                }}>
+                  Rounds: {rec.numRounds}
+                </span>
+                <span style={{
+                  padding: '4px 10px',
+                  backgroundColor: isApplied ? '#c8e6c9' : '#f3f4f6',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  color: '#555'
+                }}>
+                  LR: {rec.learningRate}
+                </span>
+                <span style={{
+                  padding: '4px 10px',
+                  backgroundColor: isApplied ? '#c8e6c9' : '#f3f4f6',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  color: '#555'
+                }}>
+                  Batch: {rec.batchSize}
+                </span>
+                <span style={{
+                  padding: '4px 10px',
+                  backgroundColor: isApplied ? '#c8e6c9' : '#f3f4f6',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  color: '#555'
+                }}>
+                  Epoche: {rec.localEpochs}
+                </span>
+                {rec.mu > 0 && (
+                  <span style={{
+                    padding: '4px 10px',
+                    backgroundColor: isApplied ? '#c8e6c9' : '#f3f4f6',
+                    borderRadius: '12px',
+                    fontSize: '12px',
+                    color: '#555'
+                  }}>
+                    Mu: {rec.mu}
+                  </span>
+                )}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <button
+                  onClick={() => applyRecommendation(datasetName)}
+                  disabled={isApplied}
+                  style={{
+                    padding: '6px 18px',
+                    backgroundColor: isApplied ? '#a5d6a7' : '#f9a825',
+                    color: isApplied ? '#2e7d32' : '#fff',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: isApplied ? 'default' : 'pointer',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    transition: 'all 0.2s ease',
+                    opacity: isApplied ? 0.8 : 1
+                  }}
+                >
+                  {isApplied ? 'Applicata' : 'Applica configurazione'}
+                </button>
+                <span style={{ fontSize: '12px', color: '#888' }}>
+                  Alternative: {rec.alternatives.join(', ')}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      );
+    })()}
+    </>
     )}
 
     {/* === TAB: BASIC CONFIGURATION === */}
