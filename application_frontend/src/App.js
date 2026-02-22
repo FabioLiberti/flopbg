@@ -1374,6 +1374,65 @@ return (
         </p>
       </div>
 
+      {/* === INFOGRAFICA + DIAGRAMMA AFFIANCATI === */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '20px',
+        marginBottom: '36px',
+      }}>
+        <div style={{
+          padding: '20px',
+          backgroundColor: '#fff',
+          borderRadius: '12px',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+          textAlign: 'center',
+        }}>
+          <h4 style={{
+            margin: '0 0 12px 0',
+            fontSize: '0.95rem',
+            color: '#333',
+            fontWeight: '600',
+          }}>
+            Framework Overview
+          </h4>
+          <img
+            src="/FLOPBG-Infografica.png"
+            alt="FLOPBG Framework Infographic"
+            style={{
+              width: '100%',
+              borderRadius: '8px',
+              border: '1px solid #e0e0e0',
+            }}
+          />
+        </div>
+        <div style={{
+          padding: '20px',
+          backgroundColor: '#fff',
+          borderRadius: '12px',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+          textAlign: 'center',
+        }}>
+          <h4 style={{
+            margin: '0 0 12px 0',
+            fontSize: '0.95rem',
+            color: '#333',
+            fontWeight: '600',
+          }}>
+            Methodology Diagram
+          </h4>
+          <img
+            src="/FLOPBG-Diagramma.png"
+            alt="FLOPBG Methodology Diagram"
+            style={{
+              width: '100%',
+              borderRadius: '8px',
+              border: '1px solid #e0e0e0',
+            }}
+          />
+        </div>
+      </div>
+
       {/* === RESEARCH CONTRIBUTIONS === */}
       <div style={{ marginBottom: '36px' }}>
         <h4 style={{
@@ -1597,7 +1656,7 @@ return (
                     fontSize: '0.75rem',
                   }}>
                     <span style={{ color: '#444', fontWeight: '500' }}>{ds.name}</span>
-                    <span style={{ color: '#999', marginLeft: 'auto', fontSize: '0.68rem' }}>{ds.classes}cl</span>
+                    <span style={{ color: '#999', marginLeft: 'auto', fontSize: '0.68rem' }}>{ds.classes} classi</span>
                   </div>
                 ))}
               </div>
@@ -1627,7 +1686,7 @@ return (
                     fontSize: '0.75rem',
                   }}>
                     <span style={{ color: '#444', fontWeight: '500' }}>{ds.name}</span>
-                    <span style={{ color: '#999', marginLeft: 'auto', fontSize: '0.68rem' }}>{ds.classes}cl</span>
+                    <span style={{ color: '#999', marginLeft: 'auto', fontSize: '0.68rem' }}>{ds.classes} classi</span>
                   </div>
                 ))}
               </div>
