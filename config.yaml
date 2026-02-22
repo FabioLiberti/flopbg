@@ -96,75 +96,110 @@ learning_rate: 0.001
 local_epochs: 1
 mu: 0.1
 nodes:
-- city: Milan
+- city: New York
   client_type: strong
   dynamism_type: fast
   id: 1
-  latitude: 45.4642
-  longitude: 9.19
-  name: Ospedale Regionale Aosta
-- city: Nuoro
-  client_type: medium
-  dynamism_type: normal
+  latitude: 40.7128
+  longitude: -74.006
+  name: Johns Hopkins Hospital
+- city: San Francisco
+  client_type: strong
+  dynamism_type: fast
   id: 2
-  latitude: 40.3211
-  longitude: 9.3313
-  name: Ospedale di Bolzano
-- city: Belluno
-  client_type: medium
-  dynamism_type: normal
+  latitude: 37.7749
+  longitude: -122.4194
+  name: Stanford Medical Center
+- city: London
+  client_type: strong
+  dynamism_type: fast
   id: 3
-  latitude: 46.1423
-  longitude: 12.217
-  name: Ospedale S. Chiara Trento
-- city: Sondrio
-  client_type: weak
-  dynamism_type: slow
+  latitude: 51.5074
+  longitude: -0.1278
+  name: UCL Hospital
+- city: Berlin
+  client_type: strong
+  dynamism_type: fast
   id: 4
-  latitude: 46.1699
-  longitude: 9.8727
-  name: Ospedale di Belluno
-- city: Bologna
-  client_type: weak
+  latitude: 52.52
+  longitude: 13.405
+  name: "Charit\xE9 Universit\xE4tsmedizin"
+- city: Tokyo
+  client_type: strong
   dynamism_type: normal
   id: 5
-  latitude: 44.4949
-  longitude: 11.3426
-  name: Ospedale di Sondrio
-- city: Brescia
-  client_type: weak
-  dynamism_type: slow
+  latitude: 35.6762
+  longitude: 139.6503
+  name: University of Tokyo Hospital
+- city: Beijing
+  client_type: medium
+  dynamism_type: normal
   id: 6
-  latitude: 45.5419
-  longitude: 10.2118
-  name: Ospedale S. Salvatore L'Aquila
-- city: Padua
+  latitude: 39.9042
+  longitude: 116.4074
+  name: Peking Union Medical College
+- city: Singapore
   client_type: medium
   dynamism_type: fast
   id: 7
-  latitude: 45.406
-  longitude: 11.8776
-  name: Ospedale San Carlo Potenza
-- city: Florence
-  client_type: weak
+  latitude: 1.3521
+  longitude: 103.8198
+  name: Singapore General Hospital
+- city: "S\xE3o Paulo"
+  client_type: medium
   dynamism_type: normal
   id: 8
-  latitude: 43.7696
-  longitude: 11.2558
-  name: Ospedale Cardarelli Campobasso
-- city: Catania
-  client_type: strong
-  dynamism_type: fast
+  latitude: -23.5505
+  longitude: -46.6333
+  name: "Hospital das Cl\xEDnicas USP"
+- city: Buenos Aires
+  client_type: medium
+  dynamism_type: normal
   id: 9
-  latitude: 37.4979
-  longitude: 15.0878
-  name: Ospedale S. Camillo de Lellis Rieti
-- city: Palermo
+  latitude: -34.6037
+  longitude: -58.3816
+  name: Hospital Italiano
+- city: Melbourne
   client_type: medium
   dynamism_type: normal
   id: 10
-  latitude: 38.1157
-  longitude: 13.3615
-  name: Ospedale Veneziale Isernia
+  latitude: -37.8136
+  longitude: 144.9631
+  name: Royal Melbourne Hospital
+- city: Delhi
+  client_type: weak
+  dynamism_type: slow
+  id: 11
+  latitude: 28.7041
+  longitude: 77.1025
+  name: AIIMS New Delhi
+- city: Lagos
+  client_type: weak
+  dynamism_type: slow
+  id: 12
+  latitude: 6.5244
+  longitude: 3.3792
+  name: Lagos University Teaching Hospital
+- city: Cairo
+  client_type: weak
+  dynamism_type: slow
+  id: 13
+  latitude: 30.0444
+  longitude: 31.2357
+  name: Kasr Al Ainy Hospital
+- city: Cape Town
+  client_type: weak
+  dynamism_type: slow
+  id: 14
+  latitude: -33.9249
+  longitude: 18.4241
+  name: Groote Schuur Hospital
+- city: Paris
+  client_type: weak
+  dynamism_type: slow
+  id: 15
+  latitude: 48.8566
+  longitude: 2.3522
+  name: "H\xF4pital Bichat-Claude Bernard"
 num_clients: 5
 ts: 5

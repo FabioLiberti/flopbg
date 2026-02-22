@@ -1272,10 +1272,9 @@ return (
       </div>
 
       <div style={{
-        display: 'flex',
-        gap: '30px',
-        flexWrap: 'wrap',
-        justifyContent: 'center'
+        display: 'grid',
+        gridTemplateColumns: `repeat(${USE_CASES.length}, 1fr)`,
+        gap: '20px',
       }}>
         {USE_CASES.map((uc) => {
           const isSelected = selectedUseCase === uc.id;
@@ -1283,17 +1282,19 @@ return (
             <div
               key={uc.id}
               style={{
-                flex: '1 1 400px',
-                maxWidth: '600px',
                 backgroundColor: isSelected ? '#e8f5e9' : '#f8f9fa',
                 borderRadius: '12px',
-                padding: '24px',
+                padding: '20px',
                 boxShadow: isSelected
                   ? '0 4px 20px rgba(76, 175, 80, 0.25)'
                   : '0 2px 10px rgba(0,0,0,0.1)',
                 border: isSelected ? '2px solid #4caf50' : '2px solid transparent',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
+                maxHeight: '75vh',
+                overflowY: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
               }}
               onClick={() => applyUseCase(uc)}
             >
@@ -1307,14 +1308,14 @@ return (
                 <div>
                   <h4 style={{
                     margin: '0 0 4px 0',
-                    fontSize: '1.3rem',
+                    fontSize: '1.1rem',
                     color: '#333',
                     fontWeight: '600'
                   }}>
                     {uc.name}
                   </h4>
                   <span style={{
-                    fontSize: '0.85rem',
+                    fontSize: '0.78rem',
                     color: '#666',
                     fontStyle: 'italic'
                   }}>
@@ -1339,46 +1340,46 @@ return (
               {/* Dataset badge */}
               <div style={{
                 display: 'flex',
-                gap: '8px',
+                gap: '6px',
                 flexWrap: 'wrap',
-                marginBottom: '16px'
+                marginBottom: '12px'
               }}>
                 <span style={{
-                  padding: '4px 10px',
+                  padding: '3px 8px',
                   backgroundColor: '#e3f2fd',
                   color: '#1565c0',
                   borderRadius: '4px',
-                  fontSize: '0.8rem',
+                  fontSize: '0.73rem',
                   fontWeight: '500'
                 }}>
                   Dataset: {uc.dataset}
                 </span>
                 <span style={{
-                  padding: '4px 10px',
+                  padding: '3px 8px',
                   backgroundColor: '#fff3e0',
                   color: '#e65100',
                   borderRadius: '4px',
-                  fontSize: '0.8rem',
+                  fontSize: '0.73rem',
                   fontWeight: '500'
                 }}>
                   {uc.basicConfig.numClients} nodi
                 </span>
                 <span style={{
-                  padding: '4px 10px',
+                  padding: '3px 8px',
                   backgroundColor: '#f3e5f5',
                   color: '#7b1fa2',
                   borderRadius: '4px',
-                  fontSize: '0.8rem',
+                  fontSize: '0.73rem',
                   fontWeight: '500'
                 }}>
                   {uc.basicConfig.numRounds} rounds
                 </span>
                 <span style={{
-                  padding: '4px 10px',
+                  padding: '3px 8px',
                   backgroundColor: '#e8f5e9',
                   color: '#2e7d32',
                   borderRadius: '4px',
-                  fontSize: '0.8rem',
+                  fontSize: '0.73rem',
                   fontWeight: '500'
                 }}>
                   Vista: {uc.nodeDistView === 'national' ? 'Italia' : uc.nodeDistView === 'europe' ? 'Europa' : 'Globale'}
@@ -1386,13 +1387,13 @@ return (
               </div>
 
               {/* Context */}
-              <div style={{ marginBottom: '14px' }}>
-                <h5 style={{ margin: '0 0 6px 0', color: '#444', fontSize: '0.9rem' }}>Contesto</h5>
+              <div style={{ marginBottom: '10px' }}>
+                <h5 style={{ margin: '0 0 4px 0', color: '#444', fontSize: '0.82rem' }}>Contesto</h5>
                 <p style={{
                   margin: 0,
-                  fontSize: '0.85rem',
+                  fontSize: '0.78rem',
                   color: '#555',
-                  lineHeight: '1.6',
+                  lineHeight: '1.5',
                 }}>
                   {uc.description}
                 </p>
@@ -1401,18 +1402,18 @@ return (
               {/* Problem */}
               {uc.problem && (
               <div style={{
-                marginBottom: '14px',
-                padding: '12px 16px',
+                marginBottom: '10px',
+                padding: '10px 12px',
                 backgroundColor: isSelected ? 'rgba(255, 243, 224, 0.8)' : '#fff3e0',
                 borderRadius: '8px',
                 borderLeft: '4px solid #ff9800',
               }}>
-                <h5 style={{ margin: '0 0 6px 0', color: '#e65100', fontSize: '0.9rem' }}>Problema</h5>
+                <h5 style={{ margin: '0 0 4px 0', color: '#e65100', fontSize: '0.82rem' }}>Problema</h5>
                 <p style={{
                   margin: 0,
-                  fontSize: '0.85rem',
+                  fontSize: '0.78rem',
                   color: '#bf360c',
-                  lineHeight: '1.6',
+                  lineHeight: '1.5',
                   fontWeight: '500',
                 }}>
                   {uc.problem}
@@ -1421,13 +1422,13 @@ return (
               )}
 
               {/* Objective */}
-              <div style={{ marginBottom: '16px' }}>
-                <h5 style={{ margin: '0 0 6px 0', color: '#444', fontSize: '0.9rem' }}>Obiettivo</h5>
+              <div style={{ marginBottom: '12px' }}>
+                <h5 style={{ margin: '0 0 4px 0', color: '#444', fontSize: '0.82rem' }}>Obiettivo</h5>
                 <p style={{
                   margin: 0,
-                  fontSize: '0.85rem',
+                  fontSize: '0.78rem',
                   color: '#555',
-                  lineHeight: '1.6',
+                  lineHeight: '1.5',
                 }}>
                   {uc.objective}
                 </p>
@@ -1437,12 +1438,12 @@ return (
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
-                gap: '8px',
-                padding: '12px',
+                gap: '4px 8px',
+                padding: '10px',
                 backgroundColor: isSelected ? 'rgba(255,255,255,0.7)' : '#fff',
                 borderRadius: '8px',
-                fontSize: '0.8rem',
-                marginBottom: '14px'
+                fontSize: '0.73rem',
+                marginBottom: '10px'
               }}>
                 <div><span style={{ color: '#888' }}>LR:</span> <strong>{uc.basicConfig.learningRate}</strong></div>
                 <div><span style={{ color: '#888' }}>Batch:</span> <strong>{uc.basicConfig.batchSize}</strong></div>
@@ -1454,21 +1455,21 @@ return (
 
               {/* Nodes list */}
               <div>
-                <h5 style={{ margin: '0 0 8px 0', color: '#444', fontSize: '0.9rem' }}>
+                <h5 style={{ margin: '0 0 6px 0', color: '#444', fontSize: '0.82rem' }}>
                   Nodi ({uc.nodes.length})
                 </h5>
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '4px',
-                  fontSize: '0.78rem'
+                  gridTemplateColumns: '1fr',
+                  gap: '3px',
+                  fontSize: '0.72rem'
                 }}>
                   {uc.nodes.map(node => (
                     <div key={node.id} style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '6px',
-                      padding: '3px 6px',
+                      gap: '5px',
+                      padding: '2px 5px',
                       backgroundColor: isSelected ? 'rgba(255,255,255,0.5)' : '#f5f5f5',
                       borderRadius: '4px',
                       borderLeft: `3px solid ${
@@ -1486,17 +1487,17 @@ return (
               </div>
 
               {/* Apply button */}
-              <div style={{ textAlign: 'center', marginTop: '16px' }}>
+              <div style={{ textAlign: 'center', marginTop: 'auto', paddingTop: '12px' }}>
                 <button
                   onClick={(e) => { e.stopPropagation(); applyUseCase(uc); }}
                   style={{
-                    padding: '10px 28px',
+                    padding: '8px 24px',
                     backgroundColor: isSelected ? '#4caf50' : '#1976d2',
                     color: '#fff',
                     border: 'none',
                     borderRadius: '6px',
                     cursor: 'pointer',
-                    fontSize: '0.9rem',
+                    fontSize: '0.85rem',
                     fontWeight: '600',
                     transition: 'all 0.2s ease',
                   }}

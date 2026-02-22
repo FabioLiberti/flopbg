@@ -1,94 +1,137 @@
 [
   {
     "id": 1,
-    "name": "Ospedale Regionale Aosta",
-    "city": "Sondrio",
-    "latitude": 46.1699,
-    "longitude": 9.8727,
+    "name": "Johns Hopkins Hospital",
+    "city": "New York",
+    "latitude": 40.7128,
+    "longitude": -74.006,
     "client_type": "strong",
     "dynamism_type": "fast"
   },
   {
     "id": 2,
-    "name": "Ospedale di Bolzano",
-    "city": "Bolzano",
-    "latitude": 46.4983,
-    "longitude": 11.3548,
-    "client_type": "medium",
-    "dynamism_type": "normal"
+    "name": "Stanford Medical Center",
+    "city": "San Francisco",
+    "latitude": 37.7749,
+    "longitude": -122.4194,
+    "client_type": "strong",
+    "dynamism_type": "fast"
   },
   {
     "id": 3,
-    "name": "Ospedale S. Chiara Trento",
-    "city": "Milan",
-    "latitude": 45.4642,
-    "longitude": 9.19,
-    "client_type": "medium",
-    "dynamism_type": "normal"
+    "name": "UCL Hospital",
+    "city": "London",
+    "latitude": 51.5074,
+    "longitude": -0.1278,
+    "client_type": "strong",
+    "dynamism_type": "fast"
   },
   {
     "id": 4,
-    "name": "Ospedale di Belluno",
-    "city": "Bari",
-    "latitude": 41.1175,
-    "longitude": 16.8703,
-    "client_type": "weak",
-    "dynamism_type": "slow"
+    "name": "Charit\u00e9 Universit\u00e4tsmedizin",
+    "city": "Berlin",
+    "latitude": 52.52,
+    "longitude": 13.405,
+    "client_type": "strong",
+    "dynamism_type": "fast"
   },
   {
     "id": 5,
-    "name": "Ospedale di Sondrio",
-    "city": "Aosta",
-    "latitude": 45.7375,
-    "longitude": 7.3154,
-    "client_type": "weak",
+    "name": "University of Tokyo Hospital",
+    "city": "Tokyo",
+    "latitude": 35.6762,
+    "longitude": 139.6503,
+    "client_type": "strong",
     "dynamism_type": "normal"
   },
   {
     "id": 6,
-    "name": "Ospedale S. Salvatore L'Aquila",
-    "city": "Turin",
-    "latitude": 45.0705,
-    "longitude": 7.6868,
-    "client_type": "weak",
-    "dynamism_type": "slow"
+    "name": "Peking Union Medical College",
+    "city": "Beijing",
+    "latitude": 39.9042,
+    "longitude": 116.4074,
+    "client_type": "medium",
+    "dynamism_type": "normal"
   },
   {
     "id": 7,
-    "name": "Ospedale San Carlo Potenza",
-    "city": "Venice",
-    "latitude": 45.4408,
-    "longitude": 12.3155,
+    "name": "Singapore General Hospital",
+    "city": "Singapore",
+    "latitude": 1.3521,
+    "longitude": 103.8198,
     "client_type": "medium",
     "dynamism_type": "fast"
   },
   {
     "id": 8,
-    "name": "Ospedale Cardarelli Campobasso",
-    "city": "Cagliari",
-    "latitude": 39.2238,
-    "longitude": 9.1217,
-    "client_type": "weak",
+    "name": "Hospital das Cl\u00ednicas USP",
+    "city": "S\u00e3o Paulo",
+    "latitude": -23.5505,
+    "longitude": -46.6333,
+    "client_type": "medium",
     "dynamism_type": "normal"
   },
   {
     "id": 9,
-    "name": "Ospedale S. Camillo de Lellis Rieti",
-    "city": "Messina",
-    "latitude": 38.1938,
-    "longitude": 15.554,
-    "client_type": "strong",
-    "dynamism_type": "fast"
+    "name": "Hospital Italiano",
+    "city": "Buenos Aires",
+    "latitude": -34.6037,
+    "longitude": -58.3816,
+    "client_type": "medium",
+    "dynamism_type": "normal"
   },
   {
     "id": 10,
-    "name": "Ospedale Veneziale Isernia",
-    "city": "Isernia",
-    "latitude": 41.596,
-    "longitude": 14.233,
+    "name": "Royal Melbourne Hospital",
+    "city": "Melbourne",
+    "latitude": -37.8136,
+    "longitude": 144.9631,
     "client_type": "medium",
     "dynamism_type": "normal"
-  }
-]"
+  },
+  {
+    "id": 11,
+    "name": "AIIMS New Delhi",
+    "city": "Delhi",
+    "latitude": 28.7041,
+    "longitude": 77.1025,
+    "client_type": "weak",
+    "dynamism_type": "slow"
+  },
+  {
+    "id": 12,
+    "name": "Lagos University Teaching Hospital",
+    "city": "Lagos",
+    "latitude": 6.5244,
+    "longitude": 3.3792,
+    "client_type": "weak",
+    "dynamism_type": "slow"
+  },
+  {
+    "id": 13,
+    "name": "Kasr Al Ainy Hospital",
+    "city": "Cairo",
+    "latitude": 30.0444,
+    "longitude": 31.2357,
+    "client_type": "weak",
+    "dynamism_type": "slow"
+  },
+  {
+    "id": 14,
+    "name": "Groote Schuur Hospital",
+    "city": "Cape Town",
+    "latitude": -33.9249,
+    "longitude": 18.4241,
+    "client_type": "weak",
+    "dynamism_type": "slow"
+  },
+  {
+    "id": 15,
+    "name": "H\u00f4pital Bichat-Claude Bernard",
+    "city": "Paris",
+    "latitude": 48.8566,
+    "longitude": 2.3522,
+    "client_type": "weak",
+    "dynamism_type": "slow"
   }
 ]
