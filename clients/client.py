@@ -116,6 +116,133 @@ class Client:
 
         return quantized_weights
 
+    def _get_loss_fn(self):
+        """Returns the appropriate loss function based on the dataset."""
+        if self.dataset_name in ['chest_xray', 'skin_cancer']:
+            return tf.keras.losses.BinaryCrossentropy()
+        else:
+            return tf.keras.losses.SparseCategoricalCrossentropy()
+
+    def train_fedprox(self, global_weights, mu=0.1, quantization_bits=8):
+        """
+        Trains the client's model using FedProx (with proximal term in the loss).
+
+        Parameters:
+            global_weights (list): Weights from the global model.
+            mu (float): Proximal term coefficient.
+            quantization_bits (int): Number of bits for weight quantization.
+
+        Returns:
+            list: Quantized weights after local training.
+        """
+        self.model.set_weights(global_weights)
+
+        # Save global trainable weights for proximal term
+        global_trainable = [tf.constant(w.numpy()) for w in self.model.trainable_weights]
+
+        loss_fn = self._get_loss_fn()
+        optimizer = self.model.optimizer
+
+        dataset = tf.data.Dataset.from_tensor_slices((self.train_images, self.train_labels))
+        dataset = dataset.shuffle(len(self.train_images)).batch(self.batch_size)
+
+        start_time = time.time()
+        for epoch in range(self.local_epochs):
+            for x_batch, y_batch in dataset:
+                with tf.GradientTape() as tape:
+                    preds = self.model(x_batch, training=True)
+                    loss = loss_fn(y_batch, preds)
+                    # Proximal term: (mu/2) * ||w - w_global||^2
+                    prox_term = 0.0
+                    for w, gw in zip(self.model.trainable_weights, global_trainable):
+                        prox_term += tf.reduce_sum(tf.square(w - gw))
+                    loss += (mu / 2.0) * prox_term
+                grads = tape.gradient(loss, self.model.trainable_weights)
+                optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
+
+        self.last_training_time = time.time() - start_time
+        logging.info(f"Client {self.client_id} trained with FedProx (mu={mu}) for {self.last_training_time:.2f}s.")
+
+        local_weights = self.model.get_weights()
+        return quantize_weights(local_weights, bits=quantization_bits)
+
+    def train_scaffold(self, global_weights, server_control, client_control, quantization_bits=8):
+        """
+        Trains the client's model using SCAFFOLD (with control variate correction).
+
+        Parameters:
+            global_weights (list): Weights from the global model (all weights).
+            server_control (list): Server control variate (all weights shape).
+            client_control (list): Client control variate (all weights shape).
+            quantization_bits (int): Number of bits for weight quantization.
+
+        Returns:
+            tuple: (quantized_weights, new_client_control, delta_control)
+        """
+        self.model.set_weights(global_weights)
+
+        loss_fn = self._get_loss_fn()
+        optimizer = self.model.optimizer
+
+        # Build index mapping: which positions in get_weights() correspond to trainable_weights
+        all_weight_names = [w.name for w in self.model.weights]
+        trainable_names = [w.name for w in self.model.trainable_weights]
+        trainable_indices = [i for i, name in enumerate(all_weight_names) if name in trainable_names]
+
+        # Extract control variates for trainable weights only
+        server_ctrl_trainable = [tf.constant(server_control[i], dtype=tf.float32) for i in trainable_indices]
+        client_ctrl_trainable = [tf.constant(client_control[i], dtype=tf.float32) for i in trainable_indices]
+
+        dataset = tf.data.Dataset.from_tensor_slices((self.train_images, self.train_labels))
+        dataset = dataset.shuffle(len(self.train_images)).batch(self.batch_size)
+
+        start_time = time.time()
+        for epoch in range(self.local_epochs):
+            for x_batch, y_batch in dataset:
+                with tf.GradientTape() as tape:
+                    preds = self.model(x_batch, training=True)
+                    loss = loss_fn(y_batch, preds)
+                grads = tape.gradient(loss, self.model.trainable_weights)
+                # SCAFFOLD correction: grad_corrected = grad - c_i + c
+                corrected_grads = []
+                for g, ci, c in zip(grads, client_ctrl_trainable, server_ctrl_trainable):
+                    corrected_grads.append(g - ci + c)
+                optimizer.apply_gradients(zip(corrected_grads, self.model.trainable_weights))
+
+        self.last_training_time = time.time() - start_time
+        logging.info(f"Client {self.client_id} trained with SCAFFOLD for {self.last_training_time:.2f}s.")
+
+        new_weights = self.model.get_weights()
+
+        # Update client control variate (Option II from SCAFFOLD paper):
+        # c_i_new = c_i - c + (w_global - w_local) / (K * lr)
+        K = self.local_epochs * int(np.ceil(len(self.train_images) / self.batch_size))
+        new_client_control = []
+        delta_control = []
+        for l in range(len(client_control)):
+            c_new = client_control[l] - server_control[l] + \
+                     (global_weights[l] - new_weights[l]) / (K * self.learning_rate)
+            new_client_control.append(c_new)
+            delta_control.append(c_new - client_control[l])
+
+        return quantize_weights(new_weights, bits=quantization_bits), new_client_control, delta_control
+
+    def train_fednova(self, global_weights, quantization_bits=8):
+        """
+        Trains the client's model using FedNova.
+        Same as FedAvg training, but also returns the number of local gradient steps (tau).
+
+        Parameters:
+            global_weights (list): Weights from the global model.
+            quantization_bits (int): Number of bits for weight quantization.
+
+        Returns:
+            tuple: (quantized_weights, tau)
+        """
+        weights = self.train(global_weights, quantization_bits)
+        tau = self.local_epochs * int(np.ceil(len(self.train_images) / self.batch_size))
+        return weights, tau
+
     def personalize_model(self):
         """
         Personalizes the global model on the client's data.

@@ -53,20 +53,34 @@ class FederatedLearningSystem:
         self.num_classes = None
         self.centralized_metrics = None
         self.execution_dir = None
+        self.algorithm = 'fedavg'
+        self.client_controls = {}  # SCAFFOLD: control variates per client
         logging.info("FederatedLearningSystem initialized.")
 
-    def start_experiment(self, num_rounds, local_epochs, batch_size, learning_rate, mu, quantization_bits, global_participation_rate):
+    def start_experiment(self, num_rounds, local_epochs, batch_size, learning_rate, mu, quantization_bits, global_participation_rate, algorithm='fedavg'):
         if not self.is_configured:
             raise ValueError("System not configured. Call configure() first.")
         self.max_rounds = num_rounds
+        self.algorithm = algorithm
         self.is_running = True
         self.current_round = 0  # Reset current round
+
+        # Initialize SCAFFOLD control variates if needed
+        if algorithm == 'scaffold' and self.client_manager:
+            global_weights = self.server.global_model.get_weights()
+            self.client_controls = {
+                cid: [np.zeros_like(w) for w in global_weights]
+                for cid in self.client_manager.clients.keys()
+            }
+            if self.server.server_control_variate is None:
+                self.server.server_control_variate = [np.zeros_like(w) for w in global_weights]
+
         # Avvia l'esperimento in un thread separato
         threading.Thread(
             target=self.run_experiment,
-            args=(local_epochs, batch_size, learning_rate, mu, quantization_bits, global_participation_rate)
+            args=(local_epochs, batch_size, learning_rate, mu, quantization_bits, global_participation_rate, algorithm)
         ).start()
-        logging.info(f"Experiment started with {num_rounds} rounds.")
+        logging.info(f"Experiment started with {num_rounds} rounds, algorithm={algorithm}.")
 
     def stop_experiment(self):
         self.is_running = False
@@ -173,6 +187,8 @@ class FederatedLearningSystem:
         self.client_data_distribution = {}
         self.client_training_times = {}
         self.centralized_metrics = None
+        self.algorithm = 'fedavg'
+        self.client_controls = {}
         # Reimposta server e client
         if self.server:
             self.server.reset()
@@ -243,7 +259,7 @@ class FederatedLearningSystem:
         self.centralized_metrics = metrics
         return metrics  # Restituisce le metriche per essere utilizzate in run_experiment
 
-    def run_experiment(self, local_epochs, batch_size, learning_rate, mu, quantization_bits, global_participation_rate):
+    def run_experiment(self, local_epochs, batch_size, learning_rate, mu, quantization_bits, global_participation_rate, algorithm='fedavg'):
         try:
             # Addestra il modello centralizzato e ottieni le metriche
             centralized_metrics = self.train_centralized_model()
@@ -252,10 +268,10 @@ class FederatedLearningSystem:
             self.accuracy_data.append(centralized_metrics)
 
             while self.is_running and self.current_round < self.max_rounds:
-                logging.info(f"Starting federated round {self.current_round + 1}/{self.max_rounds}")
+                logging.info(f"Starting federated round {self.current_round + 1}/{self.max_rounds} (algorithm={algorithm})")
                 try:
                     # Esegui un singolo round di federated learning
-                    metrics = self.run_round(local_epochs, batch_size, learning_rate, mu, quantization_bits, global_participation_rate)
+                    metrics = self.run_round(local_epochs, batch_size, learning_rate, mu, quantization_bits, global_participation_rate, algorithm)
                     self.accuracy_data.append(metrics)
                     logging.info(f"Round {self.current_round + 1} complete. Metrics: {metrics}")
                     self.current_round += 1
@@ -280,34 +296,72 @@ class FederatedLearningSystem:
             self.is_running = False
             logging.info("Experiment has ended.")
 
-    def run_round(self, local_epochs, batch_size, learning_rate, mu, quantization_bits, global_participation_rate):
+    def run_round(self, local_epochs, batch_size, learning_rate, mu, quantization_bits, global_participation_rate, algorithm='fedavg'):
         if self.client_manager is None or self.server is None or self.test_data is None:
             raise ValueError("System not properly initialized. Call configure() first.")
 
         # Seleziona i client attivi
         active_clients = self.select_active_clients(global_participation_rate)
         active_client_ids = [client.client_id for client in active_clients]
-        self.client_participation[self.current_round + 1] = active_client_ids  # Registra i client partecipanti
-        logging.info(f"Round {self.current_round + 1}: Selected Clients: {active_client_ids}")
+        self.client_participation[self.current_round + 1] = active_client_ids
+        logging.info(f"Round {self.current_round + 1}: Selected Clients: {active_client_ids} (algorithm={algorithm})")
 
+        global_weights = self.server.global_model.get_weights()
         client_weights = []
         client_samples = []
+        client_delta_controls = []  # SCAFFOLD
+        client_taus = []  # FedNova
+
         for client in active_clients:
             # Imposta i parametri del client
             client.local_epochs = local_epochs
             client.batch_size = batch_size
             client.learning_rate = learning_rate
+            n_samples = len(client.train_images)
 
-            # Addestra il modello del client
-            weights = client.train(self.server.global_model.get_weights())
-            client_weights.append(weights)
-            client_samples.append(len(client.train_images))
+            if algorithm == 'fedavg':
+                weights = client.train(global_weights, quantization_bits)
+                client_weights.append(weights)
+                client_samples.append(n_samples)
+
+            elif algorithm == 'fedprox':
+                weights = client.train_fedprox(global_weights, mu, quantization_bits)
+                client_weights.append(weights)
+                client_samples.append(n_samples)
+
+            elif algorithm == 'scaffold':
+                client_ctrl = self.client_controls.get(
+                    client.client_id,
+                    [np.zeros_like(w) for w in global_weights]
+                )
+                weights, new_cc, delta_cc = client.train_scaffold(
+                    global_weights,
+                    self.server.server_control_variate,
+                    client_ctrl,
+                    quantization_bits
+                )
+                client_weights.append(weights)
+                client_samples.append(n_samples)
+                client_delta_controls.append(delta_cc)
+                self.client_controls[client.client_id] = new_cc
+
+            elif algorithm == 'fednova':
+                weights, tau = client.train_fednova(global_weights, quantization_bits)
+                client_weights.append(weights)
+                client_samples.append(n_samples)
+                client_taus.append(tau)
+
             self.client_training_times[client.client_id] = client.get_training_time()
-            logging.debug(f"Client {client.client_id} contributed {len(client.train_images)} samples.")
+            logging.debug(f"Client {client.client_id} contributed {n_samples} samples.")
 
-        # Aggrega i pesi dei client utilizzando FedAvg
-        self.server.aggregate_weights(client_weights, client_samples)
-        
+        # Aggregazione in base all'algoritmo
+        if algorithm == 'fedavg' or algorithm == 'fedprox':
+            self.server.aggregate_weights(client_weights, client_samples)
+        elif algorithm == 'scaffold':
+            self.server.aggregate_scaffold(client_weights, client_samples, client_delta_controls)
+        elif algorithm == 'fednova':
+            self.server.aggregate_fednova(client_weights, client_samples, client_taus)
+
         # Salva il modello globale
         self.server.save_global_model()
 

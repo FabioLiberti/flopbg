@@ -288,9 +288,11 @@
       <strong>dinamismo nella partecipazione</strong> (disponibilità variabile dei client),
       <strong>distribuzione non-IID dei dati</strong> (casistiche cliniche diverse per sede),
       e <strong>vincoli di comunicazione</strong> (banda limitata, latenza variabile).
-      Il framework implementa e confronta algoritmi FedAvg e FedProx con meccanismi avanzati di
-      quantizzazione dei pesi, sistema di reputazione dei client, e supporto per scenari multi-scala
-      (nazionale, europeo, globale), con particolare applicazione all'imaging medico diagnostico.
+      Il framework implementa e confronta quattro algoritmi di aggregazione federata &mdash;
+      <strong>FedAvg</strong>, <strong>FedProx</strong>, <strong>SCAFFOLD</strong> e <strong>FedNova</strong> &mdash;
+      con meccanismi avanzati di quantizzazione dei pesi, sistema di reputazione dei client,
+      e supporto per scenari multi-scala (nazionale, europeo, globale),
+      con particolare applicazione all'imaging medico diagnostico.
     </p>
   </div>
 
@@ -322,8 +324,8 @@
 
       <div class="contrib-card" style="background:#e3f2fd;border-color:#1565c022">
         <div class="contrib-icon" style="background:#1565c0">{}</div>
-        <h5 style="color:#1565c0">FedAvg &amp; FedProx</h5>
-        <p>Implementazione completa di Federated Averaging e FedProx con proximal term configurabile (&mu;) per gestire l'eterogeneità statistica tra i client.</p>
+        <h5 style="color:#1565c0">FL Algorithms</h5>
+        <p>Implementazione completa di FedAvg, FedProx, SCAFFOLD e FedNova per confrontare strategie di aggregazione, variance reduction e normalizzazione dei gradient steps.</p>
       </div>
 
       <div class="contrib-card" style="background:#e8f5e9;border-color:#2e7d3222">
@@ -383,7 +385,7 @@
       <div class="arch-arrow">&#8594;</div>
       <div class="arch-step" style="background:#6a1b9a0d;border-color:#6a1b9a33">
         <div class="label" style="color:#6a1b9a">FL Training</div>
-        <div class="sub">FedAvg / FedProx</div>
+        <div class="sub">FedAvg / FedProx / SCAFFOLD / FedNova</div>
       </div>
       <div class="arch-arrow">&#8594;</div>
       <div class="arch-step" style="background:#00695c0d;border-color:#00695c33">
@@ -436,7 +438,7 @@
       <div class="card-title" style="text-align:left;margin-bottom:14px">Stack Tecnologico</div>
       <div class="tech-row"><span class="cat" style="color:#1565c0">Backend</span><span class="items">Python, Flask, TensorFlow / Keras</span></div>
       <div class="tech-row"><span class="cat" style="color:#2e7d32">Frontend</span><span class="items">React, Chart.js, react-simple-maps</span></div>
-      <div class="tech-row"><span class="cat" style="color:#6a1b9a">FL Framework</span><span class="items">FedAvg, FedProx, Weight Quantization</span></div>
+      <div class="tech-row"><span class="cat" style="color:#6a1b9a">FL Framework</span><span class="items">FedAvg, FedProx, SCAFFOLD, FedNova</span></div>
       <div class="tech-row"><span class="cat" style="color:#e65100">Data Processing</span><span class="items">NumPy, Scikit-learn, Pillow</span></div>
       <div class="tech-row"><span class="cat" style="color:#00695c">Visualization</span><span class="items">Chart.js (metrics), D3.js (geo maps)</span></div>
       <div class="tech-row"><span class="cat" style="color:#c62828">Communication</span><span class="items">REST API, JSON, YAML configuration</span></div>

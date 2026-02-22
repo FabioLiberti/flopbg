@@ -11,6 +11,7 @@ const USE_CASES = [
     problem: `I pediatri locali lamentano difficoltà nel discriminare rapidamente, soprattutto in pronto soccorso, fra polmoniti virali, batteriche e quadri non infettivi, con rischio di sovra-ospedalizzazione o ricoveri tardivi. La condivisione centralizzata dei dati radiologici non è permessa dalle policy regionali.`,
     objective: `Addestrare un modello di classificazione di radiografie del torace pediatrico per rilevare polmonite (vs. non polmonite), sfruttando un dataset clinico pubblico come base e simulando i vari ospedali come nodi federati. Valutare se il training federato, con dati frammentati e non IID, consente di raggiungere prestazioni paragonabili a un modello centralizzato, mantenendo la privacy dei dati e gestendo l'eterogeneità dei nodi.`,
     basicConfig: {
+      algorithm: 'fedprox',
       numRounds: 100,
       numClients: 10,
       localEpochs: 2,
@@ -53,6 +54,7 @@ const USE_CASES = [
     problem: `Le lesioni cutanee maligne (melanoma, carcinoma basocellulare, carcinoma squamocellulare) presentano morfologia variabile tra popolazioni europee con diversi fototipi (I-IV Fitzpatrick). I modelli addestrati su dataset centralizzati sovra-rappresentano i fototipi chiari nordeuropei, con prestazioni degradate su pazienti mediterranei e dell'Europa orientale. Il regolamento GDPR e le normative nazionali impediscono il trasferimento centralizzato di dati sanitari tra Stati membri, ma l'EHDS prevede esplicitamente l'uso secondario dei dati sanitari tramite tecniche privacy-preserving come il Federated Learning.`,
     objective: `Addestrare un modello federato di classificazione multi-classe delle lesioni cutanee (benigno vs. maligno, con sottotipi) distribuendo il training su 12 nodi europei eterogenei. Dimostrare che il FL sotto il framework EHDS consente di ottenere un modello robusto su tutti i fototipi europei, superando il bias dei dataset centralizzati e rispettando GDPR e sovranità dei dati nazionali. Valutare l'impatto dell'eterogeneità computazionale e della partecipazione variabile sulla convergenza del modello.`,
     basicConfig: {
+      algorithm: 'scaffold',
       numRounds: 150,
       numClients: 12,
       localEpochs: 3,
@@ -97,6 +99,7 @@ const USE_CASES = [
     problem: `La tubercolosi resta la malattia infettiva più letale al mondo con 1.3 milioni di morti/anno (WHO 2023). La diagnosi radiologica è fondamentale nelle aree dove i test molecolari (GeneXpert) non sono disponibili, ma i radiologi esperti sono scarsi nei Paesi a bassa risorsa. I modelli di AI esistenti, addestrati su dataset di Paesi occidentali, mostrano prestazioni degradate su popolazioni africane e sud-asiatiche per differenze nella prevalenza di co-infezioni (HIV-TB), pattern radiologici atipici e qualità variabile delle immagini. Il trasferimento centralizzato dei dati è impedito da regolamentazioni nazionali eterogenee, infrastrutture di rete inadeguate e preoccupazioni di sovranità sanitaria dei dati.`,
     objective: `Addestrare un modello federato di classificazione binaria (TB vs. non-TB) da radiografie toraciche distribuendo il training su 15 nodi intercontinentali altamente eterogenei. Dimostrare che il FL consente di costruire un modello globalmente robusto che supera il bias geografico dei dataset centralizzati, gestendo simultaneamente: estrema eterogeneità computazionale (GPU server vs. laptop), connettività variabile (fibra vs. rete mobile 3G), distribuzione non-IID dei dati (prevalenza TB dal 2% al 40%), e partecipazione intermittente dei nodi nei Paesi a bassa risorsa. Valutare l'impatto della quantizzazione aggressiva e del proximal term elevato sulla convergenza in scenari di comunicazione costosa.`,
     basicConfig: {
+      algorithm: 'fednova',
       numRounds: 200,
       numClients: 15,
       localEpochs: 3,

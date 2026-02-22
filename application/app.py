@@ -235,7 +235,8 @@ def start_experiment():
                 'learning_rate' : float(data.get('learning_rate', config.get('learning_rate', 0.01))),
                 'mu' : float(data.get('mu', config.get('mu', 0.0))),
                 'quantization_bits' : int(data.get('quantization_bits', config.get('quantization_bits', 32))),
-                'global_participation_rate' : float(data.get('global_participation_rate', config.get('global_participation_rate', 1.0)))
+                'global_participation_rate' : float(data.get('global_participation_rate', config.get('global_participation_rate', 1.0))),
+                'algorithm' : str(data.get('algorithm', 'fedavg'))
             }
             
             # Debugging logs

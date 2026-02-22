@@ -3,7 +3,7 @@ const BasicConfigForm = ({ experimentConfig, setExperimentConfig }) => {
     const handleInputChange = (field, value) => {
       setExperimentConfig(field, value);
     };
-   
+
     const inputStyle = {
       width: '100%',
       padding: '8px 12px',
@@ -15,27 +15,50 @@ const BasicConfigForm = ({ experimentConfig, setExperimentConfig }) => {
         borderColor: '#3498db'
       }
     };
-   
+
     const parameterBoxStyle = {
       backgroundColor: '#f8f9fa',
       padding: '15px',
       borderRadius: '8px',
       border: '1px solid #ddd'
     };
-   
+
     const labelStyle = {
       display: 'block',
       marginBottom: '8px',
       color: '#2c3e50',
       fontWeight: '500'
     };
-   
+
     return (
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
         gap: '20px',
       }}>
+        {/* Algorithm */}
+        <div style={{ ...parameterBoxStyle, backgroundColor: '#fff0f0', border: '1px solid #e0c0c0' }}>
+          <label style={labelStyle}>
+            Algorithm
+          </label>
+          <select
+            value={experimentConfig.algorithm}
+            onChange={(e) => handleInputChange('algorithm', e.target.value)}
+            style={inputStyle}
+          >
+            <option value="fedavg">FedAvg</option>
+            <option value="fedprox">FedProx</option>
+            <option value="scaffold">SCAFFOLD</option>
+            <option value="fednova">FedNova</option>
+          </select>
+          <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>
+            {experimentConfig.algorithm === 'fedavg' && 'Federated Averaging — weighted average by sample count'}
+            {experimentConfig.algorithm === 'fedprox' && 'FedAvg + proximal term in local training (requires Mu)'}
+            {experimentConfig.algorithm === 'scaffold' && 'Variance reduction with control variates'}
+            {experimentConfig.algorithm === 'fednova' && 'Normalized averaging by local gradient steps'}
+          </div>
+        </div>
+
         {/* Number of Rounds */}
         <div style={parameterBoxStyle}>
           <label style={labelStyle}>
@@ -49,7 +72,7 @@ const BasicConfigForm = ({ experimentConfig, setExperimentConfig }) => {
             min="1"
           />
         </div>
-   
+
         {/* Number of Clients */}
         <div style={parameterBoxStyle}>
           <label style={labelStyle}>
@@ -66,7 +89,7 @@ const BasicConfigForm = ({ experimentConfig, setExperimentConfig }) => {
             Synced with Node Configuration
           </div>
         </div>
-   
+
         {/* Local Epochs */}
         <div style={parameterBoxStyle}>
           <label style={labelStyle}>
@@ -80,7 +103,7 @@ const BasicConfigForm = ({ experimentConfig, setExperimentConfig }) => {
             min="1"
           />
         </div>
-   
+
         {/* Batch Size */}
         <div style={parameterBoxStyle}>
           <label style={labelStyle}>
@@ -94,7 +117,7 @@ const BasicConfigForm = ({ experimentConfig, setExperimentConfig }) => {
             min="1"
           />
         </div>
-   
+
         {/* Learning Rate */}
         <div style={parameterBoxStyle}>
           <label style={labelStyle}>
@@ -109,22 +132,27 @@ const BasicConfigForm = ({ experimentConfig, setExperimentConfig }) => {
             min="0"
           />
         </div>
-   
-        {/* Mu */}
-        <div style={parameterBoxStyle}>
-          <label style={labelStyle}>
-            Mu
-          </label>
-          <input
-            type="number"
-            value={experimentConfig.mu}
-            onChange={(e) => handleInputChange('mu', parseFloat(e.target.value))}
-            style={inputStyle}
-            step="0.1"
-            min="0"
-          />
-        </div>
-   
+
+        {/* Mu - only visible for FedProx */}
+        {experimentConfig.algorithm === 'fedprox' && (
+          <div style={parameterBoxStyle}>
+            <label style={labelStyle}>
+              Mu (Proximal Term)
+            </label>
+            <input
+              type="number"
+              value={experimentConfig.mu}
+              onChange={(e) => handleInputChange('mu', parseFloat(e.target.value))}
+              style={inputStyle}
+              step="0.01"
+              min="0"
+            />
+            <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>
+              Controls proximity to global model (0 = FedAvg)
+            </div>
+          </div>
+        )}
+
         {/* Quantization Bits */}
         <div style={parameterBoxStyle}>
           <label style={labelStyle}>
@@ -138,7 +166,7 @@ const BasicConfigForm = ({ experimentConfig, setExperimentConfig }) => {
             min="1"
           />
         </div>
-   
+
         {/* Global Participation Rate */}
         <div style={parameterBoxStyle}>
           <label style={labelStyle}>
@@ -156,6 +184,6 @@ const BasicConfigForm = ({ experimentConfig, setExperimentConfig }) => {
         </div>
       </div>
     );
-   };
-   
-   export default BasicConfigForm;
+  };
+
+  export default BasicConfigForm;

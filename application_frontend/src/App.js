@@ -82,6 +82,7 @@ function App() {
   const [localEpochs, setLocalEpochs] = useState(1);
   const [batchSize, setBatchSize] = useState(32);
   const [learningRate, setLearningRate] = useState(0.01);
+  const [algorithm, setAlgorithm] = useState('fedavg');
   const [mu, setMu] = useState(0.0);
   const [quantizationBits, setQuantizationBits] = useState(32);
   const [globalParticipationRate, setGlobalParticipationRate] = useState(1.0);
@@ -167,6 +168,7 @@ function App() {
     setLocalEpochs(useCase.basicConfig.localEpochs);
     setBatchSize(useCase.basicConfig.batchSize);
     setLearningRate(useCase.basicConfig.learningRate);
+    setAlgorithm(useCase.basicConfig.algorithm || 'fedavg');
     setMu(useCase.basicConfig.mu);
     setQuantizationBits(useCase.basicConfig.quantizationBits);
     setGlobalParticipationRate(useCase.basicConfig.globalParticipationRate);
@@ -364,6 +366,7 @@ function App() {
         mu: parseFloat(mu),
         quantization_bits: parseInt(quantizationBits, 10),
         global_participation_rate: parseFloat(globalParticipationRate),
+        algorithm: algorithm,
       };
 
       console.log('Payload being sent to /start:', payload);
@@ -949,6 +952,9 @@ const handleExperimentConfigUpdate = useCallback((field, value) => {
   console.log('Updating config:', field, value); // Debug log
   
   switch(field) {
+    case 'algorithm':
+      setAlgorithm(value);
+      break;
     case 'datasetName':
       setDatasetName(value);
       break;
@@ -1335,9 +1341,48 @@ return (
         </div>
       </div>
 
+      {/* === IL PROGETTO === */}
+      <div style={{
+        marginBottom: '24px',
+        padding: '24px 28px',
+        backgroundColor: '#fff',
+        borderRadius: '12px',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+        borderLeft: '4px solid #2e7d32',
+      }}>
+        <h4 style={{
+          margin: '0 0 10px 0',
+          fontSize: '0.95rem',
+          color: '#2e7d32',
+          fontWeight: '600',
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+        }}>
+          Il Progetto
+        </h4>
+        <p style={{ margin: '0 0 12px 0', fontSize: '0.88rem', color: '#444', lineHeight: '1.8', textAlign: 'justify' }}>
+          <strong>FLOPBG</strong> nasce dalla collaborazione scientifica tra
+          l'<strong>Ospedale Pediatrico Bambino Ges&ugrave;</strong> (IRCCS), il pi&ugrave; grande centro di ricerca
+          e cura pediatrica in Europa, e l'<strong>Universit&agrave; delle Camere di Commercio Italiane</strong>
+          (Universitas Mercatorum), nell'ambito del Dottorato di Ricerca in Big Data and Artificial Intelligence.
+        </p>
+        <p style={{ margin: '0 0 12px 0', fontSize: '0.88rem', color: '#444', lineHeight: '1.8', textAlign: 'justify' }}>
+          Il progetto affronta una delle sfide pi&ugrave; rilevanti dell'AI in sanit&agrave;: come addestrare modelli
+          di deep learning per la diagnosi medica per immagini quando i dati clinici sono distribuiti tra molteplici
+          istituzioni e non possono essere condivisi centralmente per vincoli di privacy (GDPR), sovranit&agrave;
+          dei dati e regolamentazioni sanitarie nazionali ed internazionali.
+        </p>
+        <p style={{ margin: 0, fontSize: '0.88rem', color: '#444', lineHeight: '1.8', textAlign: 'justify' }}>
+          La piattaforma &egrave; un sistema full-stack di simulazione e sperimentazione per il
+          <strong> Federated Learning</strong>, progettato per valutare e confrontare strategie di addestramento
+          distribuito rispetto ad approcci centralizzati, con particolare focus sull'imaging medico diagnostico
+          &mdash; dalla radiologia pediatrica alla dermatologia oncologica, dalla tubercolosi alla retinopatia diabetica.
+        </p>
+      </div>
+
       {/* === ABSTRACT === */}
       <div style={{
-        marginBottom: '36px',
+        marginBottom: '24px',
         padding: '24px 28px',
         backgroundColor: '#fff',
         borderRadius: '12px',
@@ -1364,13 +1409,15 @@ return (
           Il Federated Learning (FL) rappresenta un cambio di paradigma nell'addestramento distribuito
           di modelli di machine learning, consentendo a molteplici istituzioni di collaborare senza condividere
           i dati grezzi. Questa piattaforma di simulazione affronta le sfide reali del FL in ambito clinico:
-          <strong> eterogeneità computazionale</strong> tra i nodi partecipanti (ospedali con risorse diverse),
-          <strong> dinamismo nella partecipazione</strong> (disponibilità variabile dei client),
+          <strong> eterogeneit&agrave; computazionale</strong> tra i nodi partecipanti (ospedali con risorse diverse),
+          <strong> dinamismo nella partecipazione</strong> (disponibilit&agrave; variabile dei client),
           <strong> distribuzione non-IID dei dati</strong> (casistiche cliniche diverse per sede),
           e <strong> vincoli di comunicazione</strong> (banda limitata, latenza variabile).
-          Il framework implementa e confronta algoritmi FedAvg e FedProx con meccanismi avanzati di
-          quantizzazione dei pesi, sistema di reputazione dei client, e supporto per scenari multi-scala
-          (nazionale, europeo, globale), con particolare applicazione all'imaging medico diagnostico.
+          Il framework implementa e confronta quattro algoritmi di aggregazione federata &mdash;
+          <strong> FedAvg</strong>, <strong>FedProx</strong>, <strong>SCAFFOLD</strong> e <strong>FedNova</strong> &mdash;
+          con meccanismi avanzati di quantizzazione dei pesi, sistema di reputazione dei client,
+          e supporto per scenari multi-scala (nazionale, europeo, globale),
+          con particolare applicazione all'imaging medico diagnostico.
         </p>
       </div>
 
@@ -1433,6 +1480,18 @@ return (
         </div>
       </div>
 
+      {/* === IMAGES CAPTION === */}
+      <p style={{
+        textAlign: 'center',
+        fontSize: '0.82rem',
+        color: '#888',
+        margin: '-24px 0 36px',
+        lineHeight: '1.6',
+      }}>
+        A sinistra, una panoramica sintetica dell'intero framework &mdash; dal problema scientifico alle feature implementate.
+        A destra, il diagramma metodologico dettagliato con il flusso operativo completo: configurazione, motore FL (client/server), aggregazione e valutazione dei risultati.
+      </p>
+
       {/* === RESEARCH CONTRIBUTIONS === */}
       <div style={{ marginBottom: '36px' }}>
         <h4 style={{
@@ -1444,6 +1503,16 @@ return (
         }}>
           Contributi di Ricerca Principali
         </h4>
+        <p style={{
+          textAlign: 'center',
+          fontSize: '0.82rem',
+          color: '#666',
+          margin: '-8px auto 18px',
+          maxWidth: '800px',
+          lineHeight: '1.6',
+        }}>
+          Il framework integra sei componenti chiave che affrontano le principali sfide del Federated Learning in ambienti reali, dalla gestione dell'eterogeneit&agrave; dei nodi alla compressione dei modelli per reti a banda limitata.
+        </p>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
@@ -1452,8 +1521,8 @@ return (
           {[
             {
               icon: '{}',
-              title: 'FedAvg & FedProx',
-              desc: 'Implementazione completa di Federated Averaging e FedProx con proximal term configurabile (mu) per gestire l\'eterogeneità statistica tra i client.',
+              title: 'FL Algorithms',
+              desc: 'Implementazione completa di FedAvg, FedProx, SCAFFOLD e FedNova per confrontare strategie di aggregazione, variance reduction e normalizzazione dei gradient steps.',
               color: '#1565c0',
               bg: '#e3f2fd',
             },
@@ -1553,6 +1622,16 @@ return (
         }}>
           Architettura del Framework
         </h4>
+        <p style={{
+          textAlign: 'center',
+          fontSize: '0.82rem',
+          color: '#666',
+          margin: '-12px auto 18px',
+          maxWidth: '800px',
+          lineHeight: '1.6',
+        }}>
+          La pipeline di sperimentazione segue un flusso sequenziale in sei fasi: dalla selezione del dataset alla valutazione finale, passando per la configurazione dei client, il deployment geografico dei nodi, l'addestramento federato e l'aggregazione dei pesi.
+        </p>
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -1564,7 +1643,7 @@ return (
             { label: 'Dataset\nSelection', sub: '11 datasets', color: '#1565c0' },
             { label: 'Client\nConfiguration', sub: 'Heterogeneity + Dynamism', color: '#2e7d32' },
             { label: 'Node\nDistribution', sub: 'Geographic deployment', color: '#e65100' },
-            { label: 'FL Training', sub: 'FedAvg / FedProx', color: '#6a1b9a' },
+            { label: 'FL Training', sub: 'FedAvg / FedProx / SCAFFOLD / FedNova', color: '#6a1b9a' },
             { label: 'Aggregation', sub: 'Weighted + Reputation', color: '#00695c' },
             { label: 'Evaluation', sub: 'Accuracy, Loss, ROC, CM', color: '#c62828' },
           ].map((step, i) => (
@@ -1712,7 +1791,7 @@ return (
           {[
             { category: 'Backend', items: 'Python, Flask, TensorFlow / Keras', color: '#1565c0' },
             { category: 'Frontend', items: 'React, Chart.js, react-simple-maps', color: '#2e7d32' },
-            { category: 'FL Framework', items: 'FedAvg, FedProx, Weight Quantization', color: '#6a1b9a' },
+            { category: 'FL Framework', items: 'FedAvg, FedProx, SCAFFOLD, FedNova', color: '#6a1b9a' },
             { category: 'Data Processing', items: 'NumPy, Scikit-learn, Pillow', color: '#e65100' },
             { category: 'Visualization', items: 'Chart.js (metrics), D3.js (geo maps)', color: '#00695c' },
             { category: 'Communication', items: 'REST API, JSON, YAML configuration', color: '#c62828' },
@@ -1762,6 +1841,16 @@ return (
         }}>
           Scenari Multi-Scala
         </h4>
+        <p style={{
+          textAlign: 'center',
+          fontSize: '0.82rem',
+          color: '#666',
+          margin: '-6px auto 18px',
+          maxWidth: '800px',
+          lineHeight: '1.6',
+        }}>
+          La piattaforma include tre Use Case preconfigurati a scale geografiche crescenti, ciascuno ispirato a scenari clinici reali con diversi livelli di eterogeneit&agrave; infrastrutturale, distribuzione dei dati e vincoli di comunicazione.
+        </p>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
@@ -2369,8 +2458,9 @@ return (
       padding: '20px',
       borderRadius: '8px'
     }}>
-      <BasicConfigForm 
+      <BasicConfigForm
         experimentConfig={{
+          algorithm,
           numRounds,
           numClients,
           localEpochs,
