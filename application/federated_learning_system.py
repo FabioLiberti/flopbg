@@ -55,6 +55,9 @@ class FederatedLearningSystem:
         self.execution_dir = None
         self.algorithm = 'fedavg'
         self.client_controls = {}  # SCAFFOLD: control variates per client
+        self.client_h = {}  # FedDyn: dynamic regularizers per client
+        self.client_prev_weights = {}  # MOON: previous local model per client
+        self.client_label_dists = {}   # FedDisco: label distributions per client
         logging.info("FederatedLearningSystem initialized.")
 
     def start_experiment(self, num_rounds, local_epochs, batch_size, learning_rate, mu, quantization_bits, global_participation_rate, algorithm='fedavg'):
@@ -74,6 +77,32 @@ class FederatedLearningSystem:
             }
             if self.server.server_control_variate is None:
                 self.server.server_control_variate = [np.zeros_like(w) for w in global_weights]
+
+        # Initialize FedDyn dynamic regularizers if needed
+        if algorithm == 'feddyn' and self.client_manager:
+            global_weights = self.server.global_model.get_weights()
+            self.client_h = {
+                cid: [np.zeros_like(w) for w in global_weights]
+                for cid in self.client_manager.clients.keys()
+            }
+
+        # Initialize MOON previous weights (start from global)
+        if algorithm == 'moon' and self.client_manager:
+            global_weights = self.server.global_model.get_weights()
+            self.client_prev_weights = {
+                cid: [w.copy() for w in global_weights]
+                for cid in self.client_manager.clients.keys()
+            }
+
+        # Initialize FedDisco label distributions
+        if algorithm == 'feddisco' and self.client_manager:
+            for cid, client in self.client_manager.clients.items():
+                labels = client.train_labels
+                if len(labels.shape) > 1:
+                    labels = np.argmax(labels, axis=1)
+                dist = np.bincount(labels.astype(int), minlength=self.num_classes).astype(np.float64)
+                dist = dist / (dist.sum() + 1e-10)
+                self.client_label_dists[cid] = dist
 
         # Avvia l'esperimento in un thread separato
         threading.Thread(
@@ -189,6 +218,9 @@ class FederatedLearningSystem:
         self.centralized_metrics = None
         self.algorithm = 'fedavg'
         self.client_controls = {}
+        self.client_h = {}
+        self.client_prev_weights = {}
+        self.client_label_dists = {}
         # Reimposta server e client
         if self.server:
             self.server.reset()
@@ -311,6 +343,7 @@ class FederatedLearningSystem:
         client_samples = []
         client_delta_controls = []  # SCAFFOLD
         client_taus = []  # FedNova
+        client_selected_layers_list = []  # FedEL
 
         for client in active_clients:
             # Imposta i parametri del client
@@ -351,16 +384,80 @@ class FederatedLearningSystem:
                 client_samples.append(n_samples)
                 client_taus.append(tau)
 
+            elif algorithm == 'fedexp':
+                weights = client.train(global_weights, quantization_bits)
+                client_weights.append(weights)
+                client_samples.append(n_samples)
+
+            elif algorithm == 'feddyn':
+                client_h_i = self.client_h.get(
+                    client.client_id,
+                    [np.zeros_like(w) for w in global_weights]
+                )
+                weights, new_h = client.train_feddyn(
+                    global_weights, mu, client_h_i, quantization_bits
+                )
+                client_weights.append(weights)
+                client_samples.append(n_samples)
+                self.client_h[client.client_id] = new_h
+
+            elif algorithm == 'moon':
+                prev_w = self.client_prev_weights.get(
+                    client.client_id,
+                    [w.copy() for w in global_weights]
+                )
+                weights = client.train_moon(global_weights, prev_w, mu, 0.5, quantization_bits)
+                client_weights.append(weights)
+                client_samples.append(n_samples)
+                self.client_prev_weights[client.client_id] = [w.copy() for w in weights]
+
+            elif algorithm == 'feddisco':
+                weights = client.train(global_weights, quantization_bits)
+                client_weights.append(weights)
+                client_samples.append(n_samples)
+
+            elif algorithm == 'fedspeed':
+                weights = client.train_fedspeed(global_weights, mu, quantization_bits)
+                client_weights.append(weights)
+                client_samples.append(n_samples)
+
+            elif algorithm == 'fedlpa':
+                weights = client.train(global_weights, quantization_bits)
+                client_weights.append(weights)
+                client_samples.append(n_samples)
+
+            elif algorithm == 'deepafl':
+                weights = client.train_deepafl(global_weights, quantization_bits)
+                client_weights.append(weights)
+                client_samples.append(n_samples)
+
+            elif algorithm == 'fedel':
+                budget = mu if 0 < mu < 1 else 0.5
+                weights, selected = client.train_fedel(global_weights, budget, quantization_bits)
+                client_weights.append(weights)
+                client_samples.append(n_samples)
+                client_selected_layers_list.append(selected)
+
             self.client_training_times[client.client_id] = client.get_training_time()
             logging.debug(f"Client {client.client_id} contributed {n_samples} samples.")
 
         # Aggregazione in base all'algoritmo
-        if algorithm == 'fedavg' or algorithm == 'fedprox':
+        if algorithm in ('fedavg', 'fedprox', 'feddyn', 'moon', 'fedspeed', 'deepafl'):
             self.server.aggregate_weights(client_weights, client_samples)
         elif algorithm == 'scaffold':
             self.server.aggregate_scaffold(client_weights, client_samples, client_delta_controls)
         elif algorithm == 'fednova':
             self.server.aggregate_fednova(client_weights, client_samples, client_taus)
+        elif algorithm == 'fedexp':
+            self.server.aggregate_fedexp(client_weights, client_samples)
+        elif algorithm == 'feddisco':
+            active_dists = [self.client_label_dists[c.client_id] for c in active_clients
+                            if c.client_id in self.client_label_dists]
+            self.server.aggregate_disco(client_weights, client_samples, active_dists)
+        elif algorithm == 'fedlpa':
+            self.server.aggregate_fedlpa(client_weights, client_samples)
+        elif algorithm == 'fedel':
+            self.server.aggregate_fedel(client_weights, client_samples, client_selected_layers_list)
 
         # Salva il modello globale
         self.server.save_global_model()

@@ -50,12 +50,28 @@ const BasicConfigForm = ({ experimentConfig, setExperimentConfig }) => {
             <option value="fedprox">FedProx</option>
             <option value="scaffold">SCAFFOLD</option>
             <option value="fednova">FedNova</option>
+            <option value="fedexp">FedExP</option>
+            <option value="feddyn">FedDyn</option>
+            <option value="moon">MOON</option>
+            <option value="feddisco">FedDisco</option>
+            <option value="fedspeed">FedSpeed</option>
+            <option value="fedlpa">FedLPA</option>
+            <option value="deepafl">DeepAFL</option>
+            <option value="fedel">FedEL</option>
           </select>
           <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>
             {experimentConfig.algorithm === 'fedavg' && 'Federated Averaging — weighted average by sample count'}
             {experimentConfig.algorithm === 'fedprox' && 'FedAvg + proximal term in local training (requires Mu)'}
             {experimentConfig.algorithm === 'scaffold' && 'Variance reduction with control variates'}
             {experimentConfig.algorithm === 'fednova' && 'Normalized averaging by local gradient steps'}
+            {experimentConfig.algorithm === 'fedexp' && 'Extrapolation — adaptive server step size from pseudo-gradient agreement'}
+            {experimentConfig.algorithm === 'feddyn' && 'Dynamic Regularization — aligns local and global optima (requires Alpha)'}
+            {experimentConfig.algorithm === 'moon' && 'Model-Contrastive Learning — corrects local drift with contrastive loss (requires Mu)'}
+            {experimentConfig.algorithm === 'feddisco' && 'Distribution Discrepancy — aggregation weights based on local distribution divergence'}
+            {experimentConfig.algorithm === 'fedspeed' && 'Proximal + gradient perturbation — corrects proximal term bias (requires Mu)'}
+            {experimentConfig.algorithm === 'fedlpa' && 'Layer-wise Posterior Aggregation — Bayesian layer-by-layer aggregation'}
+            {experimentConfig.algorithm === 'deepafl' && 'Analytic FL — gradient-free least squares on classifier layer'}
+            {experimentConfig.algorithm === 'fedel' && 'Elastic Learning — dynamic tensor selection per round (requires Budget)'}
           </div>
         </div>
 
@@ -133,22 +149,31 @@ const BasicConfigForm = ({ experimentConfig, setExperimentConfig }) => {
           />
         </div>
 
-        {/* Mu - only visible for FedProx */}
-        {experimentConfig.algorithm === 'fedprox' && (
+        {/* Mu/Alpha/Budget - visible for algorithms that need a scalar parameter */}
+        {['fedprox', 'feddyn', 'moon', 'fedspeed', 'fedel'].includes(experimentConfig.algorithm) && (
           <div style={parameterBoxStyle}>
             <label style={labelStyle}>
-              Mu (Proximal Term)
+              {experimentConfig.algorithm === 'fedprox' && 'Mu (Proximal Term)'}
+              {experimentConfig.algorithm === 'feddyn' && 'Alpha (Dynamic Regularization)'}
+              {experimentConfig.algorithm === 'moon' && 'Mu (Contrastive Weight)'}
+              {experimentConfig.algorithm === 'fedspeed' && 'Mu (Proximal Term)'}
+              {experimentConfig.algorithm === 'fedel' && 'Budget Fraction'}
             </label>
             <input
               type="number"
               value={experimentConfig.mu}
               onChange={(e) => handleInputChange('mu', parseFloat(e.target.value))}
               style={inputStyle}
-              step="0.01"
+              step={experimentConfig.algorithm === 'fedel' ? '0.1' : '0.01'}
               min="0"
+              max={experimentConfig.algorithm === 'fedel' ? '1' : undefined}
             />
             <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>
-              Controls proximity to global model (0 = FedAvg)
+              {experimentConfig.algorithm === 'fedprox' && 'Controls proximity to global model (0 = FedAvg)'}
+              {experimentConfig.algorithm === 'feddyn' && 'Controls alignment of local and global optima'}
+              {experimentConfig.algorithm === 'moon' && 'Weight of contrastive loss (0 = FedAvg)'}
+              {experimentConfig.algorithm === 'fedspeed' && 'Proximal coefficient with gradient correction'}
+              {experimentConfig.algorithm === 'fedel' && 'Fraction of layers to communicate (0.1\u20131.0)'}
             </div>
           </div>
         )}

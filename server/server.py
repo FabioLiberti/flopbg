@@ -161,6 +161,128 @@ class Server:
         self.global_model.set_weights(new_weights)
         logging.info("FedNova aggregation complete.")
 
+    def aggregate_fedexp(self, client_weights, client_samples):
+        """
+        Aggregates client weights using FedExP (Extrapolation).
+        Computes a dynamic step size based on pseudo-gradient agreement.
+
+        Parameters:
+            client_weights (list): List of client weight updates.
+            client_samples (list): List of sample counts for each client.
+        """
+        logging.info("Aggregating weights using FedExP.")
+        total_samples = sum(client_samples)
+        global_w = self.global_model.get_weights()
+
+        # Compute weighted pseudo-gradients: d_i = w_global - w_i
+        # and weighted average: d_avg = Σ p_i · d_i
+        d_avg = [np.zeros_like(w) for w in global_w]
+        for i, cw in enumerate(client_weights):
+            p_i = client_samples[i] / total_samples
+            for l in range(len(global_w)):
+                d_avg[l] += p_i * (global_w[l] - cw[l])
+
+        # Compute weighted variance: var = Σ p_i · ||d_i - d_avg||²
+        d_avg_norm_sq = sum(np.sum(d ** 2) for d in d_avg)
+        variance = 0.0
+        for i, cw in enumerate(client_weights):
+            p_i = client_samples[i] / total_samples
+            for l in range(len(global_w)):
+                diff = (global_w[l] - cw[l]) - d_avg[l]
+                variance += p_i * np.sum(diff ** 2)
+
+        # Extrapolation factor: eta >= 1 ensures at least FedAvg convergence
+        eta = max(1.0, d_avg_norm_sq / (variance + 1e-10))
+
+        new_weights = []
+        for l in range(len(global_w)):
+            new_weights.append(global_w[l] - eta * d_avg[l])
+        self.global_model.set_weights(new_weights)
+        logging.info(f"FedExP aggregation complete (eta={eta:.4f}).")
+
+    def aggregate_disco(self, client_weights, client_samples, client_label_dists):
+        """
+        Aggregates using FedDisco (Distribution Discrepancy).
+        Clients with distributions closer to global get higher weight.
+        """
+        logging.info("Aggregating weights using FedDisco.")
+        total_samples = sum(client_samples)
+
+        # Compute global label distribution
+        global_dist = np.zeros_like(client_label_dists[0])
+        for i, dist in enumerate(client_label_dists):
+            global_dist += (client_samples[i] / total_samples) * dist
+
+        # Compute discrepancy-adjusted weights: w_i = n_i / (1 + D_KL(dist_i || global_dist))
+        adjusted_weights = []
+        for i, dist in enumerate(client_label_dists):
+            p = dist + 1e-10
+            q = global_dist + 1e-10
+            kl_div = np.sum(p * np.log(p / q))
+            adjusted_weights.append(client_samples[i] / (1.0 + kl_div))
+
+        total_adjusted = sum(adjusted_weights)
+        new_weights = [np.zeros_like(w) for w in self.global_model.get_weights()]
+        for i in range(len(client_weights)):
+            scale = adjusted_weights[i] / total_adjusted
+            for l in range(len(new_weights)):
+                new_weights[l] += scale * client_weights[i][l]
+        self.global_model.set_weights(new_weights)
+        logging.info("FedDisco aggregation complete.")
+
+    def aggregate_fedlpa(self, client_weights, client_samples):
+        """
+        Aggregates using FedLPA (Layer-wise Posterior Aggregation).
+        Each layer is aggregated using precision-weighted averaging.
+        Precision = n_i / var(w_i[l])
+        """
+        logging.info("Aggregating weights using FedLPA.")
+        n_layers = len(client_weights[0])
+        new_weights = []
+
+        for l in range(n_layers):
+            precisions = []
+            for i in range(len(client_weights)):
+                var = np.var(client_weights[i][l]) + 1e-10
+                precision = client_samples[i] / var
+                precisions.append(precision)
+            total_precision = sum(precisions)
+
+            layer_agg = np.zeros_like(client_weights[0][l])
+            for i in range(len(client_weights)):
+                layer_agg += (precisions[i] / total_precision) * client_weights[i][l]
+            new_weights.append(layer_agg)
+
+        self.global_model.set_weights(new_weights)
+        logging.info("FedLPA aggregation complete.")
+
+    def aggregate_fedel(self, client_weights, client_samples, client_selected_layers):
+        """
+        Aggregates using FedEL (Elastic Learning).
+        Per-layer aggregation: only clients that communicated a layer contribute to it.
+        """
+        logging.info("Aggregating weights using FedEL.")
+        global_w = self.global_model.get_weights()
+        new_weights = [np.copy(w) for w in global_w]
+
+        for l in range(len(global_w)):
+            layer_weights = []
+            layer_samples = []
+            for i in range(len(client_weights)):
+                if l in client_selected_layers[i]:
+                    layer_weights.append(client_weights[i][l])
+                    layer_samples.append(client_samples[i])
+
+            if layer_weights:
+                total = sum(layer_samples)
+                agg = np.zeros_like(global_w[l])
+                for j in range(len(layer_weights)):
+                    agg += (layer_samples[j] / total) * layer_weights[j]
+                new_weights[l] = agg
+
+        self.global_model.set_weights(new_weights)
+        logging.info("FedEL aggregation complete.")
+
     def reset(self):
         """
         Resetta lo stato del server, incluso il re-inizializzare il modello globale.

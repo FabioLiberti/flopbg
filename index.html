@@ -221,22 +221,6 @@
       font-size: 0.68rem; font-weight: 600;
       padding: 3px 8px; border-radius: 8px; text-align: center;
     }
-    .algo-toggle {
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 12px; border-top: 2px solid #e0e0e0; margin-top: 4px;
-      cursor: pointer; user-select: none; transition: background-color 0.15s ease;
-      border-radius: 0 0 8px 8px;
-    }
-    .algo-toggle:hover { background-color: #f8f9fa; }
-    .algo-toggle .arrow {
-      font-size: 0.72rem; color: #888; transition: transform 0.25s ease; display: inline-block;
-    }
-    .algo-toggle .arrow.open { transform: rotate(90deg); }
-    .algo-toggle .label { font-size: 0.72rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
-    .algo-toggle .count { font-size: 0.65rem; color: #aaa; margin-left: 4px; }
-    .algo-expandable { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
-    .algo-expandable.open { max-height: 800px; }
-
     /* === SCENARIOS === */
     .scenarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .scenario-card { padding: 18px; border-radius: 10px; text-align: center; border: 1px solid; }
@@ -546,7 +530,7 @@
       </div>
 
       <!-- Implemented: FedNova -->
-      <div class="algo-row" style="border-bottom:none">
+      <div class="algo-row">
         <div class="algo-name-cell">
           <span class="algo-badge" style="background:#e65100">Nov</span>
           <span class="algo-name" style="color:#e65100">FedNova</span>
@@ -556,105 +540,94 @@
         <span class="algo-paper" style="color:#e65100;background:#e6510010">Wang et al., 2020</span>
       </div>
 
-      <!-- Collapsible toggle -->
-      <div class="algo-toggle" onclick="toggleAlgorithms()">
-        <span class="arrow" id="algo-arrow">&#9654;</span>
-        <span class="label">Stato dell'arte recente</span>
-        <span class="count">(8 algoritmi &mdash; 2021&ndash;2025)</span>
+      <!-- Implemented: FedExP -->
+      <div class="algo-row">
+        <div class="algo-name-cell">
+          <span class="algo-badge" style="background:#bf360c">ExP</span>
+          <span class="algo-name" style="color:#bf360c">FedExP</span>
+        </div>
+        <span class="algo-desc">Estrapolazione lato server: calcola dinamicamente lo step size ottimale dai pseudo-gradienti dei client, accelerando la convergenza senza overhead.</span>
+        <span class="algo-scope" style="background:#fbe9e7">Communication-efficient, fast convergence</span>
+        <span class="algo-paper" style="color:#bf360c;background:#bf360c10">Jhunjhunwala et al., ICLR 2023</span>
       </div>
 
-      <!-- Expandable section -->
-      <div class="algo-expandable" id="algo-expandable">
-
-        <!-- MOON -->
-        <div class="algo-row">
-          <div class="algo-name-cell">
-            <span class="algo-badge" style="background:#00838f">MON</span>
-            <span class="algo-name" style="color:#00838f">MOON</span>
-          </div>
-          <span class="algo-desc">Contrastive learning a livello di modello: massimizza l'accordo tra rappresentazioni locali e globali, correggendo il drift locale su dati non-IID.</span>
-          <span class="algo-scope" style="background:#e0f7fa">Image classification, non-IID visivo</span>
-          <span class="algo-paper" style="color:#00838f;background:#00838f10">Li et al., CVPR 2021</span>
+      <!-- Implemented: FedDyn -->
+      <div class="algo-row">
+        <div class="algo-name-cell">
+          <span class="algo-badge" style="background:#4527a0">Dyn</span>
+          <span class="algo-name" style="color:#4527a0">FedDyn</span>
         </div>
+        <span class="algo-desc">Regolarizzazione dinamica: aggiorna il regolarizzatore ad ogni round per allineare gli ottimi locali con la loss globale, con convergenza pi&ugrave; rapida.</span>
+        <span class="algo-scope" style="background:#ede7f6">Large-scale, convergenza rapida</span>
+        <span class="algo-paper" style="color:#4527a0;background:#4527a010">Acar et al., ICLR 2021</span>
+      </div>
 
-        <!-- FedDyn -->
-        <div class="algo-row">
-          <div class="algo-name-cell">
-            <span class="algo-badge" style="background:#4527a0">Dyn</span>
-            <span class="algo-name" style="color:#4527a0">FedDyn</span>
-          </div>
-          <span class="algo-desc">Regolarizzazione dinamica: aggiorna il regolarizzatore ad ogni round per allineare gli ottimi locali con la loss globale, con convergenza pi&ugrave; rapida.</span>
-          <span class="algo-scope" style="background:#ede7f6">Large-scale, convergenza rapida</span>
-          <span class="algo-paper" style="color:#4527a0;background:#4527a010">Acar et al., ICLR 2021</span>
+      <!-- Implemented: MOON -->
+      <div class="algo-row">
+        <div class="algo-name-cell">
+          <span class="algo-badge" style="background:#00838f">MON</span>
+          <span class="algo-name" style="color:#00838f">MOON</span>
         </div>
+        <span class="algo-desc">Contrastive learning a livello di modello: massimizza l'accordo tra rappresentazioni locali e globali, correggendo il drift locale su dati non-IID.</span>
+        <span class="algo-scope" style="background:#e0f7fa">Image classification, non-IID visivo</span>
+        <span class="algo-paper" style="color:#00838f;background:#00838f10">Li et al., CVPR 2021</span>
+      </div>
 
-        <!-- FedExP -->
-        <div class="algo-row">
-          <div class="algo-name-cell">
-            <span class="algo-badge" style="background:#bf360c">ExP</span>
-            <span class="algo-name" style="color:#bf360c">FedExP</span>
-          </div>
-          <span class="algo-desc">Estrapolazione lato server: calcola dinamicamente lo step size ottimale dai pseudo-gradienti dei client, accelerando la convergenza senza overhead.</span>
-          <span class="algo-scope" style="background:#fbe9e7">Communication-efficient, fast convergence</span>
-          <span class="algo-paper" style="color:#bf360c;background:#bf360c10">Jhunjhunwala et al., ICLR 2023</span>
+      <!-- Implemented: FedDisco -->
+      <div class="algo-row">
+        <div class="algo-name-cell">
+          <span class="algo-badge" style="background:#00695c">Dis</span>
+          <span class="algo-name" style="color:#00695c">FedDisco</span>
         </div>
+        <span class="algo-desc">Pesi di aggregazione basati sulla discrepanza tra distribuzione locale e globale delle categorie, con garanzie teoriche pi&ugrave; strette.</span>
+        <span class="algo-scope" style="background:#e0f2f1">Non-IID severo, label imbalance</span>
+        <span class="algo-paper" style="color:#00695c;background:#00695c10">Ye et al., ICML 2023</span>
+      </div>
 
-        <!-- FedDisco -->
-        <div class="algo-row">
-          <div class="algo-name-cell">
-            <span class="algo-badge" style="background:#00695c">Dis</span>
-            <span class="algo-name" style="color:#00695c">FedDisco</span>
-          </div>
-          <span class="algo-desc">Pesi di aggregazione basati sulla discrepanza tra distribuzione locale e globale delle categorie, con garanzie teoriche pi&ugrave; strette.</span>
-          <span class="algo-scope" style="background:#e0f2f1">Non-IID severo, label imbalance</span>
-          <span class="algo-paper" style="color:#00695c;background:#00695c10">Ye et al., ICML 2023</span>
+      <!-- Implemented: FedSpeed -->
+      <div class="algo-row">
+        <div class="algo-name-cell">
+          <span class="algo-badge" style="background:#ad1457">Spd</span>
+          <span class="algo-name" style="color:#ad1457">FedSpeed</span>
         </div>
+        <span class="algo-desc">Correzione del prox-term sugli aggiornamenti locali per ridurre il bias introdotto dalla regolarizzazione, con bound di convergenza pi&ugrave; stretto.</span>
+        <span class="algo-scope" style="background:#fce4ec">Eterogeneit&agrave; elevata, pochi round</span>
+        <span class="algo-paper" style="color:#ad1457;background:#ad145710">Sun et al., ICLR 2023</span>
+      </div>
 
-        <!-- FedSpeed -->
-        <div class="algo-row">
-          <div class="algo-name-cell">
-            <span class="algo-badge" style="background:#ad1457">Spd</span>
-            <span class="algo-name" style="color:#ad1457">FedSpeed</span>
-          </div>
-          <span class="algo-desc">Correzione del prox-term sugli aggiornamenti locali per ridurre il bias introdotto dalla regolarizzazione, con bound di convergenza pi&ugrave; stretto.</span>
-          <span class="algo-scope" style="background:#fce4ec">Eterogeneit&agrave; elevata, pochi round</span>
-          <span class="algo-paper" style="color:#ad1457;background:#ad145710">Sun et al., ICLR 2023</span>
+      <!-- Implemented: FedLPA -->
+      <div class="algo-row">
+        <div class="algo-name-cell">
+          <span class="algo-badge" style="background:#33691e">LPA</span>
+          <span class="algo-name" style="color:#33691e">FedLPA</span>
         </div>
+        <span class="algo-desc">Aggregazione one-shot con posterior bayesiano layer-wise: un singolo round di comunicazione sfruttando la struttura a livelli della rete neurale.</span>
+        <span class="algo-scope" style="background:#f1f8e9">One-shot FL, privacy estrema</span>
+        <span class="algo-paper" style="color:#33691e;background:#33691e10">NeurIPS 2024</span>
+      </div>
 
-        <!-- FedLPA -->
-        <div class="algo-row">
-          <div class="algo-name-cell">
-            <span class="algo-badge" style="background:#33691e">LPA</span>
-            <span class="algo-name" style="color:#33691e">FedLPA</span>
-          </div>
-          <span class="algo-desc">Aggregazione one-shot con posterior bayesiano layer-wise: un singolo round di comunicazione sfruttando la struttura a livelli della rete neurale.</span>
-          <span class="algo-scope" style="background:#f1f8e9">One-shot FL, privacy estrema</span>
-          <span class="algo-paper" style="color:#33691e;background:#33691e10">NeurIPS 2024</span>
+      <!-- Implemented: DeepAFL -->
+      <div class="algo-row">
+        <div class="algo-name-cell">
+          <span class="algo-badge" style="background:#1a237e">AFL</span>
+          <span class="algo-name" style="color:#1a237e">DeepAFL</span>
         </div>
+        <span class="algo-desc">Analytic FL gradient-free: usa soluzioni analitiche (least squares) su feature estratte da modelli pre-trained, invariante al grado di non-IID dei dati.</span>
+        <span class="algo-scope" style="background:#e8eaf6">Non-IID estremo, robustezza</span>
+        <span class="algo-paper" style="color:#1a237e;background:#1a237e10">Zhai et al., ICLR 2025</span>
+      </div>
 
-        <!-- DeepAFL -->
-        <div class="algo-row">
-          <div class="algo-name-cell">
-            <span class="algo-badge" style="background:#1a237e">AFL</span>
-            <span class="algo-name" style="color:#1a237e">DeepAFL</span>
-          </div>
-          <span class="algo-desc">Analytic FL gradient-free: usa soluzioni analitiche (least squares) su feature estratte da modelli pre-trained, invariante al grado di non-IID dei dati.</span>
-          <span class="algo-scope" style="background:#e8eaf6">Non-IID estremo, robustezza</span>
-          <span class="algo-paper" style="color:#1a237e;background:#1a237e10">Zhai et al., ICLR 2025</span>
+      <!-- Implemented: FedEL -->
+      <div class="algo-row" style="border-bottom:none">
+        <div class="algo-name-cell">
+          <span class="algo-badge" style="background:#795548">EL</span>
+          <span class="algo-name" style="color:#795548">FedEL</span>
         </div>
+        <span class="algo-desc">Elastic learning con selezione dinamica dei tensori rilevanti per round e budget di comunicazione adattivo, bilanciando accuratezza ed efficienza.</span>
+        <span class="algo-scope" style="background:#efebe9">Device eterogenei, edge computing</span>
+        <span class="algo-paper" style="color:#795548;background:#79554810">NeurIPS 2025</span>
+      </div>
 
-        <!-- FedEL -->
-        <div class="algo-row" style="border-bottom:none">
-          <div class="algo-name-cell">
-            <span class="algo-badge" style="background:#795548">EL</span>
-            <span class="algo-name" style="color:#795548">FedEL</span>
-          </div>
-          <span class="algo-desc">Elastic learning con selezione dinamica dei tensori rilevanti per round e budget di comunicazione adattivo, bilanciando accuratezza ed efficienza.</span>
-          <span class="algo-scope" style="background:#efebe9">Device eterogenei, edge computing</span>
-          <span class="algo-paper" style="color:#795548;background:#79554810">NeurIPS 2025</span>
-        </div>
-
-      </div><!-- /algo-expandable -->
     </div><!-- /algo-table -->
   </div>
 
@@ -714,15 +687,6 @@
   </div>
 
 </div>
-
-<script>
-function toggleAlgorithms() {
-  var el = document.getElementById('algo-expandable');
-  var arrow = document.getElementById('algo-arrow');
-  el.classList.toggle('open');
-  arrow.classList.toggle('open');
-}
-</script>
 
 </body>
 </html>
