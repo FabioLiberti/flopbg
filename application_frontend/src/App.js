@@ -1943,6 +1943,7 @@ return (
         overflow: 'hidden'
       }}>
         <GlobeVisualization
+          key={nodeDistView}
           nodes={nodes}
           projectionConfig={currentView.projection}
         />

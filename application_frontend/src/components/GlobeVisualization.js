@@ -45,7 +45,7 @@ const GlobeVisualization = ({ nodes, projectionConfig, geography = '/countries-1
           height: '100%',
         }}
       >
-        <ZoomableGroup>
+        <ZoomableGroup center={projection.center || [0, 0]}>
           <Geographies geography={geography}>
             {({ geographies }) =>
               geographies.map((geo) => (

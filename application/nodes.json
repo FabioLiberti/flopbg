@@ -1,88 +1,52 @@
 [
   {
     "id": 1,
-    "name": "Charit\u00e9 Universit\u00e4tsmedizin",
-    "city": "Milan",
-    "latitude": 45.4642,
-    "longitude": 9.19,
+    "name": "Ospedale Regionale Aosta",
+    "city": "Sondrio",
+    "latitude": 46.1699,
+    "longitude": 9.8727,
     "client_type": "strong",
     "dynamism_type": "fast"
   },
   {
     "id": 2,
-    "name": "AP-HP H\u00f4pital Saint-Louis",
-    "city": "Messina",
-    "latitude": 38.1938,
-    "longitude": 15.554,
-    "client_type": "strong",
-    "dynamism_type": "fast"
+    "name": "Ospedale di Bolzano",
+    "city": "Bolzano",
+    "latitude": 46.4983,
+    "longitude": 11.3548,
+    "client_type": "medium",
+    "dynamism_type": "normal"
   },
   {
     "id": 3,
-    "name": "NHS Royal London Hospital",
-    "city": "Rome",
-    "latitude": 41.9028,
-    "longitude": 12.4964,
-    "client_type": "strong",
-    "dynamism_type": "fast"
+    "name": "Ospedale S. Chiara Trento",
+    "city": "Milan",
+    "latitude": 45.4642,
+    "longitude": 9.19,
+    "client_type": "medium",
+    "dynamism_type": "normal"
   },
   {
     "id": 4,
-    "name": "Istituto Europeo di Oncologia",
-    "city": "Bologna",
-    "latitude": 44.4949,
-    "longitude": 11.3426,
-    "client_type": "strong",
-    "dynamism_type": "fast"
+    "name": "Ospedale di Belluno",
+    "city": "Bari",
+    "latitude": 41.1175,
+    "longitude": 16.8703,
+    "client_type": "weak",
+    "dynamism_type": "slow"
   },
   {
     "id": 5,
-    "name": "Hospital 12 de Octubre",
-    "city": "Genoa",
-    "latitude": 44.4056,
-    "longitude": 8.9463,
-    "client_type": "medium",
-    "dynamism_type": "normal"
-  },
-  {
-    "id": 6,
-    "name": "Amsterdam UMC",
-    "city": "Catania",
-    "latitude": 37.4979,
-    "longitude": 15.0878,
-    "client_type": "medium",
-    "dynamism_type": "normal"
-  },
-  {
-    "id": 7,
-    "name": "Karolinska Universitetssjukhuset",
-    "city": "Palermo",
-    "latitude": 38.1157,
-    "longitude": 13.3615,
-    "client_type": "medium",
-    "dynamism_type": "normal"
-  },
-  {
-    "id": 8,
-    "name": "AKH Wien \u2013 Univ. Dermatologie",
-    "city": "Naples",
-    "latitude": 40.8518,
-    "longitude": 14.2681,
-    "client_type": "medium",
-    "dynamism_type": "normal"
-  },
-  {
-    "id": 9,
-    "name": "Universit\u00e4tsspital Z\u00fcrich",
-    "city": "Cagliari",
-    "latitude": 39.2238,
-    "longitude": 9.1217,
+    "name": "Ospedale di Sondrio",
+    "city": "Aosta",
+    "latitude": 45.7375,
+    "longitude": 7.3154,
     "client_type": "weak",
     "dynamism_type": "normal"
   },
   {
-    "id": 10,
-    "name": "Hospital de Santa Maria",
+    "id": 6,
+    "name": "Ospedale S. Salvatore L'Aquila",
     "city": "Turin",
     "latitude": 45.0705,
     "longitude": 7.6868,
@@ -90,21 +54,41 @@
     "dynamism_type": "slow"
   },
   {
-    "id": 11,
-    "name": "ATTIKON University Hospital",
-    "city": "Padua",
-    "latitude": 45.406,
-    "longitude": 11.8776,
-    "client_type": "weak",
-    "dynamism_type": "slow"
+    "id": 7,
+    "name": "Ospedale San Carlo Potenza",
+    "city": "Venice",
+    "latitude": 45.4408,
+    "longitude": 12.3155,
+    "client_type": "medium",
+    "dynamism_type": "fast"
   },
   {
-    "id": 12,
-    "name": "Centralny Szpital Kliniczny",
-    "city": "Florence",
-    "latitude": 43.7696,
-    "longitude": 11.2558,
+    "id": 8,
+    "name": "Ospedale Cardarelli Campobasso",
+    "city": "Cagliari",
+    "latitude": 39.2238,
+    "longitude": 9.1217,
     "client_type": "weak",
-    "dynamism_type": "slow"
+    "dynamism_type": "normal"
+  },
+  {
+    "id": 9,
+    "name": "Ospedale S. Camillo de Lellis Rieti",
+    "city": "Messina",
+    "latitude": 38.1938,
+    "longitude": 15.554,
+    "client_type": "strong",
+    "dynamism_type": "fast"
+  },
+  {
+    "id": 10,
+    "name": "Ospedale Veneziale Isernia",
+    "city": "Isernia",
+    "latitude": 41.596,
+    "longitude": 14.233,
+    "client_type": "medium",
+    "dynamism_type": "normal"
+  }
+]"
   }
 ]
