@@ -1712,10 +1712,10 @@ return (
         backgroundColor: '#fff',
         borderRadius: '12px',
         boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+        textAlign: 'center',
       }}>
         <h4 style={{
-          textAlign: 'center',
-          margin: '0 0 24px 0',
+          margin: '0 0 8px 0',
           fontSize: '1rem',
           color: '#333',
           fontWeight: '600',
@@ -1723,68 +1723,23 @@ return (
           Architettura del Framework
         </h4>
         <p style={{
-          textAlign: 'center',
           fontSize: '0.82rem',
           color: '#666',
-          margin: '-12px auto 18px',
+          margin: '0 auto 18px',
           maxWidth: '800px',
           lineHeight: '1.6',
         }}>
           La pipeline di sperimentazione segue un flusso sequenziale in sei fasi: dalla selezione del dataset alla valutazione finale, passando per la configurazione dei client, il deployment geografico dei nodi, l'addestramento federato e l'aggregazione dei pesi.
         </p>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '12px',
-          flexWrap: 'wrap',
-        }}>
-          {[
-            { label: 'Dataset\nSelection', sub: '11 datasets', color: '#1565c0' },
-            { label: 'Client\nConfiguration', sub: 'Heterogeneity + Dynamism', color: '#2e7d32' },
-            { label: 'Node\nDistribution', sub: 'Geographic deployment', color: '#e65100' },
-            { label: 'FL Training', sub: 'FedAvg / FedProx / SCAFFOLD / FedNova', color: '#6a1b9a' },
-            { label: 'Aggregation', sub: 'Weighted + Reputation', color: '#00695c' },
-            { label: 'Evaluation', sub: 'Accuracy, Loss, ROC, CM', color: '#c62828' },
-          ].map((step, i) => (
-            <React.Fragment key={i}>
-              <div style={{
-                padding: '14px 16px',
-                backgroundColor: `${step.color}0d`,
-                borderRadius: '10px',
-                border: `2px solid ${step.color}33`,
-                textAlign: 'center',
-                minWidth: '130px',
-              }}>
-                <div style={{
-                  fontSize: '0.82rem',
-                  fontWeight: '600',
-                  color: step.color,
-                  whiteSpace: 'pre-line',
-                  lineHeight: '1.3',
-                  marginBottom: '4px',
-                }}>
-                  {step.label}
-                </div>
-                <div style={{
-                  fontSize: '0.68rem',
-                  color: '#888',
-                }}>
-                  {step.sub}
-                </div>
-              </div>
-              {i < 5 && (
-                <div style={{
-                  fontSize: '1.2rem',
-                  color: '#bbb',
-                  fontWeight: '300',
-                }}>
-                  &#8594;
-                </div>
-              )}
-            </React.Fragment>
-          ))}
-        </div>
+        <img
+          src="/FLOPBG-Pipeline2.jpg"
+          alt="Architettura del Framework: Pipeline di Sperimentazione"
+          style={{
+            maxWidth: '60%',
+            height: 'auto',
+            borderRadius: '8px',
+          }}
+        />
       </div>
 
       {/* === DATASETS & TECHNOLOGY === */}

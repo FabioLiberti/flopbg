@@ -136,26 +136,6 @@
     .contrib-card h5 { font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; }
     .contrib-card p { font-size: 0.78rem; color: #555; line-height: 1.6; }
 
-    /* === ARCHITECTURE FLOW === */
-    .arch-flow {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .arch-step {
-      padding: 14px 16px;
-      border-radius: 10px;
-      text-align: center;
-      min-width: 130px;
-      border-width: 2px;
-      border-style: solid;
-    }
-    .arch-step .label { font-size: 0.82rem; font-weight: 600; white-space: pre-line; line-height: 1.3; margin-bottom: 4px; }
-    .arch-step .sub { font-size: 0.68rem; color: #888; }
-    .arch-arrow { font-size: 1.2rem; color: #bbb; font-weight: 300; }
-
     /* === DATASETS + TECH GRID === */
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
     .two-col .card { margin-bottom: 0; }
@@ -276,8 +256,6 @@
     @media (max-width: 900px) {
       .contributions-grid, .scenarios-grid { grid-template-columns: 1fr; }
       .two-col, .images-grid, .ds-columns { grid-template-columns: 1fr; }
-      .arch-flow { flex-direction: column; }
-      .arch-arrow { transform: rotate(90deg); }
     }
   </style>
 </head>
@@ -421,42 +399,16 @@
   </div>
 
   <!-- ARCHITECTURE FLOW -->
-  <div class="card">
+  <div class="card" style="text-align:center">
     <div class="card-title">Architettura del Framework</div>
-    <p style="text-align:center;font-size:0.82rem;color:#666;margin:-8px 0 18px;max-width:800px;margin-left:auto;margin-right:auto;line-height:1.6">
+    <p style="font-size:0.82rem;color:#666;margin:-8px auto 18px;max-width:800px;line-height:1.6">
       La pipeline di sperimentazione segue un flusso sequenziale in sei fasi: dalla selezione del dataset alla valutazione finale, passando per la configurazione dei client, il deployment geografico dei nodi, l'addestramento federato e l'aggregazione dei pesi.
     </p>
-    <div class="arch-flow">
-      <div class="arch-step" style="background:#1565c00d;border-color:#1565c033">
-        <div class="label" style="color:#1565c0">Dataset<br>Selection</div>
-        <div class="sub">11 datasets</div>
-      </div>
-      <div class="arch-arrow">&#8594;</div>
-      <div class="arch-step" style="background:#2e7d320d;border-color:#2e7d3233">
-        <div class="label" style="color:#2e7d32">Client<br>Configuration</div>
-        <div class="sub">Heterogeneity + Dynamism</div>
-      </div>
-      <div class="arch-arrow">&#8594;</div>
-      <div class="arch-step" style="background:#e651000d;border-color:#e6510033">
-        <div class="label" style="color:#e65100">Node<br>Distribution</div>
-        <div class="sub">Geographic deployment</div>
-      </div>
-      <div class="arch-arrow">&#8594;</div>
-      <div class="arch-step" style="background:#6a1b9a0d;border-color:#6a1b9a33">
-        <div class="label" style="color:#6a1b9a">FL Training</div>
-        <div class="sub">FedAvg / FedProx / SCAFFOLD / FedNova</div>
-      </div>
-      <div class="arch-arrow">&#8594;</div>
-      <div class="arch-step" style="background:#00695c0d;border-color:#00695c33">
-        <div class="label" style="color:#00695c">Aggregation</div>
-        <div class="sub">Weighted + Reputation</div>
-      </div>
-      <div class="arch-arrow">&#8594;</div>
-      <div class="arch-step" style="background:#c628280d;border-color:#c6282833">
-        <div class="label" style="color:#c62828">Evaluation</div>
-        <div class="sub">Accuracy, Loss, ROC, CM</div>
-      </div>
-    </div>
+    <img
+      src="_img_/FLOPBG-Pipeline2.jpg"
+      alt="Architettura del Framework: Pipeline di Sperimentazione"
+      style="max-width:60%;height:auto;border-radius:8px"
+    />
   </div>
 
   <!-- DATASETS + TECHNOLOGY -->
