@@ -30,6 +30,12 @@
   <img src="_screenshot/screen1.png" alt="Platform Dashboard" width="90%"/>
 </p>
 
+<p align="center">
+  <img src="_img_/FLOPBG-Infografica.png" alt="FLOPBG Infografica" width="48%"/>
+  &nbsp;
+  <img src="_img_/FLOPBG-Diagramma.png" alt="FLOPBG Diagramma" width="48%"/>
+</p>
+
 ---
 
 ## Key Features
@@ -102,6 +108,21 @@
               |  +-------------------------------+  |
               +-------------------------------------+
 ```
+
+<p align="center">
+  <img src="_img_/FLOPBG-Pipeline.png" alt="FLOPBG Pipeline" width="90%"/>
+</p>
+
+### Experimentation Pipeline
+
+| Phase | Name | Description |
+|:-----:|------|-------------|
+| **1** | **Dataset Selection** | Selection from 11 available datasets (5 benchmark + 6 clinical medical imaging) |
+| **2** | **Client Configuration** | Definition of client heterogeneity profiles (strong, medium, weak) and dynamism parameters (participation rate, dropout) |
+| **3** | **Node Distribution** | Geographic deployment of nodes with configurable network topology and communication constraints |
+| **4** | **FL Training** | Execution of federated training rounds using the selected algorithm (FedAvg, FedProx, SCAFFOLD, FedNova) |
+| **5** | **Aggregation** | Weighted aggregation of local model updates at the central server, with optional reputation-based client selection |
+| **6** | **Evaluation** | Comprehensive assessment through Accuracy, Loss, ROC-AUC, and Confusion Matrix metrics |
 
 ---
 
