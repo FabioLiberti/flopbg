@@ -10,7 +10,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/python-3.10-blue?logo=python&logoColor=white" alt="Python"/>
-  <img src="https://img.shields.io/badge/TensorFlow-2.16-orange?logo=tensorflow&logoColor=white" alt="TensorFlow"/>
+  <img src="https://img.shields.io/badge/TensorFlow-2.16+-orange?logo=tensorflow&logoColor=white" alt="TensorFlow"/>
   <img src="https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=white" alt="React"/>
   <img src="https://img.shields.io/badge/Flask-API-black?logo=flask&logoColor=white" alt="Flask"/>
   <img src="https://img.shields.io/badge/License-Research-green" alt="License"/>
@@ -42,14 +42,33 @@
 
 | Feature | Description |
 |---------|-------------|
-| **FL Algorithms** | FedAvg and FedProx with configurable proximal parameter (mu) |
+| **12 FL Algorithms** | FedAvg, FedProx, SCAFFOLD, FedNova, FedExP, FedDyn, MOON, FedDisco, FedSpeed, FedLPA, DeepAFL, FedEL |
 | **Client Heterogeneity** | Simulates strong, medium, and weak clients with different computational power and network speed |
 | **Client Dynamism** | Variable participation rates (fast, normal, slow) with dropout simulation |
 | **Non-IID Distribution** | Realistic data partitioning across clients |
 | **Weight Quantization** | Configurable 8/16/32-bit compression for communication efficiency |
-| **Reputation System** | Client selection weighted by reliability and performance history |
+| **Reputation System** | Client selection weighted by reputation scores with incentive-based participation |
 | **Real-time Dashboard** | Live monitoring of training metrics, client activity, and model performance |
 | **11 Datasets** | 5 benchmark + 6 clinical medical imaging datasets |
+
+---
+
+## Supported Algorithms
+
+| Algorithm | Category | Description |
+|-----------|----------|-------------|
+| **FedAvg** | Baseline | Weighted averaging of client model updates |
+| **FedProx** | Regularization | Proximal term to limit client drift from the global model |
+| **SCAFFOLD** | Variance Reduction | Control variates to correct client-server gradient drift |
+| **FedNova** | Normalized Aggregation | Normalizes contributions by local gradient steps count |
+| **FedExP** | Adaptive Aggregation | Extrapolation-based dynamic step size from pseudo-gradient agreement |
+| **FedDyn** | Dynamic Regularization | Per-client dynamic regularizer updated at each round |
+| **MOON** | Contrastive Learning | Model-contrastive loss aligning local representations with the global model |
+| **FedDisco** | Distribution-Aware | Weights clients by KL-divergence of label distributions from the global distribution |
+| **FedSpeed** | Gradient Correction | Proximal term with gradient perturbation correction |
+| **FedLPA** | Bayesian Aggregation | Layer-wise precision-weighted (posterior) aggregation |
+| **DeepAFL** | Analytic FL | Freezes feature layers and solves classifier via ridge regression |
+| **FedEL** | Communication Efficient | Elastic layer selection based on update importance with configurable budget |
 
 ---
 
@@ -98,8 +117,8 @@
               |                                     |
               |  +----------+   +----------------+  |
               |  |  Server   |   | ClientManager  |  |
-              |  | (FedAvg / |   | (selection,    |  |
-              |  |  FedProx) |   |  reputation)   |  |
+              |  | (12 aggr. |   | (selection,    |  |
+              |  | algorithms)|  |  reputation)   |  |
               |  +----------+   +----------------+  |
               |        |               |            |
               |  +-----v---------------v---------+  |
@@ -120,8 +139,8 @@
 | **1** | **Dataset Selection** | Selection from 11 available datasets (5 benchmark + 6 clinical medical imaging) |
 | **2** | **Client Configuration** | Definition of client heterogeneity profiles (strong, medium, weak) and dynamism parameters (participation rate, dropout) |
 | **3** | **Node Distribution** | Geographic deployment of nodes with configurable network topology and communication constraints |
-| **4** | **FL Training** | Execution of federated training rounds using the selected algorithm (FedAvg, FedProx, SCAFFOLD, FedNova) |
-| **5** | **Aggregation** | Weighted aggregation of local model updates at the central server, with optional reputation-based client selection |
+| **4** | **FL Training** | Execution of federated training rounds using the selected algorithm (12 available) |
+| **5** | **Aggregation** | Server-side aggregation with algorithm-specific strategies (weighted averaging, control variates, normalized gradients, contrastive alignment, etc.) |
 | **6** | **Evaluation** | Comprehensive assessment through Accuracy, Loss, ROC-AUC, and Confusion Matrix metrics |
 
 ---
@@ -181,23 +200,28 @@ flopbg/
 ├── application/                      # Backend FL engine
 │   ├── app.py                        # Flask REST API server
 │   ├── main.py                       # FL orchestrator
-│   ├── federated_learning_system.py  # Core FL logic
-│   ├── report_manager.py            # Report generation
+│   ├── federated_learning_system.py  # Core FL logic (12 algorithms)
+│   ├── report_manager.py            # Report generation & scheduling
 │   └── reports/                      # Reporting modules
+│       ├── fl_reports.py             # FL-specific reporting
+│       ├── metrics.py                # Metrics calculation
+│       └── visualization.py          # Visualization utilities
 ├── application_frontend/             # React frontend
 │   ├── src/
 │   │   ├── App.js                    # Main application
-│   │   └── components/               # UI components (19+)
+│   │   ├── components/               # UI components (19+)
+│   │   ├── hooks/                    # Custom React hooks
+│   │   └── data/                     # Static data (geo, use cases)
 │   └── package.json
 ├── clients/
-│   ├── client.py                     # FL client node
-│   └── client_manager.py            # Client orchestration
+│   ├── client.py                     # FL client node (12 training methods)
+│   └── client_manager.py            # Client orchestration & reputation
 ├── server/
-│   └── server.py                     # Aggregation server
+│   └── server.py                     # Aggregation server (8 strategies)
 ├── models/
-│   └── model_definition.py          # CNN architectures
+│   └── model_definition.py          # CNN architectures (4 model types)
 ├── data/
-│   └── data_loading.py              # Dataset loading utilities
+│   └── data_loading.py              # Dataset loading & Non-IID splitting
 ├── utils/
 │   ├── metrics.py                   # Evaluation metrics
 │   ├── visualization.py            # Plotting utilities
@@ -274,13 +298,13 @@ All experiment parameters are managed through `config.yaml`:
 
 ```yaml
 # Training parameters
-global_epochs: 10
+global_epochs: 2
 local_epochs: 1
 batch_size: 32
 learning_rate: 0.001
-mu: 0.1                          # FedProx proximal term
-num_clients: 20
-quantization_bits: 32
+mu: 0.1                          # FedProx / FedSpeed proximal term
+num_clients: 5
+ts: 5
 
 # Client heterogeneity
 client_types:
@@ -321,7 +345,6 @@ client_dynamism:
 
 ## Roadmap
 
-- [ ] Additional FL algorithms (FedNova, SCAFFOLD)
 - [ ] Differential privacy mechanisms
 - [ ] Docker containerization
 - [ ] Distributed training across physical nodes
