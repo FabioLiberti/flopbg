@@ -5,7 +5,7 @@
 <h1 align="center">FLOPBG - Federated Learning in Dynamic and Heterogeneous Environments</h1>
 
 <p align="center">
-  <strong>A full-stack platform for Federated Learning research on medical imaging and benchmark datasets</strong>
+  <strong>A privacy-preserving platform for Federated Learning research on medical imaging, designed for EHDS compliance and real-world healthcare scenarios</strong>
 </p>
 
 <p align="center">
@@ -13,6 +13,8 @@
   <img src="https://img.shields.io/badge/TensorFlow-2.16+-orange?logo=tensorflow&logoColor=white" alt="TensorFlow"/>
   <img src="https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=white" alt="React"/>
   <img src="https://img.shields.io/badge/Flask-API-black?logo=flask&logoColor=white" alt="Flask"/>
+  <img src="https://img.shields.io/badge/EHDS-Compliant-009688" alt="EHDS"/>
+  <img src="https://img.shields.io/badge/GDPR-Privacy--by--Design-blueviolet" alt="GDPR"/>
   <img src="https://img.shields.io/badge/License-Research-green" alt="License"/>
 </p>
 
@@ -24,7 +26,9 @@
 
 ## Overview
 
-**FLOPBG** is a research platform designed to simulate, evaluate, and compare **Federated Learning (FL)** strategies against centralized approaches. The system focuses on **medical imaging classification** across heterogeneous and dynamic client environments, providing a comprehensive experimentation framework with real-time monitoring.
+**FLOPBG** is a research platform designed to simulate, evaluate, and compare **Federated Learning (FL)** strategies against centralized approaches. The system focuses on **medical imaging classification** across heterogeneous and dynamic client environments, with a **privacy-by-design** architecture where patient data never leaves the source institution.
+
+The platform includes **3 pre-configured Use Cases** at national (Italy), European (EHDS), and global (WHO) scale, a **dataset recommendation system**, and an interactive geographic visualization of federated nodes.
 
 <p align="center">
   <img src="_screenshot/screen1.png" alt="Platform Dashboard" width="90%"/>
@@ -43,13 +47,74 @@
 | Feature | Description |
 |---------|-------------|
 | **12 FL Algorithms** | FedAvg, FedProx, SCAFFOLD, FedNova, FedExP, FedDyn, MOON, FedDisco, FedSpeed, FedLPA, DeepAFL, FedEL |
+| **3 Use Cases** | Pre-configured scenarios: National (Italy), European (EHDS), Global (WHO) |
+| **Dataset Recommendation** | Automatic suggestion of optimal algorithm and hyperparameters per dataset |
 | **Client Heterogeneity** | Simulates strong, medium, and weak clients with different computational power and network speed |
 | **Client Dynamism** | Variable participation rates (fast, normal, slow) with dropout simulation |
-| **Non-IID Distribution** | Realistic data partitioning across clients |
+| **Non-IID Distribution** | Shard-based data partitioning (200 shards, label-ordered) for realistic class imbalance |
 | **Weight Quantization** | Configurable 8/16/32-bit compression for communication efficiency |
-| **Reputation System** | Client selection weighted by reputation scores with incentive-based participation |
-| **Real-time Dashboard** | Live monitoring of training metrics, client activity, and model performance |
+| **Reputation System** | Quality-based reputation scores for weighted client selection |
+| **Geographic Visualization** | Interactive 2D map with 3 scales: National, European, Global (50+ cities) |
+| **Dynamic Node Management** | Add, remove, and configure nodes with real-time geographic reassignment |
+| **Real-time Dashboard** | 7-tab interface with live monitoring, elapsed time tracking, and image prediction comparison |
 | **11 Datasets** | 5 benchmark + 6 clinical medical imaging datasets |
+| **Privacy by Design** | GDPR-compliant architecture, data sovereignty at source, EHDS secondary data use support |
+
+---
+
+## Use Cases
+
+The platform provides 3 pre-configured scenarios at different geographic scales, each with optimized algorithm selection, node configuration, and clinical context.
+
+### National - Italian Mountain Hospitals Network
+
+| Parameter | Value |
+|-----------|-------|
+| **Scope** | 10 hospitals across Italian mountain regions (Aosta to Potenza) |
+| **Dataset** | Chest X-Ray (Pneumonia detection) |
+| **Algorithm** | FedProx (handles network instability in remote areas) |
+| **Rounds** | 100 |
+| **Challenge** | Connectivity constraints, heterogeneous infrastructure, small rural hospitals |
+
+### European - EHDS Dermatology Network
+
+| Parameter | Value |
+|-----------|-------|
+| **Scope** | 12 dermatology centers across Europe (Berlin, Paris, London, Milan, Madrid, Amsterdam, Stockholm, Vienna, Zurich, Lisbon, Athens, Warsaw) |
+| **Dataset** | ISIC Skin Lesion (9-class classification) |
+| **Algorithm** | SCAFFOLD (corrects gradient drift across heterogeneous centers) |
+| **Rounds** | 150 |
+| **Challenge** | GDPR compliance, EHDS secondary data use, multi-national data governance |
+
+### Global - WHO Tuberculosis Detection
+
+| Parameter | Value |
+|-----------|-------|
+| **Scope** | 15 centers across 6 continents (New York, London, Berlin, Tokyo, Beijing, Singapore, Delhi, Lagos, Cairo, Cape Town, São Paulo, Buenos Aires, Melbourne, Paris, San Francisco) |
+| **Dataset** | Chest X-Ray (TB detection) |
+| **Algorithm** | FedNova (normalizes variable local steps across extreme heterogeneity) |
+| **Rounds** | 200 |
+| **Challenge** | Extreme computational heterogeneity, 3G connectivity in low-resource areas, intercontinental latency |
+
+---
+
+## Dataset Recommendation System
+
+When a dataset is selected, the platform automatically suggests the optimal algorithm and hyperparameters based on dataset characteristics.
+
+| Dataset | Recommended Algorithm | Rationale |
+|---------|----------------------|-----------|
+| MNIST | FedAvg | Simple convergence, baseline reference |
+| Fashion MNIST | FedAvg | Moderate complexity, SCAFFOLD as alternative |
+| CIFAR-10 | SCAFFOLD | Color images, benefits from variance reduction under Non-IID |
+| CIFAR-100 | SCAFFOLD | High class count, MOON as alternative |
+| SVHN | FedAvg | Large dataset, efficiency-first |
+| Chest X-Ray | FedProx | Clinical imbalance, proximal term prevents drift |
+| ISIC | FedDisco | Dermatology, distribution-aware weighting handles label variance |
+| Brain Tumor | FedProx | Medical imaging, stable convergence |
+| Brain Tumor MRI | MOON | Complex imaging, contrastive learning improves representations |
+| Diabetic Retinopathy | FedDisco | Ophthalmology, distribution-aware for severity grading |
+| Skin Cancer | FedProx | Clinical heterogeneity, binary classification |
 
 ---
 
@@ -86,14 +151,14 @@
 
 ### Clinical Datasets
 
-| Dataset | Resolution | Classes | Description |
-|---------|-----------|---------|-------------|
-| Brain Tumor MRI | 224 x 224 x 3 | 4 | Glioma, meningioma, pituitary, no tumor |
-| ISIC Skin Lesion | 224 x 224 x 3 | 9 | Melanoma, nevus, BCC, SCC and more |
-| Chest X-Ray | 150 x 150 x 3 | 2 | Normal vs Pneumonia |
-| Diabetic Retinopathy | 224 x 224 x 3 | 5 | No DR to Proliferative DR |
-| Skin Cancer | 224 x 224 x 3 | 2 | Benign vs Malignant |
-| Brain Tumor | 224 x 224 x 3 | 4 | Alternative brain tumor dataset |
+| Dataset | Resolution | Classes | Source | Description |
+|---------|-----------|---------|--------|-------------|
+| Chest X-Ray | 150 x 150 x 3 | 2 | NIH Clinical Center (112K+ images) | Normal vs Pneumonia |
+| ISIC Skin Lesion | 224 x 224 x 3 | 9 | ISIC Collaboration (150K+ images) | Melanoma, nevus, BCC, SCC and more |
+| Brain Tumor MRI | 224 x 224 x 3 | 4 | BraTS (2,500+ MRI volumes) | Glioma, meningioma, pituitary, no tumor |
+| Diabetic Retinopathy | 224 x 224 x 3 | 5 | EyePACS/Kaggle (88K+ fundus images) | No DR to Proliferative DR |
+| Skin Cancer | 224 x 224 x 3 | 2 | HAM10000 (10,015 images) | Benign vs Malignant (histologically confirmed) |
+| Brain Tumor | 224 x 224 x 3 | 4 | 3,060 images | Alternative brain tumor dataset |
 
 ---
 
@@ -102,14 +167,17 @@
 ```
                     +---------------------------+
                     |     React Frontend        |
-                    |  Configuration | Dashboard |
-                    |  Charts | Globe | Metrics  |
+                    |  7 Tabs: Overview |       |
+                    |  Datasets | Config |      |
+                    |  Nodes | Use Cases |      |
+                    |  Experiment & Results     |
                     +------------+--------------+
                                  | Axios (proxy :3000 -> :5001)
                     +------------v--------------+
                     |       Flask REST API       |
                     |  /config /start /status    |
                     |  /stop /datasets /images   |
+                    |  /nodes                    |
                     +------------+--------------+
                                  |
               +------------------v------------------+
@@ -136,18 +204,32 @@
 
 | Phase | Name | Description |
 |:-----:|------|-------------|
-| **1** | **Dataset Selection** | Selection from 11 available datasets (5 benchmark + 6 clinical medical imaging) |
+| **1** | **Dataset Selection** | Selection from 11 available datasets with automatic algorithm recommendation |
 | **2** | **Client Configuration** | Definition of client heterogeneity profiles (strong, medium, weak) and dynamism parameters (participation rate, dropout) |
-| **3** | **Node Distribution** | Geographic deployment of nodes with configurable network topology and communication constraints |
-| **4** | **FL Training** | Execution of federated training rounds using the selected algorithm (12 available) |
-| **5** | **Aggregation** | Server-side aggregation with algorithm-specific strategies (weighted averaging, control variates, normalized gradients, contrastive alignment, etc.) |
-| **6** | **Evaluation** | Comprehensive assessment through Accuracy, Loss, ROC-AUC, and Confusion Matrix metrics |
+| **3** | **Node Distribution** | Geographic deployment on interactive map at 3 scales (National, European, Global) with dynamic node management |
+| **4** | **FL Training** | Execution of federated training rounds using the selected algorithm (12 available) with real-time monitoring |
+| **5** | **Aggregation** | Server-side aggregation with algorithm-specific strategies and reputation-weighted client selection |
+| **6** | **Evaluation** | Comprehensive assessment with Accuracy, Loss, ROC-AUC, Confusion Matrix, Precision/Recall/F1, and image prediction comparison |
+
+---
+
+## Privacy and Compliance
+
+FLOPBG is designed with a **privacy-first** architecture aligned with European healthcare regulations:
+
+| Principle | Implementation |
+|-----------|---------------|
+| **Data Sovereignty** | Patient data never leaves the source institution; only model weights are transmitted |
+| **GDPR Compliance** | No centralized data storage; processing occurs at the data source |
+| **EHDS Secondary Use** | Supports European Health Data Space regulations for secondary data use in research |
+| **Communication Security** | Weight quantization (8/16/32-bit) reduces transmitted information |
+| **Selective Participation** | Reputation-based client selection with configurable participation rates |
 
 ---
 
 ## Centralized vs Federated Learning
 
-The platform provides direct comparison between centralized and federated training approaches, with detailed metrics at each round.
+The platform provides direct comparison between centralized and federated training approaches, with detailed metrics at each round including accuracy convergence gap analysis.
 
 <p align="center">
   <img src="_img_/Graph_Central_vs_Fed.png" alt="Centralized vs Federated Comparison" width="85%"/>
@@ -157,10 +239,14 @@ The platform provides direct comparison between centralized and federated traini
 
 ## Geographic Node Distribution
 
-Clients can be mapped to geographic locations and visualized on an interactive 3D globe. Each node is classified by computational tier and participation behavior.
+Clients are mapped to geographic locations on an interactive 2D map with zoom and pan. Each node is color-coded by computational tier (strong/medium/weak) and sized by dynamism (fast/normal/slow). Three geographic scales are available:
+
+- **National**: 27 Italian cities including mountain and rural hospitals
+- **European**: 11 major European medical centers
+- **Global**: 50+ cities across 6 continents
 
 <p align="center">
-  <img src="_screenshot/screen4.png" alt="Globe Node Distribution" width="85%"/>
+  <img src="_screenshot/screen4.png" alt="Geographic Node Distribution" width="85%"/>
 </p>
 
 <p align="center">
@@ -171,7 +257,7 @@ Clients can be mapped to geographic locations and visualized on an interactive 3
 
 ## Platform Dashboard
 
-The web dashboard provides full control and real-time monitoring of federated learning experiments.
+The web dashboard is organized in **7 tabs**: Overview, Datasets, Basic Configuration, Advanced Configuration, Node Distribution, Use Cases, and Experiment. It provides full control and real-time monitoring with elapsed time tracking.
 
 <p align="center">
   <img src="_screenshot/screen5.png" alt="Results and ROC Curves" width="85%"/>
@@ -255,6 +341,23 @@ Full control over FL parameters: number of rounds, clients, learning rate, aggre
   <img src="_screenshot/screen2.png" alt="Configuration Panel" width="85%"/>
 </p>
 
+<p align="center">
+  <img src="_screenshot/screen3.png" alt="Advanced Configuration" width="85%"/>
+</p>
+
+---
+
+## Non-IID Data Distribution
+
+The platform implements a **shard-based Non-IID distribution** to simulate realistic data heterogeneity across federated clients:
+
+1. Training data is sorted by label
+2. Data is divided into **200 shards** of equal size
+3. Shards are randomly shuffled
+4. Shards are distributed round-robin across clients
+
+This results in each client having a different class distribution, mimicking real-world scenarios where each hospital specializes in different pathologies.
+
 ---
 
 ## Project Structure
@@ -263,25 +366,35 @@ Full control over FL parameters: number of rounds, clients, learning rate, aggre
 flopbg/
 ├── application/                      # Backend FL engine
 │   ├── app.py                        # Flask REST API server
-│   ├── main.py                       # FL orchestrator
 │   ├── federated_learning_system.py  # Core FL logic (12 algorithms)
 │   ├── report_manager.py            # Report generation & scheduling
+│   ├── nodes.json                    # Hospital node configuration
+│   ├── _Reports_/                    # Generated experiment reports
 │   └── reports/                      # Reporting modules
 │       ├── fl_reports.py             # FL-specific reporting
 │       ├── metrics.py                # Metrics calculation
-│       └── visualization.py          # Visualization utilities
+│       └── visualization.py          # Chart generation (8 chart types)
 ├── application_frontend/             # React frontend
 │   ├── src/
-│   │   ├── App.js                    # Main application
+│   │   ├── App.js                    # Main app (7 tabs, recommendation engine)
 │   │   ├── components/               # UI components (19+)
+│   │   │   ├── ExperimentConfig/     # Basic & Advanced configuration
+│   │   │   ├── GlobeVisualization.js # Interactive 2D geographic map
+│   │   │   ├── NodeConfiguration.js  # Dynamic node management
+│   │   │   ├── ImageComparison.js    # Real vs Predicted comparison
+│   │   │   ├── ROCChart.js           # Per-class ROC curves
+│   │   │   ├── ConfusionMatrixChart.js
+│   │   │   └── ...
 │   │   ├── hooks/                    # Custom React hooks
-│   │   └── data/                     # Static data (geo, use cases)
+│   │   └── data/
+│   │       ├── useCases.js           # 3 pre-configured scenarios
+│   │       └── worldCities.js        # 50+ cities (IT, EU, Global)
 │   └── package.json
 ├── clients/
-│   ├── client.py                     # FL client node (12 training methods)
-│   └── client_manager.py            # Client orchestration & reputation
+│   ├── client.py                     # FL client (12 training methods)
+│   └── client_manager.py            # Reputation-weighted selection
 ├── server/
-│   └── server.py                     # Aggregation server (8 strategies)
+│   └── server.py                     # Aggregation server (12 strategies)
 ├── models/
 │   └── model_definition.py          # CNN architectures (4 model types)
 ├── data/
@@ -358,7 +471,7 @@ The application will be available at `http://localhost:3000` with the API runnin
 
 ## Configuration
 
-All experiment parameters are managed through `config.yaml`:
+All experiment parameters are managed through `config.yaml` or via the dashboard UI:
 
 ```yaml
 # Training parameters
@@ -368,7 +481,8 @@ batch_size: 32
 learning_rate: 0.001
 mu: 0.1                          # FedProx / FedSpeed proximal term
 num_clients: 5
-ts: 5
+quantization_bits: 32            # 8, 16, or 32
+global_participation_rate: 1.0
 
 # Client heterogeneity
 client_types:
@@ -389,13 +503,14 @@ client_dynamism:
 
 | Metric | Description |
 |--------|-------------|
-| Accuracy | Overall classification accuracy |
-| Precision | Macro-averaged precision |
-| Recall | Macro-averaged recall |
-| F1-Score | Macro-averaged F1 |
+| Accuracy | Overall classification accuracy (FL vs Centralized) |
+| Precision | Macro-averaged precision per round |
+| Recall | Macro-averaged recall per round |
+| F1-Score | Macro-averaged F1 per round |
 | AUC-ROC | Area under the ROC curve (per-class and macro) |
-| Confusion Matrix | Full NxN classification matrix |
-| Training Time | Per-client and per-round timing |
+| Confusion Matrix | Full NxN classification matrix at each round |
+| Training Time | Per-client and per-round timing breakdown |
+| Image Comparison | Side-by-side real vs predicted inference results |
 
 ---
 
@@ -403,7 +518,7 @@ client_dynamism:
 
 **Backend:** Python 3.10 | Flask | TensorFlow/Keras | scikit-learn | NumPy | Matplotlib | Plotly
 
-**Frontend:** React 18 | Material-UI | Chart.js | Recharts | globe.gl | Axios
+**Frontend:** React 18 | Material-UI | Chart.js | Recharts | react-simple-maps | D3.js | Axios
 
 ---
 
