@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="_img_/Sperimentazioni_HEAD.png" alt="FLOPBG Banner" width="100%"/>
+  <img src="_img_/FLOPBG_testata.jpg" alt="FLOPBG Banner" width="100%"/>
 </p>
 
 <h1 align="center">FLOPBG - Federated Learning in Dynamic and Heterogeneous Environments</h1>
@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <em>Developed in collaboration between Universita Mercatorum and Ospedale Pediatrico Bambino Gesu (OPBG)</em>
+  <em>Developed in collaboration between Universitas Mercatorum and Ospedale Pediatrico Bambino Gesu (OPBG)</em>
 </p>
 
 ---
@@ -534,7 +534,7 @@ client_dynamism:
 
 ## Authors
 
-**Fabio Liberti** - Universita Mercatorum / OPBG
+**Fabio Liberti** - Universitas Mercatorum / OPBG
 
 ---
 
