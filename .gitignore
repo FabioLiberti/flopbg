@@ -1,4 +1,9 @@
 # ========================
+# Backups & Old files
+# ========================
+_BK&OLDS/
+
+# ========================
 # Datasets (large binary files)
 # ========================
 data/Brain Tumor MRI/
